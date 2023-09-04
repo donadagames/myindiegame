@@ -13,19 +13,20 @@ public class InputHandler : MonoBehaviour
     {
         playerInputActions = new PlayerInputActions();
         playerInputActions.Enable();
-        status = GetComponent<Status>();
+    }
+
+    private void Start()
+    {
+        status = Status.instance;
     }
 
     private void Update()
     {
         direction = GetDirectionInput();
-    }
-
-    private void FixedUpdate()
-    {
         Move();
     }
 
+    #region Left Stick
     private void Move()
     {
         status.player.transform.Translate(direction *
@@ -35,7 +36,6 @@ public class InputHandler : MonoBehaviour
         status.player.transform.Rotate(0, Time.deltaTime *
             status.player.rotationAngle *
             direction.x, 0);
-
     }
 
     private Vector3 GetDirectionInput()
@@ -43,6 +43,37 @@ public class InputHandler : MonoBehaviour
         Vector2 input = playerInputActions.Player.
             Move.ReadValue<Vector2>();
 
+        status.uiController.SetPositionFocusUI(GetDirection(input));
+
         return new Vector3(input.x, 0, input.y);
     }
+
+    private Direction GetDirection(Vector2 input)
+    {
+        if (input.x > 0)
+        {
+            if (input.y > 0) return Direction.UpRight;
+            else return Direction.DownLeft;
+        }
+        else if (input.x < 0)
+        {
+            if (input.y > 0) return Direction.UpLeft;
+            else return Direction.DownRight;
+        }
+        else return Direction.Default;
+    }
+    #endregion
+
+
+    #region Buttons
+
+    public void Jump()
+    {
+        status.player.rb.AddForce(Vector3.up * 
+            status.player.jumpForce, ForceMode.Impulse);
+    }
+
+    #endregion
 }
+
+
