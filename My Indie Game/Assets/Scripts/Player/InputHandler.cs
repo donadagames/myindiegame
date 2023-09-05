@@ -5,15 +5,16 @@ using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
 {
-    private PlayerInputActions playerInputActions;
+    [SerializeField] float gravityMultiplier = 1;
+    [SerializeField] float smoothTime = .05f;
     private Status status;
     private Vector3 direction = new Vector3();
+    private Vector2 input = new Vector2();
+    private float velocity;
+    private const float GRAVITY = -9.8f;
+    private float currentVelocity;
 
-    private void Awake()
-    {
-        playerInputActions = new PlayerInputActions();
-        playerInputActions.Enable();
-    }
+    private bool IsGrounded() => status.player.characterController.isGrounded;
 
     private void Start()
     {
@@ -22,33 +23,56 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
-        direction = GetDirectionInput();
-        Move();
+        ApplyGravity();
+        ApplyRotation();
+        ApplyMovement();
     }
 
     #region Left Stick
-    private void Move()
+    private void Move(InputAction.CallbackContext context)
     {
-        status.player.transform.Translate(direction *
-            Time.deltaTime *
-            status.player.moveSpeed);
+        input = context.ReadValue<Vector2>();
+        status.uiController.
+            SetPositionFocusUI(GetJoystickDirection(input));
 
-        status.player.transform.Rotate(0, Time.deltaTime *
-            status.player.rotationAngle *
-            direction.x, 0);
+        direction = new Vector3(input.x, 0, input.y);
     }
 
-    private Vector3 GetDirectionInput()
+    private void ApplyMovement()
     {
-        Vector2 input = playerInputActions.Player.
-            Move.ReadValue<Vector2>();
-
-        status.uiController.SetPositionFocusUI(GetDirection(input));
-
-        return new Vector3(input.x, 0, input.y);
+        status.player.characterController.Move(direction *
+            status.player.moveSpeed *
+            Time.deltaTime);
     }
 
-    private Direction GetDirection(Vector2 input)
+    private void ApplyRotation()
+    {
+        if (input.sqrMagnitude == 0) return;
+        var tangetAngle = Mathf.Atan2(direction.x,
+            direction.z) * Mathf.Rad2Deg;
+        var angle = Mathf.SmoothDampAngle(status.player.transform.
+            eulerAngles.y, tangetAngle, ref currentVelocity,
+            smoothTime);
+        status.player.transform.rotation =
+            Quaternion.Euler(0, angle, 0);
+    }
+
+    private void ApplyGravity()
+    {
+        if (IsGrounded() && velocity < 0.0f)
+        {
+            velocity = -1;
+        }
+
+        else
+        {
+            velocity += GRAVITY * gravityMultiplier * Time.deltaTime;
+        }
+
+        direction.y = velocity;
+    }
+
+    private Direction GetJoystickDirection(Vector2 input)
     {
         if (input.x > 0)
         {
@@ -64,13 +88,12 @@ public class InputHandler : MonoBehaviour
     }
     #endregion
 
-
     #region Buttons
 
     public void Jump()
     {
-        status.player.rb.AddForce(Vector3.up * 
-            status.player.jumpForce, ForceMode.Impulse);
+        if (!IsGrounded()) return;
+        velocity = Mathf.Sqrt(status.player.jumpHight * -2 * GRAVITY);
     }
 
     #endregion

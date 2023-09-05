@@ -2,15 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 {
     public float moveSpeed = 3f;
-    public float rotationAngle = 60f;
-    public Rigidbody rb;
-    public float jumpForce = 5f;
+
+    public float jumpHight = 5f;
+
+    public CharacterController characterController;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
     }
+
+
 }
