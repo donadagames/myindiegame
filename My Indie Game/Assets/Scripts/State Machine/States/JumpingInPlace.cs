@@ -14,8 +14,9 @@ public class JumpingInPlace : IState
 
     public void OnEnter()
     {
+        inputHandler.isFalling = false;
         jumpTime = Time.time;
-        inputHandler.canJump = false;
+        inputHandler.jumpCount++;
         inputHandler.hasPressedJumpButton = false;
         status.player.animator.Play(Animation.JumpInPlace_Unarmed.ToString());
         inputHandler.Jump(status.player.jumpInPlaceHight);
@@ -24,17 +25,17 @@ public class JumpingInPlace : IState
     public void OnExit()
     {
         inputHandler.hasPressedJumpButton = false;
-        inputHandler.canJump = true;
+        inputHandler.jumpCount = 0;
     }
 
     public void Tick()
     {
-        inputHandler.ApplyGravity();
-        inputHandler.ApplyMovement();
+        inputHandler.GetInput();
+        inputHandler.ApplyAllMovement();
 
         if (Time.time >= jumpTime + status.player.jumpClipDuration)
         {
-            inputHandler.canJump = true;
+            inputHandler.jumpCount = 0;
         }
     }
 }

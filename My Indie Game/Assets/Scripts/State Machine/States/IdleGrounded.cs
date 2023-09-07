@@ -4,6 +4,8 @@ public class IdleGrounded : IState
 {
     private readonly InputHandler inputHandler;
     private readonly Status status;
+    private float fallTime;
+    private bool shouldCheckFalling = true;
     public IdleGrounded(Status _status, InputHandler _inputHandler)
     { 
         status = _status;
@@ -12,11 +14,13 @@ public class IdleGrounded : IState
 
     public void OnEnter()
     {
-        inputHandler.hasLanded = false;
+        inputHandler.isFalling = false;
+        inputHandler.hasEndedLanding = false;
+        shouldCheckFalling = true;
         status.player.animator.Play(Animation.
             Idle_Unarmed.ToString());
     }
-
+  
     public void OnExit()
     {
         return;
@@ -24,6 +28,29 @@ public class IdleGrounded : IState
 
     public void Tick()
     {
-        inputHandler.GetInput();
+        inputHandler.GetDirection();
+        CheckIfIsFalling();
+    }
+
+    void CheckIfIsFalling()
+    {
+        if (inputHandler.IsGrounded()) return;
+
+        if (!inputHandler.IsGrounded() && shouldCheckFalling)
+        {
+            shouldCheckFalling = false;
+            fallTime = Time.time;
+        }
+        else if (!inputHandler.IsGrounded() && !shouldCheckFalling)
+        {
+            if (Time.time - fallTime > inputHandler.fallingDuration)
+            {
+                inputHandler.isFalling = true;
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 }

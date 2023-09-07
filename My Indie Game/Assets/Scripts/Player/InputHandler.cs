@@ -1,24 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
 {
+    public float fallingDuration = 1f;
     [SerializeField] float gravityMultiplier = 1;
     [SerializeField] float smoothTime = .05f;
     private Status status;
-    private Vector3 direction = new Vector3();
     private Vector2 input = new Vector2();
     private float velocity;
     private const float GRAVITY = -9.8f;
     private float currentVelocity;
     private StateMachine stateMachine;
     private PlayerInputActions playerInputActions;
-    private bool IsGrounded() => status.player.characterController.isGrounded;
+    public bool IsGrounded() => status.player.characterController.isGrounded;
 
-    public bool hasPressedJumpButton = false;
-    public bool canJump = true;
+    public bool isFalling = false;
+
+    [HideInInspector] public Vector3 direction = new Vector3();
+    [HideInInspector] public bool hasPressedJumpButton = false;
+    [HideInInspector] public int jumpCount = 0;
+    [HideInInspector] public bool hasEndedLanding = false;
 
     private void Awake()
     {
@@ -34,6 +36,12 @@ public class InputHandler : MonoBehaviour
             new JumpingInPlace(status, this);
         var jumpMoving =
             new JumpingMoving(status, this);
+        var doubleJumpig =
+            new DoubleJumpig(status, this);
+        var landing =
+            new Land(status, this);
+        var falling
+            = new Falling(status, this);
 
         stateMachine = new StateMachine();
 
@@ -45,26 +53,62 @@ public class InputHandler : MonoBehaviour
         AddTransition
             (idle, moving, PlayerHasMovementInput());
         AddTransition
+            (idle, jumpInPlace, ShouldJump());
+
+        AddTransition
             (moving, idle, PlayerHasNoMovementInput());
         AddTransition
-            (idle, jumpInPlace, ShouldJump());
-        AddTransition
             (moving, jumpMoving, ShouldJump());
-        AddTransition
-            (jumpInPlace, idle, () => IsGrounded() && canJump);
-        AddTransition
-            (jumpMoving, idle, ShouldLandAfterJumping());
 
+        AddTransition
+            (jumpInPlace, idle, () => IsGrounded() && jumpCount == 0);
+        AddTransition
+            (jumpInPlace, doubleJumpig, ShouldDoubleJump());
+
+        AddTransition
+            (jumpMoving, idle, ShouldLandIdle());
+        AddTransition
+            (jumpMoving, doubleJumpig, ShouldDoubleJump());
+        AddTransition
+             (jumpMoving, moving, ShouldLandInMovement());
+
+        AddTransition
+            (doubleJumpig, idle, () => input.sqrMagnitude <= 0 &&
+            IsGrounded() && jumpCount == 0);
+        AddTransition
+            (doubleJumpig, moving, ShouldLandInMovement());
+
+        AddTransition
+            (moving, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
+        AddTransition
+            (doubleJumpig, falling, () => jumpCount == 0 && !IsGrounded());
+        AddTransition
+            (idle, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
+
+        AddTransition
+            (falling, landing, ShouldLand());
+
+
+        AddTransition
+            (landing, idle, () => hasEndedLanding && input.sqrMagnitude <= 0);
+        AddTransition
+            (landing, moving, () => hasEndedLanding && input.sqrMagnitude > 0);
 
         Func<bool> PlayerHasMovementInput() => () =>
         input.sqrMagnitude > 0;
         Func<bool> PlayerHasNoMovementInput() => () =>
         input.sqrMagnitude <= 0;
         Func<bool> ShouldJump() => () =>
-        IsGrounded() && hasPressedJumpButton && canJump;
-        Func<bool> ShouldLandAfterJumping() => () =>
-        IsGrounded() && canJump || IsGrounded();
+        IsGrounded() && hasPressedJumpButton && jumpCount == 0;
+        Func<bool> ShouldLandIdle() => () =>
+        IsGrounded() && jumpCount == 0 && input.sqrMagnitude <= 0
+        || IsGrounded() && input.sqrMagnitude <= 0;
+        Func<bool> ShouldDoubleJump() => () =>
+        hasPressedJumpButton && jumpCount == 1;
         stateMachine.SetState(idle);
+        Func<bool> ShouldLandInMovement() => () => input.sqrMagnitude > 0 &&
+        IsGrounded() && jumpCount == 0 || input.sqrMagnitude > 0 && IsGrounded();
+        Func<bool> ShouldLand() => () => IsGrounded() && jumpCount == 0;
     }
 
     private void Update()
@@ -72,12 +116,17 @@ public class InputHandler : MonoBehaviour
         stateMachine.Tick();
     }
 
-    #region Left Stick
     public void GetInput()
     {
         input = playerInputActions.Player.Move.ReadValue<Vector2>();
         status.uiController.SetPositionFocusUI(GetJoystickDirection(input));
 
+    }
+
+    #region Left Stick
+    public void GetDirection()
+    {
+        GetInput();
         direction = new Vector3(input.x, 0, input.y);
     }
 
@@ -144,10 +193,9 @@ public class InputHandler : MonoBehaviour
 
     public void JumpButton()
     {
-        if (!canJump) return;
-        hasPressedJumpButton = true;
+        if (jumpCount == 0 || jumpCount == 1)
+            hasPressedJumpButton = true;
+        else return;
     }
     #endregion
 }
-
-

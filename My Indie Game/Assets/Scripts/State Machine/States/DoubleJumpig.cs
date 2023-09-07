@@ -1,17 +1,17 @@
 using UnityEngine;
 
-public class JumpingMoving : IState
+public class DoubleJumpig : IState
 {
-    private readonly Status status;
     private readonly InputHandler inputHandler;
-
+    private readonly Status status;
     private float jumpTime;
 
-    public JumpingMoving(Status _status, InputHandler _inputHandler)
+    public DoubleJumpig(Status _status, InputHandler _inputHandler)
     {
         status = _status;
         inputHandler = _inputHandler;
     }
+
 
     public void OnEnter()
     {
@@ -19,7 +19,7 @@ public class JumpingMoving : IState
         jumpTime = Time.time;
         inputHandler.jumpCount++;
         inputHandler.hasPressedJumpButton = false;
-        status.player.animator.Play(Animation.JumpInPlace_Unarmed.ToString());
+        status.player.animator.Play(Animation.DoubleJump_Unarmed.ToString());
         inputHandler.Jump(status.player.jumpMovingHight);
     }
 
@@ -34,9 +34,10 @@ public class JumpingMoving : IState
         inputHandler.GetInput();
         inputHandler.ApplyAllMovement();
 
-        if (Time.time >= jumpTime + status.player.jumpClipDuration)
+        if (Time.time >= jumpTime + status.player.doubleJumpClipDuration)
         {
             inputHandler.jumpCount = 0;
         }
     }
+
 }
