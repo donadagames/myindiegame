@@ -13,39 +13,82 @@ public class InputHandler : MonoBehaviour
     private float velocity;
     private const float GRAVITY = -9.8f;
     private float currentVelocity;
-
+    private StateMachine stateMachine;
+    private PlayerInputActions playerInputActions;
     private bool IsGrounded() => status.player.characterController.isGrounded;
 
-    private void Start()
+    public bool hasPressedJumpButton = false;
+    public bool canJump = true;
+
+    private void Awake()
     {
         status = Status.instance;
+        playerInputActions = new PlayerInputActions();
+        playerInputActions.Enable();
+
+        var idle =
+            new IdleGrounded(status, this);
+        var moving =
+            new Moving(status, this);
+        var jumpInPlace =
+            new JumpingInPlace(status, this);
+        var jumpMoving =
+            new JumpingMoving(status, this);
+
+        stateMachine = new StateMachine();
+
+        void AddTransition(IState from, IState to,
+            Func<bool> condition) =>
+            stateMachine.AddTransition
+            ((IState)from, (IState)to, condition);
+
+        AddTransition
+            (idle, moving, PlayerHasMovementInput());
+        AddTransition
+            (moving, idle, PlayerHasNoMovementInput());
+        AddTransition
+            (idle, jumpInPlace, ShouldJump());
+        AddTransition
+            (moving, jumpMoving, ShouldJump());
+        AddTransition
+            (jumpInPlace, idle, () => IsGrounded() && canJump);
+        AddTransition
+            (jumpMoving, idle, ShouldLandAfterJumping());
+
+
+        Func<bool> PlayerHasMovementInput() => () =>
+        input.sqrMagnitude > 0;
+        Func<bool> PlayerHasNoMovementInput() => () =>
+        input.sqrMagnitude <= 0;
+        Func<bool> ShouldJump() => () =>
+        IsGrounded() && hasPressedJumpButton && canJump;
+        Func<bool> ShouldLandAfterJumping() => () =>
+        IsGrounded() && canJump || IsGrounded();
+        stateMachine.SetState(idle);
     }
 
     private void Update()
     {
-        ApplyGravity();
-        ApplyRotation();
-        ApplyMovement();
+        stateMachine.Tick();
     }
 
     #region Left Stick
-    private void Move(InputAction.CallbackContext context)
+    public void GetInput()
     {
-        input = context.ReadValue<Vector2>();
-        status.uiController.
-            SetPositionFocusUI(GetJoystickDirection(input));
+        input = playerInputActions.Player.Move.ReadValue<Vector2>();
+        status.uiController.SetPositionFocusUI(GetJoystickDirection(input));
 
         direction = new Vector3(input.x, 0, input.y);
     }
 
-    private void ApplyMovement()
+    public void ApplyMovement()
     {
         status.player.characterController.Move(direction *
             status.player.moveSpeed *
             Time.deltaTime);
     }
 
-    private void ApplyRotation()
+    public void ApplyRotation()
     {
         if (input.sqrMagnitude == 0) return;
         var tangetAngle = Mathf.Atan2(direction.x,
@@ -57,17 +100,21 @@ public class InputHandler : MonoBehaviour
             Quaternion.Euler(0, angle, 0);
     }
 
-    private void ApplyGravity()
+    public void ApplyAllMovement()
+    {
+        ApplyGravity();
+        ApplyRotation();
+        ApplyMovement();
+    }
+
+
+    public void ApplyGravity()
     {
         if (IsGrounded() && velocity < 0.0f)
-        {
             velocity = -1;
-        }
 
         else
-        {
             velocity += GRAVITY * gravityMultiplier * Time.deltaTime;
-        }
 
         direction.y = velocity;
     }
@@ -90,12 +137,16 @@ public class InputHandler : MonoBehaviour
 
     #region Buttons
 
-    public void Jump()
+    public void Jump(float hight)
     {
-        if (!IsGrounded()) return;
-        velocity = Mathf.Sqrt(status.player.jumpHight * -2 * GRAVITY);
+        velocity = Mathf.Sqrt(hight * -2 * GRAVITY);
     }
 
+    public void JumpButton()
+    {
+        if (!canJump) return;
+        hasPressedJumpButton = true;
+    }
     #endregion
 }
 
