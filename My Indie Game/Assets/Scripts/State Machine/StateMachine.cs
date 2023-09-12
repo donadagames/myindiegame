@@ -8,8 +8,13 @@ public class StateMachine
         new Dictionary<Type, List<Transition>>();
     private List<Transition> currentTransitions =
         new List<Transition>();
+    private List<Transition> anyTransitions =
+       new List<Transition>();
     private static List<Transition> EmptyTransitions =
         new List<Transition>(0);
+
+    public bool shouldChange = false;
+
     public void Tick()
     {
         var transition = GetTransition();
@@ -29,7 +34,6 @@ public class StateMachine
             To = to;
         }
     }
-
     public void SetState(IState state)
     {
         if (state == currentState) return;
@@ -55,8 +59,26 @@ public class StateMachine
         _transitions.Add(new Transition(to, predicate));
     }
 
+    public void AddAnyTransition(IState from, IState to,
+        Func<bool> predicate)
+    {
+        if (transitions.TryGetValue(from.GetType(),
+            out var _transitions) == false)
+        {
+            _transitions = new List<Transition>();
+            transitions[from.GetType()] = _transitions;
+        }
+        _transitions.Add(new Transition(to, predicate));
+    }
+
     private Transition GetTransition()
     {
+        foreach (var transition in anyTransitions)
+        {
+            if (transition.Condition())
+                return transition;
+        }
+
         foreach (var transition in currentTransitions)
         {
             if (transition.Condition())

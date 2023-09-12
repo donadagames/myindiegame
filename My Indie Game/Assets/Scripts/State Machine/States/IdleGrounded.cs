@@ -17,8 +17,8 @@ public class IdleGrounded : IState
         inputHandler.isFalling = false;
         inputHandler.hasEndedLanding = false;
         shouldCheckFalling = true;
-        status.player.animator.Play(Animation.
-            Idle_Unarmed.ToString());
+        status.player.animations.PlayAnimation(status.player.animations.IDLE,
+            status.isSafeZone);
     }
   
     public void OnExit()
@@ -29,6 +29,7 @@ public class IdleGrounded : IState
     public void Tick()
     {
         inputHandler.GetDirection();
+        inputHandler.ApplyAllMovement();
         CheckIfIsFalling();
     }
 

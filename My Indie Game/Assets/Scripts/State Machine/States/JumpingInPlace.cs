@@ -18,7 +18,8 @@ public class JumpingInPlace : IState
         jumpTime = Time.time;
         inputHandler.jumpCount++;
         inputHandler.hasPressedJumpButton = false;
-        status.player.animator.Play(Animation.JumpInPlace_Unarmed.ToString());
+        status.player.animations.PlayAnimation(status.player.animations.JUMP_IN_PLACE,
+     status.isSafeZone);
         inputHandler.Jump(status.player.jumpInPlaceHight);
     }
 

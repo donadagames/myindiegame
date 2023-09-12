@@ -19,7 +19,8 @@ public class JumpingMoving : IState
         jumpTime = Time.time;
         inputHandler.jumpCount++;
         inputHandler.hasPressedJumpButton = false;
-        status.player.animator.Play(Animation.JumpInPlace_Unarmed.ToString());
+        status.player.animations.PlayAnimation(status.player.animations.JUMP_MOVING,
+    status.isSafeZone);
         inputHandler.Jump(status.player.jumpMovingHight);
     }
 
@@ -27,12 +28,15 @@ public class JumpingMoving : IState
     {
         inputHandler.hasPressedJumpButton = false;
         inputHandler.jumpCount = 0;
+        inputHandler.canMeleeAttack = true;
+        inputHandler.hasPressedMeleeAttackButton = false;
     }
 
     public void Tick()
     {
         inputHandler.GetInput();
         inputHandler.ApplyAllMovement();
+        inputHandler.DetectWater();
 
         if (Time.time >= jumpTime + status.player.jumpClipDuration)
         {

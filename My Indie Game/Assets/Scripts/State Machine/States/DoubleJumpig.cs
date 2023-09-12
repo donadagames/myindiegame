@@ -19,20 +19,21 @@ public class DoubleJumpig : IState
         jumpTime = Time.time;
         inputHandler.jumpCount++;
         inputHandler.hasPressedJumpButton = false;
-        status.player.animator.Play(Animation.DoubleJump_Unarmed.ToString());
-        inputHandler.Jump(status.player.jumpMovingHight);
+        status.player.animations.PlayAnimation(status.player.animations.DOUBLE_JUMP,
+    status.isSafeZone);
+        inputHandler.Jump(status.player.jumpMovingHight * 1.2f);
     }
 
     public void OnExit()
     {
-        inputHandler.hasPressedJumpButton = false;
-        inputHandler.jumpCount = 0;
+        inputHandler.SetDefaultConfigurations();
     }
 
     public void Tick()
     {
         inputHandler.GetInput();
         inputHandler.ApplyAllMovement();
+        inputHandler.DetectWater();
 
         if (Time.time >= jumpTime + status.player.doubleJumpClipDuration)
         {

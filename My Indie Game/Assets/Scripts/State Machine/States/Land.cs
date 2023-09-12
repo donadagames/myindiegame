@@ -17,19 +17,21 @@ public class Land : IState
     {
         landTime = Time.time;
         inputHandler.hasEndedLanding = false;
-        //VFX Land "Puff"
 
-        status.player.animator.Play(Animation.
-            Land_Unarmed.ToString());
+        inputHandler.LandPuff();
+        status.player.animations.PlayAnimation(status.player.animations.LAND,
+          status.isSafeZone);
     }
 
     public void OnExit()
     {
-        inputHandler.hasEndedLanding = false;
+        inputHandler.SetDefaultConfigurations();
     }
 
     public void Tick()
     {
+        inputHandler.GetDirection();
+
         if (Time.time >= landTime + status.player.landClipDuration)
         {
             inputHandler.hasEndedLanding = true;

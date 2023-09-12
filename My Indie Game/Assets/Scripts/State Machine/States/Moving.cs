@@ -7,7 +7,7 @@ public class Moving : IState
 
     private float fallTime;
     private bool shouldCheckFalling = true;
-
+    private float time;
     public Moving(Status _status, InputHandler _inputHandler)
     {
         status = _status;
@@ -15,11 +15,13 @@ public class Moving : IState
     }
     public void OnEnter()
     {
+        time = Time.time;
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
         shouldCheckFalling = true;
-        status.player.animator.Play(Animation.
-         Run_Unarmed.ToString());
+        status.player.animations.PlayAnimation(status.player.animations.MOVE,
+            status.isSafeZone);
+        inputHandler.stateMachine.shouldChange = false;
     }
 
     public void OnExit()
@@ -32,6 +34,18 @@ public class Moving : IState
         inputHandler.GetDirection();
         inputHandler.ApplyAllMovement();
         CheckIfIsFalling();
+
+        if (inputHandler.stateMachine.shouldChange)
+        {
+            status.player.animations.PlayAnimation(status.player.animations.MOVE,
+        status.isSafeZone);
+            inputHandler.stateMachine.shouldChange = false;
+        }
+
+        if (Time.time > time + .25f)
+        {
+            inputHandler.DetectWater();
+        }
     }
 
     void CheckIfIsFalling()

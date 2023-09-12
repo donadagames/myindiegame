@@ -1,8 +1,23 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class UIController : MonoBehaviour
 {
     public static UIController instance;
+
+    [SerializeField] private TextMeshProUGUI goldQuantity;
+    [SerializeField] private TextMeshProUGUI redDiamondQuantity;
+    [SerializeField] private TextMeshProUGUI greenDiamondQuantity;
+    [SerializeField] private TextMeshProUGUI blueDiamondQuantity;
+
+    [SerializeField] private TextMeshProUGUI redPotionQuantity;
+    [SerializeField] private TextMeshProUGUI bluePotionQuantity;
+    [SerializeField] private TextMeshProUGUI purplePotionQuantity;
+
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Slider energySlider;
+    [SerializeField] private Slider experienceSlider;
 
     private void Awake()
     {
