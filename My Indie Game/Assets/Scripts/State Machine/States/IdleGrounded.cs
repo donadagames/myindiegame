@@ -30,6 +30,7 @@ public class IdleGrounded : IState
     {
         inputHandler.GetDirection();
         inputHandler.ApplyAllMovement();
+        inputHandler.SearchForEnemySpawner();
         CheckIfIsFalling();
     }
 

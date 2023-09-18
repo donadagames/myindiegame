@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AnimationController))]
@@ -16,6 +19,7 @@ public class Player : MonoBehaviour
     public float jumpInPlaceHight = 5f;
     public float jumpMovingHight = 5f;
 
+    public EnemyAttackPosition[] enemyPosition;
 
     public Transform footPos;
     public Transform headPos;
@@ -30,5 +34,17 @@ public class Player : MonoBehaviour
         characterController = GetComponent<CharacterController>();
     }
 
-    
+    public EnemyAttackPosition GetEnemyPosition()
+    {
+        foreach (EnemyAttackPosition pos in enemyPosition)
+        {
+            if (pos.isInUse == false)
+            {
+                pos.isInUse = true;
+                return pos;
+            }
+        }
+
+        return null;
+    }
 }

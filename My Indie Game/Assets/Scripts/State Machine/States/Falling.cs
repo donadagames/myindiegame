@@ -27,5 +27,6 @@ public class Falling : IState
         inputHandler.GetInput();
         inputHandler.ApplyAllMovement();
         inputHandler.DetectWater();
+        inputHandler.SearchForEnemySpawner();
     }
 }

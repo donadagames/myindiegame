@@ -33,6 +33,7 @@ public class Moving : IState
     {
         inputHandler.GetDirection();
         inputHandler.ApplyAllMovement();
+        inputHandler.SearchForEnemySpawner();
         CheckIfIsFalling();
 
         if (inputHandler.stateMachine.shouldChange)

@@ -34,6 +34,7 @@ public class DoubleJumpig : IState
         inputHandler.GetInput();
         inputHandler.ApplyAllMovement();
         inputHandler.DetectWater();
+        inputHandler.SearchForEnemySpawner();
 
         if (Time.time >= jumpTime + status.player.doubleJumpClipDuration)
         {

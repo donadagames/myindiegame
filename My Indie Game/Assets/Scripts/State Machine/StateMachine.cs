@@ -59,16 +59,10 @@ public class StateMachine
         _transitions.Add(new Transition(to, predicate));
     }
 
-    public void AddAnyTransition(IState from, IState to,
+    public void AddAnyTransition(IState state,
         Func<bool> predicate)
     {
-        if (transitions.TryGetValue(from.GetType(),
-            out var _transitions) == false)
-        {
-            _transitions = new List<Transition>();
-            transitions[from.GetType()] = _transitions;
-        }
-        _transitions.Add(new Transition(to, predicate));
+        anyTransitions.Add(new Transition(state, predicate));
     }
 
     private Transition GetTransition()

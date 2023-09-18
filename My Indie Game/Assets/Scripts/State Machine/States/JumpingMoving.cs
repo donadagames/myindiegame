@@ -37,6 +37,7 @@ public class JumpingMoving : IState
         inputHandler.GetInput();
         inputHandler.ApplyAllMovement();
         inputHandler.DetectWater();
+        inputHandler.SearchForEnemySpawner();
 
         if (Time.time >= jumpTime + status.player.jumpClipDuration)
         {

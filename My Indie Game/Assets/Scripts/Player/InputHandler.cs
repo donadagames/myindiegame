@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] float gravityMultiplier = 1;
     [SerializeField] float smoothTime = .05f;
     [SerializeField] LayerMask waterLayer;
+    [SerializeField] LayerMask enemySpawnerLayer;
     [SerializeField] Status status;
     private Vector2 input = new Vector2();
     private float velocity;
@@ -24,10 +25,25 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public bool hasPressedMeleeAttackButton = false;
     [HideInInspector] public int jumpCount = 0;
     [HideInInspector] public bool hasEndedLanding = false;
-
+    public float searchRadius = 10;
     public bool headIsOnWater = false;
     public bool footIsOnWater = false;
 
+    public void SearchForEnemySpawner()
+    {
+        var spawners = Physics.OverlapSphere(status.player.transform.position, searchRadius, enemySpawnerLayer);
+
+        foreach (var spawner in spawners)
+        {
+            var enemySpawner = spawner.GetComponent<EnemySpawner>();
+            enemySpawner.SpawEnemy();
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(status.player.transform.position, searchRadius);
+    }
     public bool CheckHeadWater() => Physics.CheckSphere(status.player.headPos.position, .2f, waterLayer);
     public bool CheckFootdWater() => Physics.CheckSphere(status.player.footPos.position, .1f, waterLayer);
     private void Awake()

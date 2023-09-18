@@ -34,5 +34,6 @@ public class Swimming : IState
         inputHandler.GetDirection();
         inputHandler.ApplyAllMovement();
         inputHandler.DetectWater();
+        inputHandler.SearchForEnemySpawner();
     }
 }
