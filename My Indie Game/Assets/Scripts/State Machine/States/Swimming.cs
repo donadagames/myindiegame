@@ -14,6 +14,7 @@ public class Swimming : IState
     public void OnEnter()
     {
         inputHandler.SetSwimmingConfiguration();
+        status.player.sword.shouldCheck = false;
         inputHandler.direction.y = 0;
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;

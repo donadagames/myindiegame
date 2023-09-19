@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageble
 {
     public EnemySpawner spawner;
     public float distance;
@@ -14,6 +15,9 @@ public class Enemy : MonoBehaviour
     public Animator animator;
     public float distanceToAttack;
     public float chasingVelocity;
+
+    public GameObject death_VFX;
+
     public string IDLE;
     public string WALK;
     public string RUN;
@@ -27,12 +31,28 @@ public class Enemy : MonoBehaviour
     public float dieClipTime;
     public float dizzyClipTime;
 
-    private void Update()
+    public bool isAlive = true;
+
+    public float health;
+    public float currentHealth;
+    public int minDamage;
+    public int maxDamage;
+    public EnemyUI ui;
+    public bool hasTakenCritialDamage = false;
+
+    public virtual void Update()
     {
         spawner.stateMachine.Tick();
     }
 
-    public void GetPlayerDistance(Transform target)
+    public virtual void Start()
+    {
+        currentHealth = health;
+        ui.SetMaxHealth(currentHealth);
+        ui.healthBar.SetActive(false);
+    }
+
+    public virtual void GetPlayerDistance(Transform target)
     {
         distance = Vector3.Distance(transform.position, target.position);
 
@@ -44,14 +64,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void FaceTarget(Transform target)
+    public virtual void FaceTarget(Transform target)
     {
         Vector3 direction = (target.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x + 0.0001f, 0f, direction.z + 0.0001f));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
-    public void MoveToTarget(Transform target)
+    public virtual void MoveToTarget(Transform target)
     {
         transform.position =
             Vector3.MoveTowards
@@ -65,4 +85,28 @@ public class Enemy : MonoBehaviour
 
         return attackClipTime[index];
     }
+
+    public virtual void TakeDamage(float damage, bool isCritical)
+    {
+        if (isAlive)
+        {
+            currentHealth -= damage;
+            ui.SetValue(currentHealth);
+            CheckIfIsDead();
+            hasTakenCritialDamage = isCritical;
+        }
+    }
+
+    public virtual void CheckIfIsDead()
+    {
+        if (currentHealth <= 0)
+        {
+            isAlive = false;
+        }
+    }
+}
+
+public interface IDamageble
+{
+    public void TakeDamage(float damage, bool isCritical);
 }

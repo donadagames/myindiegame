@@ -13,6 +13,7 @@ public class EnemyIdle : IState
 
     public void OnEnter()
     {
+        spawner.enemy.ui.healthBar.SetActive(false);
         spawner.enemy.animator.Play(spawner.enemy.IDLE);
     }
 

@@ -16,6 +16,7 @@ public class Moving : IState
     public void OnEnter()
     {
         time = Time.time;
+        status.player.sword.shouldCheck = false;
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
         shouldCheckFalling = true;

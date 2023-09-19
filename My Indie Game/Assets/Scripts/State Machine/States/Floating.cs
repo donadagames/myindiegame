@@ -13,6 +13,7 @@ public class Floating : IState
 
     public void OnEnter()
     {
+        status.player.sword.shouldCheck = false;
         inputHandler.SetSwimmingConfiguration();
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;

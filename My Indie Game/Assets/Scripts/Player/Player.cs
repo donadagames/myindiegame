@@ -28,6 +28,11 @@ public class Player : MonoBehaviour
     public float doubleJumpClipDuration;
     public float landClipDuration;
 
+    public int minDamage;
+    public int maxDamage;
+
+    public Sword sword;
+
     private void Awake()
     {
         animations = GetComponent<AnimationController>();

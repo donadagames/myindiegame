@@ -5,16 +5,15 @@ using UnityEngine;
 public class EnemyDizzy : IState
 {
     // Start is called before the first frame update
-    private readonly EnemySpawner spawner; private readonly Status status;
+    private readonly EnemySpawner spawner;
 
-    public EnemyDizzy(Status _status, EnemySpawner _spawner)
+    public EnemyDizzy(EnemySpawner _spawner)
     {
-        status = _status;
         spawner = _spawner;
     }
     public void OnEnter()
     {
-        spawner.enemy.animator.Play(spawner.enemy.IDLE);
+        spawner.enemy.animator.Play(spawner.enemy.DIZZY);
     }
     public void OnExit()
     {

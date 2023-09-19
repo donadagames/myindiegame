@@ -10,10 +10,14 @@ public class Status : MonoBehaviour
     public float currentEnergy;
     public float currentExperience;
 
+    public Camera mainCamera;
+
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(this);
+
+        mainCamera = Camera.main;
     }
 
     public Player player;

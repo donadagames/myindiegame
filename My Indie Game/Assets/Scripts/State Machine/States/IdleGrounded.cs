@@ -15,6 +15,7 @@ public class IdleGrounded : IState
     public void OnEnter()
     {
         inputHandler.isFalling = false;
+        status.player.sword.shouldCheck = false;
         inputHandler.hasEndedLanding = false;
         shouldCheckFalling = true;
         status.player.animations.PlayAnimation(status.player.animations.IDLE,

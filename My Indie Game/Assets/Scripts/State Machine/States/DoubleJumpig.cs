@@ -16,6 +16,7 @@ public class DoubleJumpig : IState
     public void OnEnter()
     {
         inputHandler.isFalling = false;
+        status.player.sword.shouldCheck = false;
         jumpTime = Time.time;
         inputHandler.jumpCount++;
         inputHandler.hasPressedJumpButton = false;

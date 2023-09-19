@@ -13,7 +13,7 @@ public class EnemyChase : IState
 
     public void OnEnter()
     {
-
+        spawner.enemy.ui.healthBar.SetActive(true);
         spawner.enemy.animator.Play(spawner.enemy.RUN);
     }
 

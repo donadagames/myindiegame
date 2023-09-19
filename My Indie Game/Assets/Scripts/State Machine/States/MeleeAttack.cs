@@ -17,6 +17,7 @@ public class MeleeAttack : IState
     public void OnEnter()
     {
         inputHandler.canMeleeAttack = false;
+        status.player.sword.shouldCheck = true;
         inputHandler.hasPressedMeleeAttackButton = false;
         meleeAttackTime = Time.time;
         nextAttackTime = inputHandler.MeleeAttack();
@@ -25,6 +26,7 @@ public class MeleeAttack : IState
     public void OnExit()
     {
         inputHandler.SetDefaultConfigurations();
+        status.player.sword.shouldCheck = false;
     }
 
     public void Tick()

@@ -5,17 +5,21 @@ using UnityEngine;
 public class EnemyDie : IState
 {
     private readonly EnemySpawner spawner;
-    private readonly Status status;
 
-    public EnemyDie(Status _status, EnemySpawner _spawner)
+    private float time;
+    private bool shouldCheck = true;
+
+    public EnemyDie(EnemySpawner _spawner)
     {
-        status = _status;
         spawner = _spawner;
     }
 
     public void OnEnter()
     {
-        spawner.enemy.animator.Play(spawner.enemy.IDLE);
+        time = Time.time;
+        spawner.enemy.ui.healthBar.SetActive(false);
+        spawner.shouldSpawn = false;
+        spawner.enemy.animator.Play(spawner.enemy.DIE);
     }
 
     public void OnExit()
@@ -24,6 +28,10 @@ public class EnemyDie : IState
 
     public void Tick()
     {
+        if (Time.time > time + spawner.enemy.dieClipTime && shouldCheck)
+        { 
+            shouldCheck = false;
+            spawner.DeathVFX();
+        }
     }
-
 }

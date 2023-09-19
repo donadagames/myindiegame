@@ -11,6 +11,7 @@ public class GetHit : IState
 
     public void OnEnter()
     {
+        status.player.sword.shouldCheck = false;
     }
 
     public void OnExit()

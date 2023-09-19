@@ -13,6 +13,7 @@ public class Falling : IState
 
     public void OnEnter()
     {
+        status.player.sword.shouldCheck = false;
         status.player.animations.PlayAnimation(status.player.animations.FALL,
             status.isSafeZone);
     }
