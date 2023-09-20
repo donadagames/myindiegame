@@ -55,13 +55,15 @@ public class EnemySpawner : MonoBehaviour
         stateMachine.AddAnyTransition
             (die, () => !enemy.isAlive);
         stateMachine.AddAnyTransition
-            (getHit, () => enemy.isAlive && enemy.hasTakenCritialDamage);
+            (getHit, () => enemy.isAlive && enemy.isDamaged);
+        stateMachine.AddAnyTransition
+            (victory, ()=> enemy.isVictory && enemy.isAlive);
 
         Func<bool> IsFarAwayFromPlayer() => () => enemy.distance > chaseDistance + .5f;
         Func<bool> IsCloseToPlayerToAttack() => () => canAttack && enemy.distance < enemy.distanceToAttack;
         Func<bool> IsCloseToPlayerToChase() => () => enemy.distance < chaseDistance && enemy.distance > enemy.distanceToAttack;
         Func<bool> IsCloseToPlayerToChaseAfterAttack() => () => canAttack;
-        Func<bool> EndGetHitAnimation() => () => !enemy.hasTakenCritialDamage && enemy.isAlive;
+        Func<bool> EndGetHitAnimation() => () => !enemy.isDamaged && enemy.isAlive;
     }
 
     private void Start()
@@ -103,6 +105,10 @@ public class EnemySpawner : MonoBehaviour
     public void DeathVFX()
     {
         Instantiate(enemy.death_VFX, enemy.transform.position + new Vector3(0,.8f,0), Quaternion.AngleAxis(-90, Vector3.left));
+        if (status.enemies.Contains(enemy))
+        { 
+            status.enemies.Remove(enemy);
+        }
         Destroy(enemy.gameObject);
     }
 

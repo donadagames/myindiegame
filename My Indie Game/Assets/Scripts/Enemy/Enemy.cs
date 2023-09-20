@@ -38,7 +38,8 @@ public class Enemy : MonoBehaviour, IDamageble
     public int minDamage;
     public int maxDamage;
     public EnemyUI ui;
-    public bool hasTakenCritialDamage = false;
+    public bool isDamaged = false;
+    public bool isVictory = false;
 
     public virtual void Update()
     {
@@ -93,7 +94,7 @@ public class Enemy : MonoBehaviour, IDamageble
             currentHealth -= damage;
             ui.SetValue(currentHealth);
             CheckIfIsDead();
-            hasTakenCritialDamage = isCritical;
+            isDamaged = isCritical;
         }
     }
 
@@ -104,6 +105,14 @@ public class Enemy : MonoBehaviour, IDamageble
             isAlive = false;
         }
     }
+
+    public void Damage()
+    { 
+        var damage = UnityEngine.Random.Range(minDamage, maxDamage);
+        var isCritical = damage >= maxDamage * .8f;
+        spawner.status.TakeDamage(damage, isCritical);
+    }
+
 }
 
 public interface IDamageble

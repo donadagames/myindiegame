@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class UIController : MonoBehaviour
 {
     public static UIController instance;
+    private Status status;
 
     [SerializeField] private TextMeshProUGUI goldQuantity;
     [SerializeField] private TextMeshProUGUI redDiamondQuantity;
@@ -19,10 +21,32 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider energySlider;
     [SerializeField] private Slider experienceSlider;
 
+    public Gradient healthGradient;
+    public Gradient energyGradient;
+
+    public Image healthFill;
+
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(this);
+    }
+
+    private void Start()
+    {
+        status = Status.instance;
+        status.OnHealthChange += OnHealthChange;
+
+        healthSlider.minValue = 0;
+        healthSlider.maxValue = status.health;
+        healthSlider.value = status.currentHealth;
+
+        energySlider.minValue = 0;
+        energySlider.maxValue = status.energy;
+        energySlider.value = status.currentEnergy;
+
+        experienceSlider.minValue = 0;
+        experienceSlider.maxValue = status.nextLevelExperienceNeeded;
     }
 
     [Header("Left Stick")]
@@ -78,6 +102,13 @@ public class UIController : MonoBehaviour
         }
     }
     #endregion
+
+    public void OnHealthChange(object sender, Status.OnHealthEventHandler handler)
+    {
+        healthSlider.value = handler._currentHealth;
+        healthFill.color = healthGradient.Evaluate(healthSlider.normalizedValue);
+    }
+
 }
 
 public enum Direction

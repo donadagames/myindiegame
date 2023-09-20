@@ -15,6 +15,11 @@ public class EnemyIdle : IState
     {
         spawner.enemy.ui.healthBar.SetActive(false);
         spawner.enemy.animator.Play(spawner.enemy.IDLE);
+
+        if (spawner.status.enemies.Contains(spawner.enemy))
+        {
+            spawner.status.enemies.Remove(spawner.enemy);
+        }
     }
 
     public void OnExit()

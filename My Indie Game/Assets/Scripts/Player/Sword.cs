@@ -23,7 +23,7 @@ public class Sword : MonoBehaviour
         {
             var damage = (float)Random.Range(player.minDamage, player.maxDamage);
             
-            if (damage > player.maxDamage * .70f && !enemy.hasTakenCritialDamage)
+            if (damage > player.maxDamage * .70f && !enemy.isDamaged)
             {
                 enemy.TakeDamage(damage, true);
             }

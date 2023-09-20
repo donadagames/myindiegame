@@ -19,14 +19,14 @@ public class EnemyGetHit : IState
     }
     public void OnExit()
     {
-        spawner.enemy.hasTakenCritialDamage = false;
+        spawner.enemy.isDamaged = false;
     }
 
     public void Tick()
     {
         if (Time.time > time + spawner.enemy.getHitClipTime)
         {
-            spawner.enemy.hasTakenCritialDamage = false;
+            spawner.enemy.isDamaged = false;
         }
     }
 }

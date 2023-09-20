@@ -172,6 +172,10 @@ public class InputHandler : MonoBehaviour
         AddTransition(meleeAttack, moving,
            () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
 
+        stateMachine.AddAnyTransition(die, ()=> !status.isAlive);
+        stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged);
+
+        AddTransition(getHit, idle, () => status.isAlive && !status.isDamaged);
 
         Func<bool> PlayerHasMovementInput() => () =>
         input.sqrMagnitude > 0;

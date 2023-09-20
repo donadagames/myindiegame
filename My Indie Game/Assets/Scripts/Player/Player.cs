@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
     public float jumpClipDuration;
     public float doubleJumpClipDuration;
     public float landClipDuration;
+    public float getHitClipDuration;
+    public float dieClipDuration;
 
     public int minDamage;
     public int maxDamage;

@@ -37,6 +37,7 @@ public class AnimationController : MonoBehaviour
     public string[] CUT_WOOD = new string[2];
     public string[] MINE = new string[2];
     public string[] DIE = new string[2];
+    public string[] GETHIT = new string[2];
     public string[] MELEE_ATTACK_01 = new string[2];
     public string[] MELEE_ATTACK_02 = new string[2];
     public string[] MELEE_ATTACK_03 = new string[2];
