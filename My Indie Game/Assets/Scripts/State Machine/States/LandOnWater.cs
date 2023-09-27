@@ -1,11 +1,9 @@
 public class LandOnWater : IState
 {
     private readonly InputHandler inputHandler;
-    private readonly Status status;
 
-    public LandOnWater(Status _status, InputHandler _inputHandler)
+    public LandOnWater(InputHandler _inputHandler)
     {
-        status = _status;
         inputHandler = _inputHandler;
     }
 

@@ -15,6 +15,10 @@ public class EnemySpawner : MonoBehaviour
     public bool canAttack = true;
     private EnemyIdle idle;
     private EnemyChase chase;
+    private EnemyPatroll patroll;
+    public Transform[] waypoints;
+    public float minDistanceToWaypoint;
+    public bool isIdleEnemy;
 
     public EnemyAttackPosition enemyPosition;
     public Transform playerTarget;
@@ -26,7 +30,7 @@ public class EnemySpawner : MonoBehaviour
         idle = new EnemyIdle(this);
         chase = new EnemyChase(this);
         var attack = new EnemyAttack(this);
-        var patroll = new EnemyPatroll(status, this);
+        patroll = new EnemyPatroll(this);
         var die = new EnemyDie(this);
         var getHit = new EnemyGetHit(this);
         var dizzy = new EnemyDizzy(this);
@@ -40,12 +44,14 @@ public class EnemySpawner : MonoBehaviour
         AddTransition
             (idle, chase, IsCloseToPlayerToChase());
 
+        AddTransition(patroll, chase, IsCloseToPlayerToChase());
 
         AddTransition
             (chase, attack, IsCloseToPlayerToAttack());
         AddTransition
            (chase, idle, IsFarAwayFromPlayer());
 
+        AddTransition(chase, patroll, IsFarAwayFromPlayerAndIsPatroll());
 
         AddTransition
             (attack, chase, IsCloseToPlayerToChaseAfterAttack());
@@ -57,9 +63,11 @@ public class EnemySpawner : MonoBehaviour
         stateMachine.AddAnyTransition
             (getHit, () => enemy.isAlive && enemy.isDamaged);
         stateMachine.AddAnyTransition
-            (victory, ()=> enemy.isVictory && enemy.isAlive);
+            (victory, () => enemy.isVictory && enemy.isAlive);
 
-        Func<bool> IsFarAwayFromPlayer() => () => enemy.distance > chaseDistance + .5f;
+
+        Func<bool> IsFarAwayFromPlayer() => () => enemy.distance > chaseDistance + .5f && isIdleEnemy;
+        Func<bool> IsFarAwayFromPlayerAndIsPatroll() => () => enemy.distance > chaseDistance + .5f && !isIdleEnemy;
         Func<bool> IsCloseToPlayerToAttack() => () => canAttack && enemy.distance < enemy.distanceToAttack;
         Func<bool> IsCloseToPlayerToChase() => () => enemy.distance < chaseDistance && enemy.distance > enemy.distanceToAttack;
         Func<bool> IsCloseToPlayerToChaseAfterAttack() => () => canAttack;
@@ -91,7 +99,12 @@ public class EnemySpawner : MonoBehaviour
                 playerTarget = enemyPosition.transform;
             }
 
-            stateMachine.SetState(idle);
+            if (isIdleEnemy)
+                stateMachine.SetState(idle);
+            else
+            {
+                stateMachine.SetState(patroll);
+            }
         }
 
         else return;
@@ -104,9 +117,9 @@ public class EnemySpawner : MonoBehaviour
 
     public void DeathVFX()
     {
-        Instantiate(enemy.death_VFX, enemy.transform.position + new Vector3(0,.8f,0), Quaternion.AngleAxis(-90, Vector3.left));
+        Instantiate(enemy.death_VFX, enemy.transform.position + new Vector3(0, .8f, 0), Quaternion.AngleAxis(-90, Vector3.left));
         if (status.enemies.Contains(enemy))
-        { 
+        {
             status.enemies.Remove(enemy);
         }
         Destroy(enemy.gameObject);

@@ -5,22 +5,8 @@ using UnityEngine;
 public class Status : MonoBehaviour
 {
     public static Status instance;
-    public bool isSafeZone = true;
-
     public List<Enemy> enemies = new List<Enemy>();
-
-    public float currentHealth;
-    public float currentEnergy;
-    public float currentExperience;
-
-    public float health;
-    public float energy;
-    public float nextLevelExperienceNeeded;
-
     public Camera mainCamera;
-
-    public bool isAlive = true;
-    public bool isDamaged = false;
 
     private void Awake()
     {
@@ -38,8 +24,11 @@ public class Status : MonoBehaviour
     private void Start()
     {
         uiController = UIController.instance;
-
     }
+
+    #region EVENTS
+    #region SAFE ZONE EVENTS
+    public bool isSafeZone = true;
 
     public event EventHandler<OnSafeZoneChangeEventHandler> OnSafeZoneChange;
 
@@ -53,6 +42,13 @@ public class Status : MonoBehaviour
         isSafeZone = _isSafeZone;
         OnSafeZoneChange?.Invoke(this, new OnSafeZoneChangeEventHandler { _isSafeZone = isSafeZone });
     }
+    #endregion
+
+    #region HEALTH EVENTS
+    public float health;
+    public float currentHealth;
+    public bool isDamaged = false;
+    public bool isAlive = true;
 
     public void TakeDamage(float damage, bool isCritical)
     {
@@ -60,6 +56,13 @@ public class Status : MonoBehaviour
         isDamaged = isCritical;
         OnHealthChange?.Invoke(this, new OnHealthEventHandler { _currentHealth = currentHealth });
         CheckDeath();
+    }
+
+    public event EventHandler<OnHealthEventHandler> OnHealthChange;
+
+    public class OnHealthEventHandler : EventArgs
+    {
+        public float _currentHealth;
     }
 
     public void CheckDeath()
@@ -71,7 +74,7 @@ public class Status : MonoBehaviour
             foreach (Enemy enemy in enemies)
             {
                 if (enemy.isAlive)
-                { 
+                {
                     enemy.isVictory = true;
                 }
             }
@@ -80,17 +83,77 @@ public class Status : MonoBehaviour
         }
     }
 
-    public event EventHandler<OnHealthEventHandler> OnHealthChange;
-
-    public class OnHealthEventHandler : EventArgs
-    {
-        public float _currentHealth;
-    }
-
     public event EventHandler<OnDieEventHandler> OnDie;
 
     public class OnDieEventHandler : EventArgs
     {
         public bool _isAlive;
     }
+    #endregion
+
+    #region ENERGY EVENTS
+    public float currentEnergy;
+    public float energy;
+    #endregion
+
+    #region EXPERIENCE EVENTS
+    public bool isLevelUp = false;
+    public GameObject levelUp_VFX;
+    public float currentExperience;
+    public int currentLevel;
+    public float nextLevelExperienceNeeded;
+    public float baseExperience;
+    public void ReciveExperience(float _xp)
+    {
+        currentExperience += _xp;
+        OnExperienceChange?.Invoke(this, new OnExperienceEventHandler { _currentExperience = currentExperience });
+        CheckLevelUp();
+    }
+
+    public void CheckLevelUp()
+    {
+        if (currentExperience >= nextLevelExperienceNeeded)
+        {
+            Instantiate(levelUp_VFX, player.transform.position, Quaternion.AngleAxis(-90, Vector3.left), player.transform);
+
+            isLevelUp = true;
+            currentLevel++;
+            currentExperience = 0;
+            nextLevelExperienceNeeded = currentLevel * baseExperience;
+            OnLEvelUp?.Invoke(this, new OnLevelUpEventHandler 
+            { _isLevelUp = isLevelUp, _currentLevel = currentLevel, _nextLevelExperienceNeeded = nextLevelExperienceNeeded });
+        }
+    }
+
+    public event EventHandler<OnExperienceEventHandler> OnExperienceChange;
+
+    public class OnExperienceEventHandler : EventArgs
+    {
+        public float _currentExperience;
+    }
+
+    public class OnLevelUpEventHandler : EventArgs
+    {
+        public bool _isLevelUp;
+        public float _currentLevel;
+        public float _nextLevelExperienceNeeded; 
+    }
+
+    public event EventHandler<OnLevelUpEventHandler> OnLEvelUp;
+    #endregion
+
+    #region SAVE EVENTS
+    #endregion
+    #endregion
+
+
+
+
+
+
+
+
+
+
+
 }

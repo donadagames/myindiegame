@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     public float landClipDuration;
     public float getHitClipDuration;
     public float dieClipDuration;
+    public float levelUpClipDuration;
 
     public int minDamage;
     public int maxDamage;

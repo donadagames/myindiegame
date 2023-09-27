@@ -10,8 +10,10 @@ public class Enemy : MonoBehaviour, IDamageble
 {
     public EnemySpawner spawner;
     public float distance;
+    public float distanceToWaypoint;
+
     public float scapeDistance = 11;
-    public Transform target;
+    //public Transform target;
     public Animator animator;
     public float distanceToAttack;
     public float chasingVelocity;
@@ -30,6 +32,9 @@ public class Enemy : MonoBehaviour, IDamageble
     public float getHitClipTime;
     public float dieClipTime;
     public float dizzyClipTime;
+
+    public float patrollVelocity;
+    public int waypoint;
 
     public bool isAlive = true;
 
@@ -60,9 +65,17 @@ public class Enemy : MonoBehaviour, IDamageble
         if (distance > scapeDistance)
         {
             spawner.shouldSpawn = true;
-            spawner.enemyPosition.isInUse = false;
             Destroy(this.gameObject);
+
+
+            if (spawner.enemyPosition != null)
+                spawner.enemyPosition.isInUse = false;
         }
+    }
+
+    public void CheckScapeDistance()
+    {
+
     }
 
     public virtual void FaceTarget(Transform target)
@@ -77,6 +90,25 @@ public class Enemy : MonoBehaviour, IDamageble
         transform.position =
             Vector3.MoveTowards
             (transform.position, target.position, chasingVelocity * Time.deltaTime);
+    }
+
+    public virtual void MoveToWaypoint()
+    {
+        transform.position = Vector3.MoveTowards
+            (transform.position,
+            spawner.waypoints[waypoint].position,
+            patrollVelocity * Time.deltaTime);
+    }
+
+    public void CheckIfIsCloseToWaypoint()
+    {
+        distanceToWaypoint = Vector3.Distance(transform.position, spawner.waypoints[waypoint].position);
+
+        if (distanceToWaypoint < spawner.minDistanceToWaypoint)
+        {
+            if (waypoint < spawner.waypoints.Length - 1) { waypoint++; }
+            else { waypoint = 0; }
+        }
     }
 
     public float Attack()
@@ -107,7 +139,7 @@ public class Enemy : MonoBehaviour, IDamageble
     }
 
     public void Damage()
-    { 
+    {
         var damage = UnityEngine.Random.Range(minDamage, maxDamage);
         var isCritical = damage >= maxDamage * .8f;
         spawner.status.TakeDamage(damage, isCritical);

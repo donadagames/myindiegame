@@ -46,6 +46,7 @@ public class AnimationController : MonoBehaviour
     public string[] MAGIC_ATTACK_02 = new string[2];
     public string[] MAGIC_ATTACK_03 = new string[2];
     public string[] MAGIC_ATTACK_04 = new string[2];
+    public string[] LEVELUP = new string[2];
 
     public List<string[]> MELEE_ATTACKS = new List<string[]>(4);
     public List<string[]> MAGIC_ATTACKS = new List<string[]>(4);

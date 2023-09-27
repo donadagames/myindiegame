@@ -70,14 +70,15 @@ public class InputHandler : MonoBehaviour
         var floating =
             new Floating(status, this);
         var landOnWater =
-            new LandOnWater(status, this);
+            new LandOnWater(this);
         var meleeAttack =
             new MeleeAttack(status, this);
         var magicAttack =
             new MagicAttack(status, this);
         var getHit =
-            new GetHit(status, this);
+            new GetHit(status);
         var die = new Die(status, this);
+        var levelUp = new LevelUp(status);
 
         stateMachine = new StateMachine();
 
@@ -123,7 +124,6 @@ public class InputHandler : MonoBehaviour
         AddTransition
             (jumpMoving, landOnWater, () => headIsOnWater);
 
-
         AddTransition
             (doubleJumpig, idle, () => input.sqrMagnitude <= 0 &&
             IsGrounded() && jumpCount == 0);
@@ -134,28 +134,23 @@ public class InputHandler : MonoBehaviour
         AddTransition
             (doubleJumpig, landOnWater, () => headIsOnWater);
 
-
         AddTransition
             (falling, landing, ShouldLand());
         AddTransition
             (falling, landOnWater, () => headIsOnWater && jumpCount == 0);
-
 
         AddTransition
             (landing, idle, () => hasEndedLanding && input.sqrMagnitude <= 0);
         AddTransition
             (landing, moving, () => hasEndedLanding && input.sqrMagnitude > 0);
 
-
         AddTransition
             (swimming, moving, () => !headIsOnWater && input.sqrMagnitude > 0 && IsGrounded());
         AddTransition
             (swimming, floating, () => input.sqrMagnitude <= 0);
 
-
         AddTransition
             (floating, to: swimming, () => headIsOnWater && input.sqrMagnitude > 0);
-
 
         AddTransition
             (landOnWater, floating, () => headIsOnWater && input.sqrMagnitude <= 0);
@@ -172,10 +167,13 @@ public class InputHandler : MonoBehaviour
         AddTransition(meleeAttack, moving,
            () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
 
-        stateMachine.AddAnyTransition(die, ()=> !status.isAlive);
+        stateMachine.AddAnyTransition(die, () => !status.isAlive);
         stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged);
 
         AddTransition(getHit, idle, () => status.isAlive && !status.isDamaged);
+
+        stateMachine.AddAnyTransition(levelUp, () => status.isAlive && status.isLevelUp);
+        AddTransition(levelUp, idle, () => status.isAlive && !status.isLevelUp);
 
         Func<bool> PlayerHasMovementInput() => () =>
         input.sqrMagnitude > 0;

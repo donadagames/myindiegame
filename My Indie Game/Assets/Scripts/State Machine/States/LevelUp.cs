@@ -1,13 +1,14 @@
-using UnityEditor.Rendering;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class GetHit : IState
+public class LevelUp : IState
 {
     private readonly Status status;
 
     private float time;
 
-    public GetHit(Status _status)
+    public LevelUp(Status _status)
     {
         status = _status;
     }
@@ -16,20 +17,20 @@ public class GetHit : IState
     {
         status.player.sword.shouldCheck = false;
         time = Time.time;
-        status.player.animations.PlayAnimation(status.player.animations.GETHIT,
+        status.player.animations.PlayAnimation(status.player.animations.LEVELUP,
             status.isSafeZone);
     }
 
     public void OnExit()
     {
-        status.isDamaged = false;
+        status.isLevelUp = false;
     }
 
     public void Tick()
     {
-        if (Time.time > time + status.player.getHitClipDuration)
+        if (Time.time > time + status.player.levelUpClipDuration)
         {
-            status.isDamaged = false;
+            status.isLevelUp = false;
         }
     }
 }

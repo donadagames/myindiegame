@@ -20,6 +20,9 @@ public class EnemyDie : IState
         spawner.enemy.ui.healthBar.SetActive(false);
         spawner.shouldSpawn = false;
         spawner.enemy.animator.Play(spawner.enemy.DIE);
+
+        var experience = spawner.enemy.health * Random.Range(.7f, 1f);
+        spawner.status.ReciveExperience(experience);
     }
 
     public void OnExit()
@@ -29,8 +32,10 @@ public class EnemyDie : IState
     public void Tick()
     {
         if (Time.time > time + spawner.enemy.dieClipTime && shouldCheck)
-        { 
+        {
             shouldCheck = false;
+
+
             spawner.DeathVFX();
         }
     }

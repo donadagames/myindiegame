@@ -10,7 +10,7 @@ public class EnemyUI : MonoBehaviour
     public Slider _slider;
     public Image fill;
     Enemy _enemy = null;
-    public TextMeshProUGUI _nameText;
+    //public TextMeshProUGUI _nameText;
     Transform cam;
     public GameObject healthBar;
 

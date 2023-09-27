@@ -5,15 +5,15 @@ using UnityEngine;
 public class EnemyPatroll : IState
 {
     // Start is called before the first frame update
-    private readonly EnemySpawner spawner; private readonly Status status;
+    private readonly EnemySpawner spawner;
 
-    public EnemyPatroll(Status _status, EnemySpawner _spawner)
+    public EnemyPatroll(EnemySpawner _spawner)
     {
-        status = _status;
         spawner = _spawner;
     }
     public void OnEnter()
     {
+        spawner.enemy.ui.healthBar.SetActive(false);
         spawner.enemy.animator.Play(spawner.enemy.WALK);
     }
     public void OnExit()
@@ -21,5 +21,9 @@ public class EnemyPatroll : IState
     }
     public void Tick()
     {
+        spawner.enemy.CheckIfIsCloseToWaypoint();
+        spawner.enemy.GetPlayerDistance(spawner.playerTarget);
+        spawner.enemy.FaceTarget(spawner.waypoints[spawner.enemy.waypoint]);
+        spawner.enemy.MoveToWaypoint();
     }
 }

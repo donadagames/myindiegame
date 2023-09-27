@@ -21,6 +21,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider energySlider;
     [SerializeField] private Slider experienceSlider;
 
+    [SerializeField] private TextMeshProUGUI level;
+
     public Gradient healthGradient;
     public Gradient energyGradient;
 
@@ -36,6 +38,8 @@ public class UIController : MonoBehaviour
     {
         status = Status.instance;
         status.OnHealthChange += OnHealthChange;
+        status.OnExperienceChange += OnExperienceChange;
+        status.OnLEvelUp += OnLevelUp;
 
         healthSlider.minValue = 0;
         healthSlider.maxValue = status.health;
@@ -107,6 +111,19 @@ public class UIController : MonoBehaviour
     {
         healthSlider.value = handler._currentHealth;
         healthFill.color = healthGradient.Evaluate(healthSlider.normalizedValue);
+    }
+
+    public void OnExperienceChange(object sender, Status.OnExperienceEventHandler handler)
+    { 
+        experienceSlider.value = handler._currentExperience;
+    }
+
+    public void OnLevelUp(object sender, Status.OnLevelUpEventHandler handler)
+    { 
+        level.text = handler._currentLevel.ToString();
+        experienceSlider.minValue = 0;
+        experienceSlider.maxValue = handler._nextLevelExperienceNeeded;
+        experienceSlider.value = 0;
     }
 
 }
