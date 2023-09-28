@@ -3,12 +3,15 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
+    public static InputHandler instance;
+
     public GameObject puff;
     public GameObject splash;
     public float fallingDuration = 1f;
     [SerializeField] float gravityMultiplier = 1;
     [SerializeField] float smoothTime = .05f;
     [SerializeField] LayerMask waterLayer;
+    [SerializeField] LayerMask interactablesLayer;
     [SerializeField] LayerMask enemySpawnerLayer;
     [SerializeField] Status status;
     private Vector2 input = new Vector2();
@@ -28,6 +31,8 @@ public class InputHandler : MonoBehaviour
     public float searchRadius = 10;
     public bool headIsOnWater = false;
     public bool footIsOnWater = false;
+    public bool isInteracting = false;
+    public Interactable interactable;
 
     public void SearchForEnemySpawner()
     {
@@ -40,14 +45,40 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    public void SearchForInteractables()
     {
-        Gizmos.DrawWireSphere(status.player.transform.position, searchRadius);
+        if (interactable == null)
+        {
+            if (HasInteractable())
+            {
+                interactable = CheckForInteractable()[0].GetComponentInParent<Interactable>();
+                interactable.OnEnter();
+            }
+        }
+
+        else
+        {
+            if (!HasInteractable())
+            {
+                interactable.OnExit();
+                interactable = null;
+            }
+        }
     }
+
+    public Collider[] CheckForInteractable() => Physics.OverlapSphere(status.player.headPos.position, .3f, interactablesLayer);
+
+    public bool HasInteractable() => Physics.CheckSphere(status.player.headPos.position, .3f, interactablesLayer);
+
     public bool CheckHeadWater() => Physics.CheckSphere(status.player.headPos.position, .2f, waterLayer);
     public bool CheckFootdWater() => Physics.CheckSphere(status.player.footPos.position, .1f, waterLayer);
     private void Awake()
     {
+        if (instance != null)
+            Destroy(this);
+        else
+            instance = this;
+
         playerInputActions = new PlayerInputActions();
         playerInputActions.Enable();
 
@@ -79,6 +110,8 @@ public class InputHandler : MonoBehaviour
             new GetHit(status);
         var die = new Die(status, this);
         var levelUp = new LevelUp(status);
+
+        var interacting = new Interacting(status, this);
 
         stateMachine = new StateMachine();
 
@@ -161,6 +194,8 @@ public class InputHandler : MonoBehaviour
         AddTransition
            (landOnWater, idle, () => !headIsOnWater && footIsOnWater && input.sqrMagnitude <= 0);
 
+        AddTransition(idle, interacting, () => status.isAlive && isInteracting);
+        AddTransition(interacting, idle, () => status.isAlive && !isInteracting);
 
         AddTransition(meleeAttack, idle,
             () => IsGrounded() && input.sqrMagnitude <= 0 && canMeleeAttack == true);
@@ -333,6 +368,11 @@ public class InputHandler : MonoBehaviour
             return status.player.animations.swordAndShieldAttackDuration[index];
     }
 
+    public void InteractButton()
+    {
+        if (interactable == null) return;
+        interactable.Interact();
+    }
     #endregion
 
     #region VFX

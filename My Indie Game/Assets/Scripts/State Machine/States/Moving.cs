@@ -37,6 +37,8 @@ public class Moving : IState
         inputHandler.SearchForEnemySpawner();
         CheckIfIsFalling();
 
+        inputHandler.SearchForInteractables();
+
         if (inputHandler.stateMachine.shouldChange)
         {
             status.player.animations.PlayAnimation(status.player.animations.MOVE,

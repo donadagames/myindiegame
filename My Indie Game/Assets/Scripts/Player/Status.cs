@@ -20,10 +20,12 @@ public class Status : MonoBehaviour
 
     public Player player;
     public UIController uiController;
+    public InputHandler input;
 
     private void Start()
     {
         uiController = UIController.instance;
+        input = InputHandler.instance;
     }
 
     #region EVENTS

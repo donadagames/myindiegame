@@ -21,13 +21,13 @@ public class Inventory : MonoBehaviour
     public void AddItem(Item item, int quantity)
     {
         if (itens.Count == inventorySpace)
-        { 
-        
+        {
+
         }
 
         if (itens.Contains(item))
-        { 
-            
+        {
+
         }
 
         OnItemChange?.Invoke(this, new OnItemChangeEventHandler { _item = item });

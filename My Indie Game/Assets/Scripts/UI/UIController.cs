@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using Cinemachine;
 
 public class UIController : MonoBehaviour
 {
@@ -23,11 +24,16 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI level;
 
+    [SerializeField] CinemachineVirtualCamera virtualCamera;
+
+    private CinemachineFramingTransposer body;
+
     public Gradient healthGradient;
     public Gradient energyGradient;
 
     public Image healthFill;
-
+    [SerializeField] Image interactIcon;
+    [SerializeField] Sprite handSprite;
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -40,6 +46,8 @@ public class UIController : MonoBehaviour
         status.OnHealthChange += OnHealthChange;
         status.OnExperienceChange += OnExperienceChange;
         status.OnLEvelUp += OnLevelUp;
+
+        body = virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
 
         healthSlider.minValue = 0;
         healthSlider.maxValue = status.health;
@@ -56,6 +64,7 @@ public class UIController : MonoBehaviour
     [Header("Left Stick")]
     #region LEFT STICK 
 
+    [SerializeField] Slider zoomSlider;
     [SerializeField] GameObject[] positionFocus;
     private Direction currentDirection;
 
@@ -126,6 +135,20 @@ public class UIController : MonoBehaviour
         experienceSlider.value = 0;
     }
 
+    public void ZoomSlider(float value)
+    { 
+        body.m_CameraDistance = value;
+    }
+
+    public void SetInteractionSprite(Sprite sprite)
+    {
+        interactIcon.sprite = sprite;
+    }
+
+    public void SetDefaultInteractionSprite()
+    {
+        interactIcon.sprite = handSprite;
+    }
 }
 
 public enum Direction

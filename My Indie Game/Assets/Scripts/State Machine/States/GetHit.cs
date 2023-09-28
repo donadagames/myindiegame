@@ -15,6 +15,7 @@ public class GetHit : IState
     public void OnEnter()
     {
         status.player.sword.shouldCheck = false;
+        status.input.isInteracting = false;
         time = Time.time;
         status.player.animations.PlayAnimation(status.player.animations.GETHIT,
             status.isSafeZone);

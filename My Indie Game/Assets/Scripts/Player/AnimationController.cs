@@ -32,10 +32,6 @@ public class AnimationController : MonoBehaviour
     public string[] DOUBLE_JUMP = new string[2];
     public string[] SWIM = new string[2];
     public string[] FLOAT = new string[2];
-    public string[] INTERACT = new string[2];
-    public string[] CHAT = new string[2];
-    public string[] CUT_WOOD = new string[2];
-    public string[] MINE = new string[2];
     public string[] DIE = new string[2];
     public string[] GETHIT = new string[2];
     public string[] MELEE_ATTACK_01 = new string[2];
@@ -54,6 +50,8 @@ public class AnimationController : MonoBehaviour
     public float[] meleeAttackDuration;
     public float[] swordAndShieldAttackDuration;
     public float[] magicAttackDuration;
+    public string[] INTERACT;
+    public float[] interactionsClipsDurations;
 
     #endregion
 

@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public CharacterController characterController;
     public AnimationController animations;
 
+    public GameObject handAxe;
     public GameObject handWeapon;
     public GameObject handShield;
     public GameObject backWeapon;
@@ -54,5 +55,32 @@ public class Player : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void SetCutWoodConfiguration()
+    {
+        handWeapon.SetActive(false);
+        handShield.SetActive(false);
+        handAxe.SetActive(true);
+        backWeapon.SetActive(true);
+        backShield.SetActive(true);
+    }
+
+    public void SetUnarmedConfiguration()
+    {
+        handWeapon.SetActive(false);
+        handShield.SetActive(false);
+        handAxe.SetActive(false);
+        backWeapon.SetActive(true);
+        backShield.SetActive(true);
+    }
+
+    public void SetSwordAndShieldConfiguration()
+    {
+        handWeapon.SetActive(true);
+        handShield.SetActive(true);
+        handAxe.SetActive(false);
+        backWeapon.SetActive(false);
+        backShield.SetActive(false);
     }
 }

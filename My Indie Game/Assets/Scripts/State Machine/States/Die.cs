@@ -13,6 +13,7 @@ public class Die : IState
 
     public void OnEnter()
     {
+        status.input.isInteracting = false;
         status.player.sword.shouldCheck = false;
         status.player.animations.PlayAnimation(status.player.animations.DIE,
     status.isSafeZone);
