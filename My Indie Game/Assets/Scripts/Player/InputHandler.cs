@@ -19,7 +19,7 @@ public class InputHandler : MonoBehaviour
     private const float GRAVITY = -9.8f;
     private float currentVelocity;
     public StateMachine stateMachine;
-    private PlayerInputActions playerInputActions;
+    public PlayerInputActions playerInputActions;
     public bool IsGrounded() => status.player.characterController.isGrounded;
     public bool isFalling = false;
     public bool canMeleeAttack = true;

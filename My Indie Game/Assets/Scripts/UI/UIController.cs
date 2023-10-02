@@ -3,11 +3,13 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 using Cinemachine;
+using System;
 
 public class UIController : MonoBehaviour
 {
     public static UIController instance;
-    private Status status;
+    public bool isPortuguese = false;
+
 
     [SerializeField] private TextMeshProUGUI goldQuantity;
     [SerializeField] private TextMeshProUGUI redDiamondQuantity;
@@ -27,13 +29,16 @@ public class UIController : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera virtualCamera;
 
     private CinemachineFramingTransposer body;
+    private Status status;
 
     public Gradient healthGradient;
     public Gradient energyGradient;
-
+    bool isClosing = false;
     public Image healthFill;
     [SerializeField] Image interactIcon;
     [SerializeField] Sprite handSprite;
+    private int leanIndex;
+    private int leandDefaultIndex;
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -123,12 +128,12 @@ public class UIController : MonoBehaviour
     }
 
     public void OnExperienceChange(object sender, Status.OnExperienceEventHandler handler)
-    { 
+    {
         experienceSlider.value = handler._currentExperience;
     }
 
     public void OnLevelUp(object sender, Status.OnLevelUpEventHandler handler)
-    { 
+    {
         level.text = handler._currentLevel.ToString();
         experienceSlider.minValue = 0;
         experienceSlider.maxValue = handler._nextLevelExperienceNeeded;
@@ -136,18 +141,45 @@ public class UIController : MonoBehaviour
     }
 
     public void ZoomSlider(float value)
-    { 
+    {
         body.m_CameraDistance = value;
     }
 
     public void SetInteractionSprite(Sprite sprite)
     {
         interactIcon.sprite = sprite;
+        interactIcon.enabled = true;
+
+        if (!isClosing)
+        {
+            leanIndex = interactIcon.gameObject.LeanScale(new Vector3(1, 1, 1), .25f).setOnComplete(() =>
+           interactIcon.gameObject.LeanScale(new Vector3(.85f, .85f, .85f), .25f)).
+           setLoopPingPong().id;
+        }
     }
 
     public void SetDefaultInteractionSprite()
     {
-        interactIcon.sprite = handSprite;
+        isClosing = true;
+        LeanTween.cancel(leanIndex);
+
+        leandDefaultIndex = interactIcon.gameObject.LeanScale(new Vector3(0, 0, 0), .1f).
+            setOnComplete(OnDefaultComplete).id;
+    }
+
+    private void OnDefaultComplete()
+    {
+        interactIcon.enabled = false;
+        isClosing = false;
+        LeanTween.cancel(leandDefaultIndex);
+        interactIcon.gameObject.transform.localScale = new Vector3(.85f, .85f, .85f);
+    }
+
+    public event EventHandler<OnLanguageChangeEventHandler> OnLanguageChange;
+
+    public class OnLanguageChangeEventHandler : EventArgs
+    {
+        public bool isPortuguese;
     }
 }
 

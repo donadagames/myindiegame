@@ -1,18 +1,81 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
 
 public class InventorySlot : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Item item;
+    public Image itemIcon;
+    private Inventory inventory;
+    [SerializeField] GameObject selectedEdge;
+    public Image placeHolderIcon;
+    [SerializeField] DragableItem dragableItem;
+
+    private void Start()
     {
-        
+        if (inventory == null) inventory = Inventory.instance;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AddItem(Item _item, int _quantity)
     {
-        
+        item = _item;
+        itemIcon.sprite = item.icon;
+        itemIcon.enabled = true;
+        inventory = Inventory.instance;
+        placeHolderIcon.sprite = item.icon;
+
+        if (item.canBeUsedOnActionBar)
+            dragableItem.enabled = true;
+        else
+            dragableItem.enabled = false;
+
+        inventory.OnUpdateInventory += OnUpdateInventory;
+    }
+
+    private void OnUpdateInventory(object sender, Inventory.OnUpdateInventoryEventHandler handler)
+    {
+        if (handler.item != item) return;
+        else
+        {
+            inventory.inventoryUI.itemQuantityTPM.text = item.quantity.ToString();
+
+            if (item.quantity <= 0)
+            {
+                item.quantity = 0;
+                ClearInventorySlot();
+            }
+        }
+    }
+
+    public void ClearInventorySlot()
+    {
+        item = null;
+        itemIcon.enabled = false;
+        placeHolderIcon.enabled = false;
+        inventory.OnUpdateInventory -= OnUpdateInventory;
+    }
+
+
+
+    public void OnSlotPressed()
+    {
+        if (item == null) return;
+
+        if (inventory.inventoryUI.selectedInventorySlot != null)
+            inventory.inventoryUI.selectedInventorySlot.DeselectSlot();
+
+        selectedEdge.SetActive(true);
+        inventory.inventoryUI.selectedInventorySlot = this;
+        inventory.inventoryUI.DisplayItemInformation(item);
+    }
+
+    public void DeselectSlot()
+    {
+        selectedEdge.SetActive(false);
     }
 }

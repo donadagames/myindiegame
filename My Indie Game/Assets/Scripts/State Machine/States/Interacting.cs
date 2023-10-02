@@ -29,6 +29,11 @@ public class Interacting : IState
 
     public void OnExit()
     {
+        inputHandler.hasPressedJumpButton = false;
+        inputHandler.isFalling = false;
+        inputHandler.jumpCount = 0;
+        inputHandler.hasPressedMeleeAttackButton = false;
+
         if (status.isSafeZone)
         {
             status.player.SetUnarmedConfiguration();

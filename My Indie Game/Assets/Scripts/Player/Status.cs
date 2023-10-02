@@ -54,10 +54,24 @@ public class Status : MonoBehaviour
 
     public void TakeDamage(float damage, bool isCritical)
     {
-        currentHealth -= damage;
+        if(currentHealth - damage > 0)
+            currentHealth -= damage;
+        else
+            currentHealth = 0;
+
         isDamaged = isCritical;
         OnHealthChange?.Invoke(this, new OnHealthEventHandler { _currentHealth = currentHealth });
         CheckDeath();
+    }
+
+    public void RecoverHealth(float recoverAmount)
+    {
+        if (currentHealth + recoverAmount <= health)
+            currentHealth += recoverAmount;
+        else
+            currentHealth = health;
+
+        OnHealthChange?.Invoke(this, new OnHealthEventHandler { _currentHealth = currentHealth });
     }
 
     public event EventHandler<OnHealthEventHandler> OnHealthChange;
@@ -122,7 +136,7 @@ public class Status : MonoBehaviour
             currentLevel++;
             currentExperience = 0;
             nextLevelExperienceNeeded = currentLevel * baseExperience;
-            OnLEvelUp?.Invoke(this, new OnLevelUpEventHandler 
+            OnLEvelUp?.Invoke(this, new OnLevelUpEventHandler
             { _isLevelUp = isLevelUp, _currentLevel = currentLevel, _nextLevelExperienceNeeded = nextLevelExperienceNeeded });
         }
     }
@@ -138,7 +152,7 @@ public class Status : MonoBehaviour
     {
         public bool _isLevelUp;
         public float _currentLevel;
-        public float _nextLevelExperienceNeeded; 
+        public float _nextLevelExperienceNeeded;
     }
 
     public event EventHandler<OnLevelUpEventHandler> OnLEvelUp;

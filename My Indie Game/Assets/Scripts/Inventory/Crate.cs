@@ -5,7 +5,7 @@ using UnityEngine;
 public class Crate : Interactable
 {
     [SerializeField] Transform tampa;
-
+    [SerializeField] Item item;
 
     public override void Interact()
     {
@@ -13,8 +13,12 @@ public class Crate : Interactable
 
         hasInteract = true;
         uiController.SetDefaultInteractionSprite();
-        tampa.LeanRotateAroundLocal(Vector3.right, -45, .5f);
+        tampa.LeanRotateAroundLocal(Vector3.right, -45, .5f).
+            setOnComplete(GiveItem);
+    }
 
-        Debug.Log("entrei");
+    private void GiveItem()
+    {
+        inventory.AddItem(item, 1);
     }
 }

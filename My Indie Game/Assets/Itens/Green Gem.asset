@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
+  m_Name: Green Gem
+  m_EditorClassIdentifier: 
+  names:
+  - Cristal Verde
+  - Green Gem
+  descriptions:
+  - Cristal que recupera pontos de vitalidade e de energia ao mesmo tempo.
+  - Gen that heals and recover energy points at the same time.
+  quantity: 0
+  icon: {fileID: 21300000, guid: 11e712aa803114f389945c85e98553d0, type: 3}
+  audioClip: {fileID: 0}
+  deletable: 0
+  questObjective: {fileID: 0}

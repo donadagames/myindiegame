@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -8,14 +9,19 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Item")]
 public class Item : ScriptableObject
 {
-    public string[] _name;
+    public string[] names;
     [TextArea(5, 10)]
-    public string[] _description;
-    public int _quantity;
-    public Sprite _icon;
+    public string[] descriptions;
+    public int quantity;
+    public Sprite icon;
+    public AudioClip audioClip;
+    public bool deletable = true;
+    public QuestObjective questObjective;
+    public Status status;
+    public bool canBeUsedOnActionBar = false;
 
     public virtual void Use()
     {
-
+        status = Status.instance;
     }
 }
