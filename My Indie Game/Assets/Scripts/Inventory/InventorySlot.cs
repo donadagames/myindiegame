@@ -58,9 +58,18 @@ public class InventorySlot : MonoBehaviour
         itemIcon.enabled = false;
         placeHolderIcon.enabled = false;
         inventory.OnUpdateInventory -= OnUpdateInventory;
+
+        if (dragableItem.actionbarSlot != null)
+        {
+            dragableItem.actionbarSlot.CleanSlot();
+
+            dragableItem.actionbarSlot = null;
+            dragableItem.changebleParentTransform = dragableItem.parentTransform;
+            dragableItem.transform.SetParent(dragableItem.changebleParentTransform);
+            dragableItem.transform.localPosition = new Vector3(0, 0, 0);
+            dragableItem.image.raycastTarget = true;
+        }
     }
-
-
 
     public void OnSlotPressed()
     {

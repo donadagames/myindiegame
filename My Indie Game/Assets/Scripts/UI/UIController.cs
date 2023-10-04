@@ -175,7 +175,7 @@ public class UIController : MonoBehaviour
         interactIcon.gameObject.transform.localScale = new Vector3(.85f, .85f, .85f);
     }
 
-    public event EventHandler<OnLanguageChangeEventHandler> OnLanguageChange;
+    //public event EventHandler<OnLanguageChangeEventHandler> OnLanguageChange;
 
     public class OnLanguageChangeEventHandler : EventArgs
     {

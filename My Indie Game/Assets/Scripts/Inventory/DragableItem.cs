@@ -5,13 +5,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-    [SerializeField] RectTransform parentTransform;
+    public Transform parentTransform;
 
     public Transform changebleParentTransform;
     InputHandler input;
-    InventorySlot parentSlot;
-    Image image;
-    public bool isOnActionbar;
+    public InventorySlot parentSlot;
+    public Image image;
+    public ActionBarSlot actionbarSlot;
 
     private void Start()
     {
@@ -27,6 +27,11 @@ public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, I
         transform.SetAsLastSibling();
         parentSlot.placeHolderIcon.enabled = true;
         image.raycastTarget = false;
+
+        if (actionbarSlot != null)
+        {
+            actionbarSlot.quantity.text = string.Empty; 
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -39,8 +44,17 @@ public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        transform.SetParent(changebleParentTransform);
-        transform.localPosition = new Vector3(0, 0, 0);
-        image.raycastTarget = true;
+        if (changebleParentTransform == parentTransform)
+        {
+            transform.SetParent(changebleParentTransform);
+            transform.localPosition = new Vector3(0, 0, 0);
+            image.raycastTarget = true;
+
+            if (actionbarSlot != null)
+            {
+                actionbarSlot.CleanSlot();
+                actionbarSlot = null;
+            }
+        }
     }
 }
