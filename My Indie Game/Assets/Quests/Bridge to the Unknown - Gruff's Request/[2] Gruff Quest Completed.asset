@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4192425355037783929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: bb64e91c-5ba1-48d9-ad1f-d58469e62379
+  m_EditorClassIdentifier: 
+  portugueseText: "Ah, Lili! Voc\xEA voltou e parece que trouxe a madeira de que
+    precisamos. Obrigado pelo seu trabalho \xE1rduo."
+  englishText: Well, look who's back! You did it, didn't ya? Thanks for the help.
+  childrenID: 337191e4-cc03-421d-981d-101db7934c51
+  rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: Build Bridge
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eace37c626608854da8a5519c88d6af7, type: 3}
+  m_Name: '[2] Gruff Quest Completed'
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -4192425355037783929}
+  - {fileID: 3154916980349572105}
+  - {fileID: 5777501734556503371}
+  - {fileID: 3943761779547431883}
+  speaker: <color=#BEB5B6>Lumberjack</color> Gruff
+  dialogueID: 028ecf3b-ca4b-4012-a5c3-c09f551a0427
+--- !u!114 &3154916980349572105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 337191e4-cc03-421d-981d-101db7934c51
+  m_EditorClassIdentifier: 
+  portugueseText: "Com esta madeira, finalmente posso terminar a ponte, e a aldeia
+    estar\xE1 mais segura. Voc\xEA sabe, a floresta guarda segredos."
+  englishText: With this wood, I can finish the bridge, and the village will be safer
+    than a tick on a dog's back. By the way, y'know the woods?
+  childrenID: a950faa6-7884-4962-bda0-feefa7ebbe19
+  rect:
+    serializedVersion: 2
+    x: 3
+    y: 106
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &3943761779547431883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: a950faa6-7884-4962-bda0-feefa7ebbe19
+  m_EditorClassIdentifier: 
+  portugueseText: "Nas matas, dizem que existe uma \xE1rvore antiga com o poder de
+    revelar caminhos ocultos. Isso pode ser \xFAtil em suas aventuras."
+  englishText: There's this ancient tree folks talk about, says it can show hidden
+    paths. Might come in handy on your adventures.
+  childrenID: 5b651445-8226-41d0-b404-bb382aac3dfd
+  rect:
+    serializedVersion: 2
+    x: 9
+    y: 215
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &5777501734556503371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 5b651445-8226-41d0-b404-bb382aac3dfd
+  m_EditorClassIdentifier: 
+  portugueseText: "Obrigada, Gruff. Vou lembrar disso. Se voc\xEA precisar de mais
+    ajuda, n\xE3o hesite em pedir."
+  englishText: Thanks, Gruff. I'll keep an eye out for that tree. If you need anything
+    else, just give me a holler.
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 281
+    y: 216
+    width: 200
+    height: 100
+  isPlayerSpeaking: 1
+  onEnterAction: 
+  onExitAction: Give Reward
+  isLiliDialogue: 1

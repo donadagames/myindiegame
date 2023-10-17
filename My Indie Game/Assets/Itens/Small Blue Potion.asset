@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Small Blue Potion
   m_EditorClassIdentifier: 
-  names:
-  - "Po\xE7\xE3o de Vitalidade Pequena"
-  - Small Health Potion
+  singularNames:
+  - "Po\xE7\xE3o de Energia Pequena"
+  - Small Enery Potion
+  pluralNames:
+  - "Po\xE7\xF5es de Energia Pequenas"
+  - Small Energy Potions
   descriptions:
   - "Este pequeno frasco de l\xEDquido vermelho vibrante \xE9 uma fonte r\xE1pida
     de rejuvenescimento. No calor da batalha ou durante sua jornada \xE9pica, basta
@@ -25,8 +28,8 @@ MonoBehaviour:
     the heat of battle or during your epic journey, simply drag it to your action
     bar for quick access. When consumed, it instantly restores 100 health points,
     providing you with a vital edge in the face of adversity.
-  quantity: 2
-  icon: {fileID: 21300000, guid: 84bbe07e4229248d59598bda3d57f602, type: 3}
+  quantity: 3
+  icon: {fileID: 21300000, guid: ddb29a59cc9594e7d92266367ac62ad4, type: 3}
   audioClip: {fileID: 0}
   deletable: 1
   questObjective: {fileID: 0}

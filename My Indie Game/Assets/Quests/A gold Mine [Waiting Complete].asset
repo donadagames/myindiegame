@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eace37c626608854da8a5519c88d6af7, type: 3}
+  m_Name: A gold Mine [Waiting Complete]
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 5136815488877146830}
+  speaker: <color=#BEB5B6>Thoren</color> Stoneforge
+  dialogueID: 6604d19c-6288-4b1d-a7e2-8f14b7deaa01
+--- !u!114 &5136815488877146830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 8b392cbe-0d8b-4f42-8d80-032d3c8b2ea8
+  m_EditorClassIdentifier: 
+  portugueseText: "Espero que voc\xEA consiga buscar o que preciso!"
+  englishText: I hope you can find what I need!
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 10
+    y: 47
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0

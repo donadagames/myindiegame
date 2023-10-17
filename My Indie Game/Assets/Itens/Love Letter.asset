@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Love Letter
   m_EditorClassIdentifier: 
-  names:
-  - 
+  singularNames:
+  - Carta de Amor
+  - Love Letter
+  pluralNames:
+  - Cartas de Amor
+  - Love Letters
   descriptions:
   - Carta de amor.
   - Love letter.

@@ -1,0 +1,121 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5455903158572591079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 5cac0c3e-65e6-4a7f-8865-53269c5a3c7d
+  m_EditorClassIdentifier: 
+  portugueseText: "O que voc\xEA precisa?"
+  englishText: What do you need?
+  childrenID: a323b310-9b2c-40be-b297-4e4eb5eacd53
+  rect:
+    serializedVersion: 2
+    x: 288
+    y: 66
+    width: 200
+    height: 100
+  isPlayerSpeaking: 1
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eace37c626608854da8a5519c88d6af7, type: 3}
+  m_Name: A gold Mine [Give Quest]
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 6587182925391160086}
+  - {fileID: -5455903158572591079}
+  - {fileID: 3211152513434498727}
+  - {fileID: 3950056261554124043}
+  speaker: <color=#BEB5B6>Thoren</color> Stoneforge
+  dialogueID: 66bdc7e2-70b3-4a4d-87a0-e2b0fbf8c511
+--- !u!114 &3211152513434498727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: a323b310-9b2c-40be-b297-4e4eb5eacd53
+  m_EditorClassIdentifier: 
+  portugueseText: Busque dez barras de ouro nas Minas de Emberforge.
+  englishText: Collect ten gold bars in the Emberforge Mines.
+  childrenID: 8111c991-4114-4756-96f4-a1f368495993
+  rect:
+    serializedVersion: 2
+    x: 488
+    y: 66
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &3950056261554124043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 8111c991-4114-4756-96f4-a1f368495993
+  m_EditorClassIdentifier: 
+  portugueseText: "Ok. Eu aceito a miss\xE3o."
+  englishText: Ok. I accept the quest.
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 688
+    y: 66
+    width: 200
+    height: 100
+  isPlayerSpeaking: 1
+  onEnterAction: 
+  onExitAction: Give Quest
+  isLiliDialogue: 1
+--- !u!114 &6587182925391160086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 2de53666-6aae-4147-ac6c-fd3e68cca03c
+  m_EditorClassIdentifier: 
+  portugueseText: "Ol\xE1 Lili Tudo bem? Preciso de sua ajuda."
+  englishText: Hello Lili, how are you? I need your help.
+  childrenID: 5cac0c3e-65e6-4a7f-8865-53269c5a3c7d
+  rect:
+    serializedVersion: 2
+    x: 88
+    y: 66
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0

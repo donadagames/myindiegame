@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Die : IState
 {
     private readonly Status status;

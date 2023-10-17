@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Swimming : IState
 {
     private readonly Status status;

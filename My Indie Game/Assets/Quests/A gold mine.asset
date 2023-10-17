@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3a66ac14c22ef459d02ad4faf9ddb5, type: 3}
+  m_Name: A gold mine
+  m_EditorClassIdentifier: 
+  questID: 603c3209-17ae-4726-8f16-5b2879fe67e4
+  questTexts:
+  - 'Uma mina de ouro
+
+    <size=26><color=#BEB5B6>Colete 10 barras de ouro e as
+    entregue para Thom, o mineiro.</color></size>'
+  - "A gold mine\n<size=26><color=#BEB5B6>Colete 10 madeiras e entregue para Mills,
+    l\xEDder dos lenhadores..</color></size>"
+  isCompleted: 1
+  objective: {fileID: 11400000, guid: 9577548dfdc1c0748bacbc3bc20c805c, type: 2}
+  icon: {fileID: 21300000, guid: 0f8ddcb07481a684183fc65510045555, type: 3}
+  rewardItem: {fileID: 11400000, guid: 20fc940fbc50b3e41b6a05c931178667, type: 2}
+  rewardQuantity: 1000
+  waitingCompletionDialogue: {fileID: 11400000, guid: 095f8544a8bfac14395152864a34f49b,
+    type: 2}
+  onCompleteDialogue: {fileID: 11400000, guid: cd9810e5a59c8fa4eb8371b04494bd4d, type: 2}
+  afterCompletedDialogue: {fileID: 11400000, guid: bbf9afb27af525b47ab847a51365bc15,
+    type: 2}

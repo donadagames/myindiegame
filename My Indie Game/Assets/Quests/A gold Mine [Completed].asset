@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eace37c626608854da8a5519c88d6af7, type: 3}
+  m_Name: A gold Mine [Completed]
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 295238531680960099}
+  - {fileID: 623997658415204427}
+  - {fileID: 1063982442320895083}
+  speaker: <color=#BEB5B6>Thoren</color> Stoneforge
+  dialogueID: da268401-2606-4ff6-a6e0-864fd0950f05
+--- !u!114 &295238531680960099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 988e987f-a3ec-44dc-abf5-58eed7ca32fc
+  m_EditorClassIdentifier: 
+  portugueseText: "Vejo que voc\xEA encontrou as 10 barras de ouro!"
+  englishText: I see you found the 10 gold bars!
+  childrenID: 15e2b49d-96f2-4e9f-8595-dec3888cab05
+  rect:
+    serializedVersion: 2
+    x: 1
+    y: 95
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &623997658415204427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 15e2b49d-96f2-4e9f-8595-dec3888cab05
+  m_EditorClassIdentifier: 
+  portugueseText: "Sim, aqui est\xE3o as barras que voc\xEA pediu!"
+  englishText: Yes, here are the bars you asked for!
+  childrenID: 93713c85-5633-44ed-8ca9-d6af6b9704ea
+  rect:
+    serializedVersion: 2
+    x: 231
+    y: 134
+    width: 200
+    height: 100
+  isPlayerSpeaking: 1
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 1
+--- !u!114 &1063982442320895083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 93713c85-5633-44ed-8ca9-d6af6b9704ea
+  m_EditorClassIdentifier: 
+  portugueseText: Muito obrigado, Lili! Tome sua recompensa.
+  englishText: Thank you very much, Lili! Take your reward.
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 671
+    y: 121
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: Give Reward
+  isLiliDialogue: 0

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -30,8 +28,10 @@ public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, I
 
         if (actionbarSlot != null)
         {
-            actionbarSlot.quantity.text = string.Empty; 
+            actionbarSlot.quantity.text = string.Empty;
         }
+
+        parentSlot.OnSlotPressed();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -46,9 +46,12 @@ public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, I
     {
         if (changebleParentTransform == parentTransform)
         {
+
             transform.SetParent(changebleParentTransform);
             transform.localPosition = new Vector3(0, 0, 0);
             image.raycastTarget = true;
+            transform.localScale = new Vector3(0, 0, 0);
+            transform.LeanScale(new Vector3(.75f, .75f, .1f), .15f);
 
             if (actionbarSlot != null)
             {

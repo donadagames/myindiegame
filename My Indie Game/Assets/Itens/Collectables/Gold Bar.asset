@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
+  m_Name: Gold Bar
+  m_EditorClassIdentifier: 
+  singularNames:
+  - Barra de Ouro
+  - Gold bar
+  pluralNames:
+  - Barras de Ouro
+  - Gold Bars
+  descriptions:
+  - Barra de ouro muito cara.
+  - Very rare gold bar.
+  quantity: 0
+  icon: {fileID: 21300000, guid: 0f8ddcb07481a684183fc65510045555, type: 3}
+  audioClip: {fileID: 8300000, guid: d0f1f686676216b4085694cdfd36c464, type: 3}
+  deletable: 0
+  questObjective: {fileID: 11400000, guid: 9577548dfdc1c0748bacbc3bc20c805c, type: 2}
+  status: {fileID: 0}
+  canBeUsedOnActionBar: 0

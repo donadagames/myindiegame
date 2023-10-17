@@ -1,0 +1,267 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6203114810512551295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 13e2f108-6b5a-4f74-994f-aa42acec7ca8
+  m_EditorClassIdentifier: 
+  portugueseText: "Ha! Sabia que voc\xEA toparia. Aqui est\xE1 o plano, garoto. Entre
+    na floresta, derrube algumas dessas \xE1rvores resistentes."
+  englishText: Ha! I knew you'd be up for it. Here's the deal, kiddo. Head into the
+    forest, chop down some of them strong trees.
+  childrenID: 3fc17097-4289-4421-b9f0-363d027b28e5
+  rect:
+    serializedVersion: 2
+    x: 263
+    y: 150
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &-5636554969322934776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 8f48da9a-4c9d-4d9e-802f-5d4ed850d6c9
+  m_EditorClassIdentifier: 
+  portugueseText: Soa como um bom plano, Gruff. Vou pegar aquelas madeiras e encher
+    minha barriga com peixe depois. Pode contar comigo!
+  englishText: Sounds like a plan, Gruff. I'll go get that wood and fill my belly
+    with fish afterward. You can count on me!
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 713
+    y: 236
+    width: 200
+    height: 100
+  isPlayerSpeaking: 1
+  onEnterAction: 
+  onExitAction: Give Quest
+  isLiliDialogue: 1
+--- !u!114 &-5402501406652065380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: ccbd8fc0-6f11-41f1-ab84-988c43d525b8
+  m_EditorClassIdentifier: 
+  portugueseText: "Quanto \xE0s recompensas, voc\xEA vai levar uns dos peixes mais
+    frescos que temos, uma boa quantidade deles."
+  englishText: Oh, and as for rewards, you'll get yourself some of the freshest fish
+    we got, a nice stack of 'em.
+  childrenID: 302397fa-d527-4bac-9052-38eea03eb8ee
+  rect:
+    serializedVersion: 2
+    x: 506
+    y: 56
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &-4557972619323187298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 9dc2ea2d-124d-4ce8-972d-fee8d1619cbf
+  m_EditorClassIdentifier: 
+  portugueseText: "Preciso que voc\xEA v\xE1 naquelas matas e colete umas madeiras
+    resistentes para essa ponte. Acha que consegue encarar, baixinha?"
+  englishText: I need ya to go into those woods and gather some sturdy wood for this
+    bridge. You think you can handle it, short stuff?
+  childrenID: 834cd9c8-0abe-42d2-8f03-aeb3723748bc
+  rect:
+    serializedVersion: 2
+    x: 23
+    y: 255
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &-3682485854510414751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 302397fa-d527-4bac-9052-38eea03eb8ee
+  m_EditorClassIdentifier: 
+  portugueseText: Perfeitos para encher a barriga depois de um dia de trabalho pesado.
+  englishText: Perfect for filling your belly after a hard day's work.
+  childrenID: 8f48da9a-4c9d-4d9e-802f-5d4ed850d6c9
+  rect:
+    serializedVersion: 2
+    x: 513
+    y: 153
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &-3453312417707650338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: a8b1c27b-4b14-43de-bce4-0dd335c9b82d
+  m_EditorClassIdentifier: 
+  portugueseText: "Eu tenho que construir essa ponte para manter a aldeia segura,
+    mas aqueles monstros na floresta est\xE3o causando todo tipo de encrenca."
+  englishText: I gotta build this bridge to keep the village safe, but them pesky
+    monsters in the forest are causin' all sorts of trouble.
+  childrenID: 9dc2ea2d-124d-4ce8-972d-fee8d1619cbf
+  rect:
+    serializedVersion: 2
+    x: 22
+    y: 154
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eace37c626608854da8a5519c88d6af7, type: 3}
+  m_Name: '[0] Gruff Give Quest'
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 4626201047652592771}
+  - {fileID: -3453312417707650338}
+  - {fileID: -4557972619323187298}
+  - {fileID: 9152496716285124955}
+  - {fileID: -6203114810512551295}
+  - {fileID: 5842022357129412609}
+  - {fileID: -5402501406652065380}
+  - {fileID: -3682485854510414751}
+  - {fileID: -5636554969322934776}
+  speaker: <color=#BEB5B6>Lumberjack</color> Gruff
+  dialogueID: f7877615-8e12-4ce5-83bd-950a14e4be68
+--- !u!114 &4626201047652592771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 4000f425-4bda-4b93-9656-bca9e40d8076
+  m_EditorClassIdentifier: 
+  portugueseText: "E a\xED, garota! Eu sou o Gruff, o lenhador da aldeia. Presta
+    aten\xE7\xE3o, crian\xE7a. Estamos enfrentando um baita problema aqui."
+  englishText: Hey there, bub! I'm Gruff, the village lumberjack. Listen up, kiddo.
+    We're facin' a real mess here.
+  childrenID: a8b1c27b-4b14-43de-bce4-0dd335c9b82d
+  rect:
+    serializedVersion: 2
+    x: 21
+    y: 59
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &5842022357129412609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 3fc17097-4289-4421-b9f0-363d027b28e5
+  m_EditorClassIdentifier: 
+  portugueseText: "Preciso de cerca de 20 peda\xE7os de madeira de qualidade para
+    terminar essa ponte. Depois de coletar tudo, traga de volta para c\xE1."
+  englishText: I need about 20 pieces of good wood to finish this bridge. Once you've
+    gathered 'em, bring 'em back here.
+  childrenID: ccbd8fc0-6f11-41f1-ab84-988c43d525b8
+  rect:
+    serializedVersion: 2
+    x: 262
+    y: 57
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &9152496716285124955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 834cd9c8-0abe-42d2-8f03-aeb3723748bc
+  m_EditorClassIdentifier: 
+  portugueseText: "Claro, Gruff! Estou pronta para a a\xE7\xE3o. Ent\xE3o, o que
+    exatamente eu preciso fazer para ajudar na ponte e o que ganho se eu conseguir?"
+  englishText: You bet, Gruff! I'm ready for action. So, what exactly do I need to
+    do to help with the bridge, and what's in it for me if I succeed?
+  childrenID: 13e2f108-6b5a-4f74-994f-aa42acec7ca8
+  rect:
+    serializedVersion: 2
+    x: 264
+    y: 250
+    width: 200
+    height: 100
+  isPlayerSpeaking: 1
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 1

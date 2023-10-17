@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4462514256375676655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: b8c2b98d-d9cb-4017-907e-472b0c6d71f8
+  m_EditorClassIdentifier: 
+  portugueseText: "Agrade\xE7o, Gruff. Vou ter isso em mente e vou te procurar se
+    precisar de orienta\xE7\xE3o em minha jornada."
+  englishText: I'll do that, Gruff. I'm sure your stories will come in handy on my
+    journey.
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 216
+    y: 132
+    width: 200
+    height: 100
+  isPlayerSpeaking: 1
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eace37c626608854da8a5519c88d6af7, type: 3}
+  m_Name: '[3] Gruff After Quest Complete'
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 7762370203808671440}
+  - {fileID: 6397095922565020}
+  - {fileID: -4462514256375676655}
+  speaker: <color=#BEB5B6>Lumberjack</color> Gruff
+  dialogueID: ca2b1d3f-70ac-436d-bf8e-eb1a98e49eb1
+--- !u!114 &6397095922565020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 533fe5d0-af60-4cc5-a4b0-49fbf11ffd71
+  m_EditorClassIdentifier: 
+  portugueseText: Se precisar de alguma coisa na floresta, venha me procurar. Passei
+    minha vida nessas matas e posso saber mais do que a maioria.
+  englishText: If you ever need info or if something strange's goin' down, just drop
+    by. I've got more stories than a dog's got fleas.
+  childrenID: b8c2b98d-d9cb-4017-907e-472b0c6d71f8
+  rect:
+    serializedVersion: 2
+    x: 16
+    y: 132
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0
+--- !u!114 &7762370203808671440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 7a38b156-b0ef-45f0-b163-95f092d66cf6
+  m_EditorClassIdentifier: 
+  portugueseText: "A ponte est\xE1 indo muito bem, gra\xE7as \xE0 sua ajuda, Lili.
+    N\xE3o esquecerei sua assist\xEAncia."
+  englishText: Bridge is comin' along, thanks to you. Y'know, kiddo, I've seen a
+    thing or two in these woods.
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 14
+    y: 30
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0

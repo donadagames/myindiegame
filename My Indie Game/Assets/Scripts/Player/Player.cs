@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AnimationController))]

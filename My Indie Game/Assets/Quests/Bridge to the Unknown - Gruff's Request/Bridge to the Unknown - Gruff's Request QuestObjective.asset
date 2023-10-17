@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416983e40b3af4146bb9c077de9d210e, type: 3}
+  m_Name: Bridge to the Unknown - Gruff's Request QuestObjective
+  m_EditorClassIdentifier: 
+  completeQuantity: 20
+  currentQuantity: 20
+  questObjectiveID: 75ee1590-7957-496b-9807-db61866151b9
+  isCompleted: 0
+  quest: {fileID: 11400000, guid: 5177b360bf30c0243aecf470c06b393e, type: 2}
+  item: {fileID: 11400000, guid: e9e299655a6ebec4f8e2877746336202, type: 2}

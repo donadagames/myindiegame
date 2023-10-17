@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Interacting : IState
@@ -34,6 +32,10 @@ public class Interacting : IState
         inputHandler.jumpCount = 0;
         inputHandler.hasPressedMeleeAttackButton = false;
 
+        inputHandler.interactable.GiveItem();
+
+        inputHandler.interactable = null;
+
         if (status.isSafeZone)
         {
             status.player.SetUnarmedConfiguration();
@@ -52,4 +54,5 @@ public class Interacting : IState
             inputHandler.isInteracting = false;
         }
     }
+
 }

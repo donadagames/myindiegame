@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
 
 public class BasicInventorySlots : MonoBehaviour
 {
@@ -20,7 +17,7 @@ public class BasicInventorySlots : MonoBehaviour
     public virtual void OnUpdateInventory(object sender, Inventory.OnUpdateInventoryEventHandler handler)
     {
         if (handler.item == item)
-            foreach(TextMeshProUGUI text in quantity)
-                text.text = handler.item.quantity.ToString();
+            foreach (TextMeshProUGUI text in quantity)
+                text.text = $"{handler.item.quantity}";
     }
 }

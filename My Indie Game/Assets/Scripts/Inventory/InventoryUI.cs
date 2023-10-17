@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -30,9 +26,12 @@ public class InventoryUI : MonoBehaviour
     public Sprite[] selectedSlot;
     public Sprite[] deselectedSlot;
 
+    public TextMeshProUGUI displayItem;
+
     Item selectedItem;
     int quantityToDelete;
     Inventory inventory;
+
     #region Singleton
     public static InventoryUI instance;
     private void Awake()
@@ -73,7 +72,7 @@ public class InventoryUI : MonoBehaviour
             selectedItem = item;
             if (languageControll.isPortuguese == true)
             {
-                itemNameTPM.text = item.names[0];
+                itemNameTPM.text = item.itemNames[0];
                 itemDescriptionTPM.text = item.descriptions[0];
                 itemQuantityTPM.text = item.quantity.ToString();
 
@@ -81,7 +80,7 @@ public class InventoryUI : MonoBehaviour
 
             else
             {
-                itemNameTPM.text = item.names[1];
+                itemNameTPM.text = item.itemNames[1];
                 itemDescriptionTPM.text = item.descriptions[1];
                 itemQuantityTPM.text = item.quantity.ToString();
             }
@@ -151,4 +150,7 @@ public class InventoryUI : MonoBehaviour
         quantityToDelete = 0;
         deleteQuantityTPM.text = $"{quantityToDelete} / {selectedItem.quantity}";
     }
+
+    
+
 }

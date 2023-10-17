@@ -12,14 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Coin
   m_EditorClassIdentifier: 
-  names:
-  - Moedas
-  - Coins
+  itemNames:
+  - Moeda
+  - Coin
   descriptions:
   - Moeda de troca!
   - Money!
   quantity: 0
   icon: {fileID: 21300000, guid: 64766520a53b84759bbbe270b09f19ab, type: 3}
-  audioClip: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: cb1a9f4101354fa468f97c3fffbd7541, type: 3}
   deletable: 1
   questObjective: {fileID: 0}
+  status: {fileID: 0}
+  canBeUsedOnActionBar: 0

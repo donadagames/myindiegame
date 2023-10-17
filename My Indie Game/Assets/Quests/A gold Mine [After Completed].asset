@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eace37c626608854da8a5519c88d6af7, type: 3}
+  m_Name: A gold Mine [After Completed]
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 5310377579312278545}
+  speaker: <color=#BEB5B6>Thoren</color> Stoneforge
+  dialogueID: 4100aff8-ffca-4554-97dc-bed87e836471
+--- !u!114 &5310377579312278545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5551d88285611448598a8f69329e63, type: 3}
+  m_Name: 4e0f0d92-46f7-48bf-aadd-828bb4d304f6
+  m_EditorClassIdentifier: 
+  portugueseText: "N\xE3o preciso mais de voc\xEA por agora..."
+  englishText: I don't need you anymore for now...
+  childrenID: 
+  rect:
+    serializedVersion: 2
+    x: 63
+    y: 82
+    width: 200
+    height: 100
+  isPlayerSpeaking: 0
+  onEnterAction: 
+  onExitAction: 
+  isLiliDialogue: 0

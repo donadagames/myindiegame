@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Falling : IState
 {
     private readonly Status status;

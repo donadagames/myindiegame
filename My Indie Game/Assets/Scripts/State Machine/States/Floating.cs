@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Floating : IState
 {
     private readonly Status status;
@@ -30,5 +28,7 @@ public class Floating : IState
     {
         inputHandler.GetDirection();
         inputHandler.DetectWater();
+        inputHandler.ApplyGravity();
+        inputHandler.ApplyRotation();
     }
 }

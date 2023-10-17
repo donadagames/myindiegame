@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Blue Gem
   m_EditorClassIdentifier: 
-  names:
+  singularNames:
   - Cristal Azul
   - Blue Gem
+  pluralNames:
+  - Cristais Azuis
+  - Blue Gems
   descriptions:
   - Cristal que recupera pontos de energia.
   - Gen that recover energy points.
@@ -23,3 +26,5 @@ MonoBehaviour:
   audioClip: {fileID: 0}
   deletable: 1
   questObjective: {fileID: 0}
+  status: {fileID: 0}
+  canBeUsedOnActionBar: 0

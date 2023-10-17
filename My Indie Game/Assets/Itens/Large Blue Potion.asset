@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Large Blue Potion
   m_EditorClassIdentifier: 
-  names:
-  - "Po\xE7\xE3o de Vitalidade Grande"
-  - Large Health Potion
+  singularNames:
+  - "Po\xE7\xE3o de Energia Grande"
+  - Large Energy Potion
+  pluralNames:
+  - "Po\xE7\xF5es de Energia Grandes"
+  - Large Energy Potions
   descriptions:
   - "Este pequeno frasco de l\xEDquido vermelho vibrante \xE9 uma fonte r\xE1pida
     de rejuvenescimento. No calor da batalha ou durante sua jornada \xE9pica, basta
@@ -25,8 +28,8 @@ MonoBehaviour:
     the heat of battle or during your epic journey, simply drag it to your action
     bar for quick access. When consumed, it instantly restores 100 health points,
     providing you with a vital edge in the face of adversity.
-  quantity: 2
-  icon: {fileID: 21300000, guid: 38db24853aa6e480781e84a174f372b1, type: 3}
+  quantity: 3
+  icon: {fileID: 21300000, guid: 6a5b19899613e413a95ce96dc161bf3c, type: 3}
   audioClip: {fileID: 0}
   deletable: 1
   questObjective: {fileID: 0}

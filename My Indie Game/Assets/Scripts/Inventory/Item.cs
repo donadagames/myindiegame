@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -9,7 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Item")]
 public class Item : ScriptableObject
 {
-    public string[] names;
+    public string[] itemNames;
     [TextArea(5, 10)]
     public string[] descriptions;
     public int quantity;
@@ -23,5 +20,10 @@ public class Item : ScriptableObject
     public virtual void Use()
     {
         status = Status.instance;
+    }
+
+    public void ResetItem()
+    { 
+        quantity = 0;
     }
 }

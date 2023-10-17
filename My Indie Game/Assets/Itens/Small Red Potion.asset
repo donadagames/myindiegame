@@ -12,20 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Small Red Potion
   m_EditorClassIdentifier: 
-  names:
-  - "Po\xE7\xE3o de Vitalidade Pequena"
+  itemNames:
+  - "Po\xE7\xE3o Pequena de Vitalidade"
   - Small Health Potion
   descriptions:
-  - "Este pequeno frasco de l\xEDquido vermelho vibrante \xE9 uma fonte r\xE1pida
-    de rejuvenescimento. No calor da batalha ou durante sua jornada \xE9pica, basta
-    arrast\xE1-lo para a barra de a\xE7\xE3o para acesso r\xE1pido. Quando consumido,
-    restaura instantaneamente 100 pontos de vitalidade, proporcionando-lhe uma vantagem
-    vital face \xE0s adversidades."
-  - This petite vial of vibrant red liquid is a swift source of rejuvenation. In
-    the heat of battle or during your epic journey, simply drag it to your action
-    bar for quick access. When consumed, it instantly restores 100 health points,
-    providing you with a vital edge in the face of adversity.
-  quantity: 2
+  - Um pequeno frasco cheio de um elixir revitalizante que restaura instantaneamente
+    100 Pontos de Vitalidade quando consumido.
+  - A small vial filled with a revitalizing elixir that instantly restores 100 Vitality
+    Points when consumed.
+  quantity: 0
   icon: {fileID: 21300000, guid: 84bbe07e4229248d59598bda3d57f602, type: 3}
   audioClip: {fileID: 0}
   deletable: 1

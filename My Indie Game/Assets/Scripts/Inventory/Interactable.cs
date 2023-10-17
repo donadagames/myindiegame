@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Interactable : MonoBehaviour, IInteractable
@@ -7,12 +5,14 @@ public class Interactable : MonoBehaviour, IInteractable
     public Status status;
     public UIController uiController;
     public Inventory inventory;
-
     public bool hasInteract;
     public Sprite icon;
-
     public int interactionIndex;
-    private void Start()
+    public Item item;
+    public GameObject displayItem;
+    public int itemQuantity;
+    public Vector3 offset = new Vector3 (0, 0, 0);
+    public virtual void Start()
     {
         status = Status.instance;
         uiController = UIController.instance;
@@ -38,6 +38,16 @@ public class Interactable : MonoBehaviour, IInteractable
 
         hasInteract = true;
         uiController.SetDefaultInteractionSprite();
+    }
+
+    public virtual void GiveItem()
+    {
+        inventory.AddItem(item, itemQuantity);
+        DisplayAddItem display = Instantiate(displayItem, transform.position + offset, transform.rotation, transform).GetComponent<DisplayAddItem>();
+
+        display.quantity.text = $"+{itemQuantity}";
+        display.cam = inventory.status.mainCamera.transform;
+        display.icon.sprite = item.icon;
     }
 }
 

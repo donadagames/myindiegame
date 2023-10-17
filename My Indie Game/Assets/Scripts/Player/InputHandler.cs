@@ -33,6 +33,7 @@ public class InputHandler : MonoBehaviour
     public bool footIsOnWater = false;
     public bool isInteracting = false;
     public Interactable interactable;
+    public bool isChatting;
 
     public void SearchForEnemySpawner()
     {
@@ -113,6 +114,8 @@ public class InputHandler : MonoBehaviour
 
         var interacting = new Interacting(status, this);
 
+        var chatting = new Chat(status, this);
+
         stateMachine = new StateMachine();
 
         void AddTransition(IState from, IState to,
@@ -184,6 +187,8 @@ public class InputHandler : MonoBehaviour
 
         AddTransition
             (floating, to: swimming, () => headIsOnWater && input.sqrMagnitude > 0);
+        AddTransition
+          (floating, to: idle, () => !headIsOnWater && input.sqrMagnitude > 0);
 
         AddTransition
             (landOnWater, floating, () => headIsOnWater && input.sqrMagnitude <= 0);
@@ -195,6 +200,7 @@ public class InputHandler : MonoBehaviour
            (landOnWater, idle, () => !headIsOnWater && footIsOnWater && input.sqrMagnitude <= 0);
 
         AddTransition(idle, interacting, () => status.isAlive && isInteracting);
+        AddTransition(moving, interacting, () => status.isAlive && isInteracting);
         AddTransition(interacting, idle, () => status.isAlive && !isInteracting);
 
         AddTransition(meleeAttack, idle,
@@ -210,23 +216,29 @@ public class InputHandler : MonoBehaviour
         stateMachine.AddAnyTransition(levelUp, () => status.isAlive && status.isLevelUp);
         AddTransition(levelUp, idle, () => status.isAlive && !status.isLevelUp);
 
+
+        AddTransition(idle, chatting, () => status.isAlive && isChatting);
+        AddTransition(moving, chatting, () => status.isAlive && isChatting);
+        AddTransition(chatting, idle, () => status.isAlive && !isChatting);
+
         Func<bool> PlayerHasMovementInput() => () =>
         input.sqrMagnitude > 0;
         Func<bool> PlayerHasNoMovementInput() => () =>
         input.sqrMagnitude <= 0;
         Func<bool> ShouldJump() => () =>
-        IsGrounded() && hasPressedJumpButton && jumpCount == 0;
+        IsGrounded() && hasPressedJumpButton && jumpCount == 0 && !status.dialogueUI.isOpen;
         Func<bool> ShouldLandIdle() => () =>
         IsGrounded() && jumpCount == 0 && input.sqrMagnitude <= 0
         || IsGrounded() && input.sqrMagnitude <= 0;
         Func<bool> ShouldDoubleJump() => () =>
-        hasPressedJumpButton && jumpCount == 1;
-        stateMachine.SetState(idle);
+        hasPressedJumpButton && jumpCount == 1 && !status.dialogueUI.isOpen;
         Func<bool> ShouldLandInMovement() => () => input.sqrMagnitude > 0 &&
         IsGrounded() && jumpCount == 0 || input.sqrMagnitude > 0 && IsGrounded();
         Func<bool> ShouldLand() => () => IsGrounded() && jumpCount == 0 && !footIsOnWater && !headIsOnWater;
         Func<bool> ShouldMeleeAttack() =>
-            () => canMeleeAttack == true && hasPressedMeleeAttackButton;
+            () => canMeleeAttack == true && hasPressedMeleeAttackButton && !status.dialogueUI.isOpen;
+
+        stateMachine.SetState(idle);
     }
 
     private void Start()

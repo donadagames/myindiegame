@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using UnityEngine;
-using static UnityEditor.Progress;
 
 public class CoinBasicInventorySlot : BasicInventorySlots
 {
@@ -10,6 +6,6 @@ public class CoinBasicInventorySlot : BasicInventorySlots
     {
         if (handler.item == item)
             foreach (TextMeshProUGUI text in quantity)
-                text.text = $"{handler.item.quantity.ToString()},00";
+                text.text = $"{handler.item.quantity},00";
     }
 }

@@ -7,7 +7,8 @@ public class Status : MonoBehaviour
     public static Status instance;
     public List<Enemy> enemies = new List<Enemy>();
     public Camera mainCamera;
-
+    public DialogueUI dialogueUI;
+    public Quests quests;
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -26,6 +27,8 @@ public class Status : MonoBehaviour
     {
         uiController = UIController.instance;
         input = InputHandler.instance;
+        dialogueUI = DialogueUI.instance;
+        quests = Quests.instance;
     }
 
     #region EVENTS

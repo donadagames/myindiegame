@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -47,6 +45,9 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler
                 dragableItem.changebleParentTransform = dragableItem.parentTransform;
                 dragableItem.transform.SetParent(dragableItem.changebleParentTransform);
                 dragableItem.transform.localPosition = new Vector3(0, 0, 0);
+
+                dragableItem.transform.localScale = new Vector3(0, 0, 0);
+                dragableItem.transform.LeanScale(new Vector3(.75f, .75f, .1f), .15f);
                 dragableItem.image.raycastTarget = true;
 
                 UpdateActionbarSlot(this, dragable);
@@ -90,6 +91,10 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler
         dragable.changebleParentTransform = slot.transform;
         dragable.transform.SetParent(dragable.changebleParentTransform);
         dragable.transform.localPosition = new Vector3(0, 0, 0);
+
+        dragable.transform.localScale = new Vector3(0, 0, 0);
+        dragable.transform.LeanScale(new Vector3(1, 1, 1), .15f);
+
         dragable.image.raycastTarget = true;
     }
 }

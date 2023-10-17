@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,6 +25,15 @@ public class ActionBarUsableSlot : MonoBehaviour
         if (handler.item == item)
         { 
             quantity.text = $"{item.quantity}";
+        }
+    }
+
+    public void OnButtonPressed()
+    {
+        if (item == null) return;
+        else
+        {
+            item.Use();
         }
     }
 

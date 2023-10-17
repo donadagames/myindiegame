@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Red Gem
   m_EditorClassIdentifier: 
-  names:
-  - Cristal Vermelha
+  singularNames:
+  - Cristal Vermelho
   - Red Gem
+  pluralNames:
+  - Cristais Vermelhos
+  - Red Gems
   descriptions:
   - Cristal que recupera pontos de vitalidade.
   - Gen that heals.
@@ -23,3 +26,5 @@ MonoBehaviour:
   audioClip: {fileID: 0}
   deletable: 1
   questObjective: {fileID: 0}
+  status: {fileID: 0}
+  canBeUsedOnActionBar: 0

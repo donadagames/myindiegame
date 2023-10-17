@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -18,11 +17,14 @@ public class Inventory : MonoBehaviour
     }
     #endregion
 
+    public Status status;
     public List<Item> itens = new List<Item>();
     public List<Item> basicItens = new List<Item>(4);
     public List<InventorySlot> slots = new List<InventorySlot>();
-
+    public Sprite fullInventoryIcon;
     public int inventorySpace;
+
+    public bool InventoryIsFull(Item item) => GetFirstEmptySlot() == null && !itens.Contains(item);
 
     public AudioSource _audio;
 
@@ -35,6 +37,7 @@ public class Inventory : MonoBehaviour
     {
         slots = inventorySlotsParent.GetComponentsInChildren<InventorySlot>().ToList();
         inventoryUI = InventoryUI.instance;
+        status = Status.instance;
     }
 
     public void AddItem(Item item, int quantity)
@@ -45,6 +48,20 @@ public class Inventory : MonoBehaviour
         {
             #region ADD Basic Itens (Coin[0] and Gems(Red[1], Blue[2], Green[3]))
             item.quantity += quantity;
+
+            if (item.questObjective != null)
+            {
+                item.questObjective.currentQuantity += quantity;
+                OnUpdateQuestObjective?.Invoke
+                    (this, new OnUpdateQuestObjectiveEventHandler { questObjective = item.questObjective });
+
+                if (item.questObjective.currentQuantity >= item.questObjective.completeQuantity &&
+                    !item.questObjective.isCompleted)
+                {
+                    item.questObjective.isCompleted = true;
+                }
+            }
+
             OnUpdateInventory?.Invoke(this, new OnUpdateInventoryEventHandler { item = item });
             #endregion
         }
@@ -76,6 +93,18 @@ public class Inventory : MonoBehaviour
                 var usedSlot = GetSlotWithItem(item);
                 _audio.PlayOneShot(item.audioClip, .5f);
                 item.quantity += quantity;
+
+                if (item.questObjective != null)
+                {
+                    item.questObjective.currentQuantity += quantity;
+                    OnUpdateQuestObjective?.Invoke
+                    (this, new OnUpdateQuestObjectiveEventHandler { questObjective = item.questObjective });
+                    if (item.questObjective.currentQuantity >= item.questObjective.completeQuantity &&
+                    !item.questObjective.isCompleted)
+                    {
+                        item.questObjective.isCompleted = true;
+                    }
+                }
 
                 #region Inventory don't have this specific item
                 if (usedSlot == null)
@@ -122,7 +151,7 @@ public class Inventory : MonoBehaviour
         item.quantity -= quantity;
 
         if (item.quantity <= 0 && !basicItens.Contains(item))
-        { 
+        {
             itens.Remove(item);
         }
 
@@ -134,5 +163,12 @@ public class Inventory : MonoBehaviour
     public class OnUpdateInventoryEventHandler : EventArgs
     {
         public Item item;
+    }
+
+    public event EventHandler<OnUpdateQuestObjectiveEventHandler> OnUpdateQuestObjective;
+
+    public class OnUpdateQuestObjectiveEventHandler : EventArgs
+    {
+        public QuestObjective questObjective;
     }
 }

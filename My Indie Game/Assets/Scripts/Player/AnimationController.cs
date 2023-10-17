@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,6 +51,7 @@ public class AnimationController : MonoBehaviour
     public float[] magicAttackDuration;
     public string[] INTERACT;
     public float[] interactionsClipsDurations;
+    public string CHAT;
 
     #endregion
 

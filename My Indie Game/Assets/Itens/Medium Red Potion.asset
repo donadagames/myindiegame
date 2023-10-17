@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b569c26e0429b49a90e7ef8e4a1f65, type: 3}
   m_Name: Medium Red Potion
   m_EditorClassIdentifier: 
-  names:
+  singularNames:
   - "Po\xE7\xE3o de Vitalidade M\xE9dia"
   - Medium Health Potion
+  pluralNames:
+  - "Po\xE7\xF5es de Vitalidade M\xE9dias"
+  - Medium Heath Potions
   descriptions:
   - "Este pequeno frasco de l\xEDquido vermelho vibrante \xE9 uma fonte r\xE1pida
     de rejuvenescimento. No calor da batalha ou durante sua jornada \xE9pica, basta

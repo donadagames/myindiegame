@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 using Cinemachine;
 using System;
 
@@ -9,7 +8,6 @@ public class UIController : MonoBehaviour
 {
     public static UIController instance;
     public bool isPortuguese = false;
-
 
     [SerializeField] private TextMeshProUGUI goldQuantity;
     [SerializeField] private TextMeshProUGUI redDiamondQuantity;
@@ -39,6 +37,7 @@ public class UIController : MonoBehaviour
     [SerializeField] Sprite handSprite;
     private int leanIndex;
     private int leandDefaultIndex;
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -69,7 +68,7 @@ public class UIController : MonoBehaviour
     [Header("Left Stick")]
     #region LEFT STICK 
 
-    [SerializeField] Slider zoomSlider;
+    public Slider zoomSlider;
     [SerializeField] GameObject[] positionFocus;
     private Direction currentDirection;
 
@@ -145,6 +144,19 @@ public class UIController : MonoBehaviour
         body.m_CameraDistance = value;
     }
 
+    public void SetDialogueCamera()
+    {
+        var currentDistance = body.m_CameraDistance;
+
+        var zoom = LeanTween.value(zoomSlider.gameObject, currentDistance, zoomSlider.maxValue, .5f).setOnUpdate(OnZoomUpdate);
+    }
+
+    private void OnZoomUpdate(float value)
+    {
+        zoomSlider.value = value;
+        //ZoomSlider(value);
+    }
+
     public void SetInteractionSprite(Sprite sprite)
     {
         interactIcon.sprite = sprite;
@@ -174,6 +186,9 @@ public class UIController : MonoBehaviour
         LeanTween.cancel(leandDefaultIndex);
         interactIcon.gameObject.transform.localScale = new Vector3(.85f, .85f, .85f);
     }
+
+
+
 
     //public event EventHandler<OnLanguageChangeEventHandler> OnLanguageChange;
 

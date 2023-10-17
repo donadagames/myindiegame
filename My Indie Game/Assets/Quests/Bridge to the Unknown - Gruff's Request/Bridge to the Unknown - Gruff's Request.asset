@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3a66ac14c22ef459d02ad4faf9ddb5, type: 3}
+  m_Name: Bridge to the Unknown - Gruff's Request
+  m_EditorClassIdentifier: 
+  questID: 01279517-e3a5-4d40-bde3-50a1d96bc015
+  questTexts:
+  - "Ponte para o Desconhecido: O Pedido de Gruff\n<size=26><color=#BEB5B6>Colete
+    20 peda\xE7os de madeira para auxiliar Gruff, o lenhador, na repara\xE7\xE3o
+    da ponte.</color></size>"
+  - 'Bridge to the Unknown: Gruff''s Request
+
+    <size=26><color=#BEB5B6>Collect
+    20 wood pieces to aid Gruff the woodcutter in bridge repair.</color></size>'
+  isCompleted: 0
+  objective: {fileID: 11400000, guid: 7bf836c8fc2e9aa40bed1790640c99c6, type: 2}
+  icon: {fileID: 21300000, guid: 33537ec61126fa24c8583656e92afefd, type: 3}
+  rewardItem: {fileID: 11400000, guid: 023ed41b3273b2c409cec2fd9c98535b, type: 2}
+  rewardQuantity: 10
+  waitingCompletionDialogue: {fileID: 11400000, guid: ac362dde14606604dae96e738714d4b4,
+    type: 2}
+  onCompleteDialogue: {fileID: 11400000, guid: 20b01bb22eb5edf42bc971f767a0fbf3, type: 2}
+  afterCompletedDialogue: {fileID: 11400000, guid: 9f6aa285b0f5f7a42918192f359b2794,
+    type: 2}
