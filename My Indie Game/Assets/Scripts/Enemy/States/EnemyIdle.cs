@@ -9,6 +9,7 @@ public class EnemyIdle : IState
 
     public void OnEnter()
     {
+        spawner.enemy.onFire_VFX.SetActive(false);
         spawner.enemy.ui.healthBar.SetActive(false);
         spawner.enemy.animator.Play(spawner.enemy.IDLE);
 

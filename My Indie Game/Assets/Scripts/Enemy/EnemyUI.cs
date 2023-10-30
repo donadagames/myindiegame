@@ -10,7 +10,7 @@ public class EnemyUI : MonoBehaviour
     //public TextMeshProUGUI _nameText;
     Transform cam;
     public GameObject healthBar;
-
+    //public GameObject targetImage;
 
     private void Start()
     {
@@ -20,17 +20,6 @@ public class EnemyUI : MonoBehaviour
     private void OnEnable()
     {
         _enemy = GetComponentInParent<Enemy>();
-
-        /*
-        if (gameData.isPortuguese)
-        {
-            _nameText.text = _enemy.names[0];
-        }
-        else
-        {
-            _nameText.text = _enemy.names[1];
-        }
-        */
     }
 
     public void SetMaxHealth(float maxHealth)

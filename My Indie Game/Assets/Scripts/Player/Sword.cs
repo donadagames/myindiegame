@@ -20,7 +20,9 @@ public class Sword : MonoBehaviour
         if (damageble != null && enemy.isAlive)
         {
             var damage = (float)Random.Range(player.minDamage, player.maxDamage);
-            
+
+            player.soundController.SwordHitSound();
+
             if (damage > player.maxDamage * .70f && !enemy.isDamaged)
             {
                 enemy.TakeDamage(damage, true);

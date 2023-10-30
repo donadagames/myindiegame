@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5a5ad708c00db429bc221a0e90873f, type: 3}
+  m_Name: Fireball
+  m_EditorClassIdentifier: 
+  _name: Fireball
+  animationClip: Fireball
+  animationDuration: 0.533
+  icon: {fileID: 21300000, guid: 53862eee291164d249363b52a2db5052, type: 3}
+  iconColor: {r: 0, g: 0, b: 0, a: 0}
+  energyCost: 50
+  healthRegenaration: 0
+  criticalDamageFactor: 0.1
+  minDamage: 50
+  maxDamage: 100
+  skill_VFX: {fileID: 1239156983776194, guid: 9bdee3723a4e52c4ca2af5bc5b56474a, type: 3}
+  enemy_Hit_VFX: {fileID: 1966577261312235893, guid: 8d7b616be07656a47b9ee977a920b8bd,
+    type: 3}
+  hit_SFX:
+  - {fileID: 8300000, guid: d225dd6977762914eb4c2f2d759a00ec, type: 3}
+  - {fileID: 8300000, guid: 18c221185332cd54f98cb2279699c4c3, type: 3}
+  - {fileID: 8300000, guid: 45747a6fa57b898449e665179660ef86, type: 3}
+  - {fileID: 8300000, guid: c2bd0f1662f996b4da08826a51b3b370, type: 3}
+  index: 0
+  time: 2

@@ -13,24 +13,25 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI actionBarTPM;
 
     [Header("Intem Info Panel")]
+    public TextMeshProUGUI itemQuantityTPM;
+
+    [SerializeField] TextMeshProUGUI inventoryTMP;
     [SerializeField] TextMeshProUGUI itemNameTPM;
     [SerializeField] TextMeshProUGUI itemDescriptionTPM;
     [SerializeField] TextMeshProUGUI deleteQuantityTPM;
     [SerializeField] TextMeshProUGUI quantityTPM;
-    public TextMeshProUGUI itemQuantityTPM;
     [SerializeField] GameObject deletePanel;
     [SerializeField] Image itemIcon;
 
-    [HideInInspector] public LanguageControll languageControll;
+    [HideInInspector] public SettingsController settingsController;
 
     public Sprite[] selectedSlot;
     public Sprite[] deselectedSlot;
-
     public TextMeshProUGUI displayItem;
 
-    Item selectedItem;
-    int quantityToDelete;
-    Inventory inventory;
+    private Item selectedItem;
+    private int quantityToDelete;
+    private Inventory inventory;
 
     #region Singleton
     public static InventoryUI instance;
@@ -43,23 +44,25 @@ public class InventoryUI : MonoBehaviour
 
     private void Start()
     {
-        languageControll = LanguageControll.instance;
+        settingsController = SettingsController.instance;
         inventory = Inventory.instance;
-        languageControll.OnLanguageUpdate += OnLanguageUpdate;
+        settingsController.OnLanguageChanged += OnLanguageUpdate;
     }
 
-    public void OnLanguageUpdate(object sender, LanguageControll.OnLanguageUpdateEventHandler handler)
+    public void OnLanguageUpdate(object sender, SettingsController.OnLanguageChangeEventHandler handler)
     {
         if (handler._isPortuguese == true)
         {
             actionBarTPM.text = "Barra de ação";
             quantityTPM.text = "Quantidade";
+            inventoryTMP.text = "Mochila";
         }
 
         else
         {
             actionBarTPM.text = "Action bar";
             quantityTPM.text = "Quantity:";
+            inventoryTMP.text = "Inventory";
         }
     }
 
@@ -70,7 +73,9 @@ public class InventoryUI : MonoBehaviour
         {
             itemIcon.sprite = item.icon;
             selectedItem = item;
-            if (languageControll.isPortuguese == true)
+            settingsController.uiController.PlayDefaultAudioClip();
+
+            if (settingsController.IsPortuguese() == true)
             {
                 itemNameTPM.text = item.itemNames[0];
                 itemDescriptionTPM.text = item.descriptions[0];
@@ -112,6 +117,8 @@ public class InventoryUI : MonoBehaviour
             selectedInventorySlot = null;
         }
 
+        settingsController.uiController.PlayDefaultAudioClip();
+
         selectedItem = null;
         quantityToDelete = 0;
         inventoryPanel.SetActive(!inventoryPanel.activeSelf);
@@ -122,6 +129,8 @@ public class InventoryUI : MonoBehaviour
     {
         if (quantityToDelete < selectedItem.quantity)
         {
+            settingsController.uiController.PlayDefaultAudioClip();
+
             quantityToDelete++;
             deleteQuantityTPM.text = $"{quantityToDelete} / {selectedItem.quantity}";
         }
@@ -131,6 +140,8 @@ public class InventoryUI : MonoBehaviour
     {
         if (quantityToDelete > 0)
         {
+            settingsController.uiController.PlayDefaultAudioClip();
+
             quantityToDelete--;
             deleteQuantityTPM.text = $"{quantityToDelete} / {selectedItem.quantity}";
         }
@@ -138,6 +149,8 @@ public class InventoryUI : MonoBehaviour
 
     public void OnDeleteButtonPressed()
     {
+        if (quantityToDelete <= 0) return;
+
         if (quantityToDelete == selectedItem.quantity)
         {
             selectedInventorySlot.DeselectSlot();
@@ -145,6 +158,8 @@ public class InventoryUI : MonoBehaviour
             selectedInventorySlot = null;
 
         }
+
+        settingsController.uiController.PlayDefaultAudioClip();
 
         inventory.RemoveItem(selectedItem, quantityToDelete);
         quantityToDelete = 0;

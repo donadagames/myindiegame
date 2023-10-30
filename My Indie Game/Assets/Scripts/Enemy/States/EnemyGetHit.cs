@@ -13,11 +13,13 @@ public class EnemyGetHit : IState
     public void OnEnter()
     {
         time = Time.time;   
+        spawner.enemy.isOnFire = false;
         spawner.enemy.animator.Play(spawner.enemy.GETHIT);
     }
     public void OnExit()
     {
-        spawner.enemy.isDamaged = false;
+        spawner.enemy.isDamaged = false; 
+        spawner.enemy.onFire_VFX.SetActive(false);
     }
 
     public void Tick()

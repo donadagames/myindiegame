@@ -2,7 +2,6 @@ public class Swimming : IState
 {
     private readonly Status status;
     private readonly InputHandler inputHandler;
-
     public Swimming(Status _status, InputHandler _inputHandler)
     {
         status = _status;
@@ -11,6 +10,7 @@ public class Swimming : IState
 
     public void OnEnter()
     {
+
         inputHandler.SetSwimmingConfiguration();
         status.player.sword.shouldCheck = false;
         inputHandler.direction.y = 0;
@@ -32,7 +32,7 @@ public class Swimming : IState
     {
         inputHandler.GetDirection();
         inputHandler.ApplyAllMovement();
-        inputHandler.DetectWater();
         inputHandler.SearchForEnemySpawner();
+        inputHandler.DetectWater();
     }
 }

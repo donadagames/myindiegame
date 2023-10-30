@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,8 +24,17 @@ public class QuestSlot : MonoBehaviour
         inventory.status.quests.OnQuestCompleted += CompleteQuest;
     }
 
-    public void UpdateLanguage(object sender)
+    public void UpdateLanguage(bool isPortuguese)
     {
+        if (isPortuguese == true)
+        {
+            questText.text = quest.questTexts[0];
+        }
+
+        else
+        {
+            questText.text = quest.questTexts[1];
+        }
     }
 
     public void UpdateQuest(object sender, Inventory.OnUpdateQuestObjectiveEventHandler handler)

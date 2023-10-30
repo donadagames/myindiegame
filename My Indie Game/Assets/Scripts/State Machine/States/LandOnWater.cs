@@ -1,15 +1,17 @@
 public class LandOnWater : IState
 {
     private readonly InputHandler inputHandler;
-
-    public LandOnWater(InputHandler _inputHandler)
+    private readonly Status status;
+    public LandOnWater(InputHandler _inputHandler, Status _status)
     {
         inputHandler = _inputHandler;
+        status = _status;
     }
 
     public void OnEnter()
     {
         inputHandler.Splash();
+        status.player.soundController.SplashSound();
     }
 
 

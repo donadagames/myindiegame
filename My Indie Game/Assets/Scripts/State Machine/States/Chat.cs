@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class Chat : IState
 {
     private readonly InputHandler inputHandler;
@@ -16,6 +12,9 @@ public class Chat : IState
         status.player.sword.shouldCheck = false;
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
+
+        status.player.animations.PlayAnimation(status.player.animations.IDLE,
+    status.isSafeZone);
 
         inputHandler.stateMachine.shouldChange = false;
     }

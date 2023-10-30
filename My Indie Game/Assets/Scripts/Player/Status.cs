@@ -5,10 +5,15 @@ using UnityEngine;
 public class Status : MonoBehaviour
 {
     public static Status instance;
-    public List<Enemy> enemies = new List<Enemy>();
     public Camera mainCamera;
-    public DialogueUI dialogueUI;
-    public Quests quests;
+    public Player player;
+
+    [HideInInspector] public List<Enemy> enemies = new List<Enemy>();
+    [HideInInspector] public DialogueUI dialogueUI;
+    [HideInInspector] public Quests quests;
+    [HideInInspector] public UIController uiController;
+    [HideInInspector] public InputHandler input;
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -18,10 +23,6 @@ public class Status : MonoBehaviour
         currentHealth = health;
         currentEnergy = energy;
     }
-
-    public Player player;
-    public UIController uiController;
-    public InputHandler input;
 
     private void Start()
     {
@@ -33,7 +34,7 @@ public class Status : MonoBehaviour
 
     #region EVENTS
     #region SAFE ZONE EVENTS
-    public bool isSafeZone = true;
+    [HideInInspector] public bool isSafeZone = true;
 
     public event EventHandler<OnSafeZoneChangeEventHandler> OnSafeZoneChange;
 
@@ -52,12 +53,12 @@ public class Status : MonoBehaviour
     #region HEALTH EVENTS
     public float health;
     public float currentHealth;
-    public bool isDamaged = false;
-    public bool isAlive = true;
+    [HideInInspector] public bool isDamaged = false;
+    [HideInInspector] public bool isAlive = true;
 
     public void TakeDamage(float damage, bool isCritical)
     {
-        if(currentHealth - damage > 0)
+        if (currentHealth - damage > 0)
             currentHealth -= damage;
         else
             currentHealth = 0;
@@ -113,13 +114,40 @@ public class Status : MonoBehaviour
     #region ENERGY EVENTS
     public float currentEnergy;
     public float energy;
+
+    public void ConsumeEnergy(float amount)
+    {
+        if (currentEnergy - amount > 0)
+            currentEnergy -= amount;
+        else
+            currentEnergy = 0;
+
+        OnEnergyChange?.Invoke(this, new OnEnergyEventHandler { _currentEnergy = currentEnergy });
+    }
+
+    public void RecoverEnergy(float recoverAmount)
+    {
+        if (currentEnergy + recoverAmount <= energy)
+            currentEnergy += recoverAmount;
+        else
+            currentEnergy = energy;
+
+        OnEnergyChange?.Invoke(this, new OnEnergyEventHandler { _currentEnergy = currentEnergy });
+    }
+
+    public event EventHandler<OnEnergyEventHandler> OnEnergyChange;
+
+    public class OnEnergyEventHandler : EventArgs
+    {
+        public float _currentEnergy;
+    }
     #endregion
 
     #region EXPERIENCE EVENTS
-    public bool isLevelUp = false;
+    [HideInInspector] public bool isLevelUp = false;
+    public int currentLevel;
     public GameObject levelUp_VFX;
     public float currentExperience;
-    public int currentLevel;
     public float nextLevelExperienceNeeded;
     public float baseExperience;
     public void ReciveExperience(float _xp)
@@ -164,15 +192,4 @@ public class Status : MonoBehaviour
     #region SAVE EVENTS
     #endregion
     #endregion
-
-
-
-
-
-
-
-
-
-
-
 }

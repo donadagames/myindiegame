@@ -12,6 +12,9 @@ public class Interactable : MonoBehaviour, IInteractable
     public GameObject displayItem;
     public int itemQuantity;
     public Vector3 offset = new Vector3 (0, 0, 0);
+    public int repetitions;
+    public Vector3 vfxOffset = new Vector3(0, 0, 0);
+    
     public virtual void Start()
     {
         status = Status.instance;

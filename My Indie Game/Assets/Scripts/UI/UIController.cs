@@ -2,21 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Cinemachine;
-using System;
+using Unity.VisualScripting;
 
 public class UIController : MonoBehaviour
 {
     public static UIController instance;
-    public bool isPortuguese = false;
 
-    [SerializeField] private TextMeshProUGUI goldQuantity;
-    [SerializeField] private TextMeshProUGUI redDiamondQuantity;
-    [SerializeField] private TextMeshProUGUI greenDiamondQuantity;
-    [SerializeField] private TextMeshProUGUI blueDiamondQuantity;
-
-    [SerializeField] private TextMeshProUGUI redPotionQuantity;
-    [SerializeField] private TextMeshProUGUI bluePotionQuantity;
-    [SerializeField] private TextMeshProUGUI purplePotionQuantity;
+    [SerializeField] AudioClip defaultClickAudioClip;
 
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider energySlider;
@@ -33,10 +25,14 @@ public class UIController : MonoBehaviour
     public Gradient energyGradient;
     bool isClosing = false;
     public Image healthFill;
+    public Image energyFill;
+
     [SerializeField] Image interactIcon;
     [SerializeField] Sprite handSprite;
     private int leanIndex;
     private int leandDefaultIndex;
+
+    public Image fillMagicTimer;
 
     private void Awake()
     {
@@ -50,6 +46,7 @@ public class UIController : MonoBehaviour
         status.OnHealthChange += OnHealthChange;
         status.OnExperienceChange += OnExperienceChange;
         status.OnLEvelUp += OnLevelUp;
+        status.OnEnergyChange += OnEnergyChange;
 
         body = virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
 
@@ -63,7 +60,11 @@ public class UIController : MonoBehaviour
 
         experienceSlider.minValue = 0;
         experienceSlider.maxValue = status.nextLevelExperienceNeeded;
+
+        zoomSlider.value = zoomSlider.maxValue;
+        body.m_CameraDistance = zoomSlider.value;
     }
+    public void PlayDefaultAudioClip() => status.player.soundController.PlayClip(defaultClickAudioClip);
 
     [Header("Left Stick")]
     #region LEFT STICK 
@@ -126,6 +127,12 @@ public class UIController : MonoBehaviour
         healthFill.color = healthGradient.Evaluate(healthSlider.normalizedValue);
     }
 
+    public void OnEnergyChange(object sender, Status.OnEnergyEventHandler handler)
+    {
+        energySlider.value = handler._currentEnergy;
+        energyFill.color = energyGradient.Evaluate(energySlider.normalizedValue);
+    }
+
     public void OnExperienceChange(object sender, Status.OnExperienceEventHandler handler)
     {
         experienceSlider.value = handler._currentExperience;
@@ -154,7 +161,6 @@ public class UIController : MonoBehaviour
     private void OnZoomUpdate(float value)
     {
         zoomSlider.value = value;
-        //ZoomSlider(value);
     }
 
     public void SetInteractionSprite(Sprite sprite)
@@ -187,14 +193,19 @@ public class UIController : MonoBehaviour
         interactIcon.gameObject.transform.localScale = new Vector3(.85f, .85f, .85f);
     }
 
-
-
-
-    //public event EventHandler<OnLanguageChangeEventHandler> OnLanguageChange;
-
-    public class OnLanguageChangeEventHandler : EventArgs
+    public void DealMagicTimer(Skill skill)
     {
-        public bool isPortuguese;
+        status.input.hasCompletedMagicTimer = false;
+
+        var value = LeanTween.value(gameObject, 1, 0, .25f).setOnUpdate(UpdateFillImage).setOnComplete(() =>
+        LeanTween.value(gameObject, 0, 1, skill.time).setOnUpdate(UpdateFillImage).setOnComplete(() => 
+        status.input.hasCompletedMagicTimer = true));
+
+    }
+
+    private void UpdateFillImage(float value)
+    {
+        fillMagicTimer.fillAmount = value;
     }
 }
 

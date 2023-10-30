@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,12 +8,8 @@ public class QuestsUI : MonoBehaviour
     public GameObject questPanel;
     public Transform inProgressQuestsParent;
     public Transform completedQuestParent;
-    Quests quests;
-    [SerializeField] GameObject questSlot;
-    [HideInInspector] public LanguageControll languageControll;
     public TextMeshProUGUI inProgressText;
     public TextMeshProUGUI completedText;
-    private List<QuestSlot> inProgressQuestSlots = new List<QuestSlot>();
     [Header("Sprite[0] = default")]
     public Sprite[] inProgressSprites = new Sprite[2];
     public Sprite[] completedSprites = new Sprite[2];
@@ -22,7 +17,15 @@ public class QuestsUI : MonoBehaviour
     public Image completedIcon;
     public Color defaultColor;
     public Color selectedColor;
-    Inventory inventory;
+
+    [HideInInspector] public SettingsController settingsController;
+
+    [SerializeField] GameObject questSlot;
+    [SerializeField] TextMeshProUGUI questTitle;
+
+    private Inventory inventory;
+    private Quests quests;
+   private List<QuestSlot> questSlots = new List<QuestSlot>();
     #region Singleton
     public static QuestsUI instance;
     private void Awake()
@@ -35,8 +38,31 @@ public class QuestsUI : MonoBehaviour
     private void Start()
     {
         quests = Quests.instance;
-        languageControll = LanguageControll.instance;
+        settingsController = SettingsController.instance;
         inventory = Inventory.instance;
+        settingsController.OnLanguageChanged += OnLanguageUpdate;
+    }
+
+    public void OnLanguageUpdate(object sender, SettingsController.OnLanguageChangeEventHandler handler)
+    {
+        if (handler._isPortuguese == true)
+        {
+            questTitle.text = "Missões";
+            inProgressText.text = "Em andamento";
+            completedText.text = "Finalizadas";
+        }
+
+        else
+        {
+            questTitle.text = "Quests";
+            inProgressText.text = "In Progress";
+            completedText.text = "Completed";
+        }
+
+        foreach (QuestSlot slot in questSlots)
+        {
+            slot.UpdateLanguage(handler._isPortuguese);
+        }
     }
 
     public void OnQuestButtonPressed()
@@ -45,6 +71,7 @@ public class QuestsUI : MonoBehaviour
             OnInProgressButtonPressed();
 
         questPanel.SetActive(!questPanel.activeSelf);
+        settingsController.uiController.PlayDefaultAudioClip();
     }
 
     public void AddNewQuest(Quest quest)
@@ -56,7 +83,7 @@ public class QuestsUI : MonoBehaviour
         slot.questObjective = quest.objective;
         slot.slider.maxValue = quest.objective.completeQuantity;
 
-        inProgressQuestSlots.Add(slot);
+        questSlots.Add(slot);
 
         if (quest.objective.currentQuantity < quest.objective.completeQuantity)
 
@@ -75,7 +102,7 @@ public class QuestsUI : MonoBehaviour
         slot.rewardIcon.sprite = quest.rewardItem.icon;
         slot.rewardText.text = $"{quest.rewardQuantity}";
 
-        if (languageControll.isPortuguese)
+        if (settingsController.IsPortuguese() == true)
         {
             slot.questText.text = quest.questTexts[0];
         }
@@ -87,8 +114,8 @@ public class QuestsUI : MonoBehaviour
     }
 
     public void OnCompleteQuest(Quest quest)
-    { 
-    
+    {
+
     }
 
     public void OnInProgressButtonPressed()
@@ -101,6 +128,8 @@ public class QuestsUI : MonoBehaviour
 
         completedQuestParent.gameObject.SetActive(false);
         inProgressQuestsParent.gameObject.SetActive(true);
+
+        settingsController.uiController.PlayDefaultAudioClip();
     }
 
     public void OnCompleteButtonPressed()
@@ -113,5 +142,7 @@ public class QuestsUI : MonoBehaviour
 
         inProgressQuestsParent.gameObject.SetActive(false);
         completedQuestParent.gameObject.SetActive(true);
+
+        settingsController.uiController.PlayDefaultAudioClip();
     }
 }

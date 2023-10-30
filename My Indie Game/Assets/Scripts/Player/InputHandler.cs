@@ -4,36 +4,51 @@ using UnityEngine;
 public class InputHandler : MonoBehaviour
 {
     public static InputHandler instance;
+    public float fallingDuration = .4f;
+    //public Skill cureSkill;
 
-    public GameObject puff;
-    public GameObject splash;
-    public float fallingDuration = 1f;
+    [SerializeField] GameObject puff;
+    [SerializeField] GameObject splash;
+
     [SerializeField] float gravityMultiplier = 1;
     [SerializeField] float smoothTime = .05f;
+    [SerializeField] float searchRadius = 40;
+
     [SerializeField] LayerMask waterLayer;
     [SerializeField] LayerMask interactablesLayer;
     [SerializeField] LayerMask enemySpawnerLayer;
-    [SerializeField] Status status;
+
+    public Status status;
+
     private Vector2 input = new Vector2();
-    private float velocity;
+
     private const float GRAVITY = -9.8f;
+    private float velocity;
     private float currentVelocity;
-    public StateMachine stateMachine;
-    public PlayerInputActions playerInputActions;
-    public bool IsGrounded() => status.player.characterController.isGrounded;
-    public bool isFalling = false;
-    public bool canMeleeAttack = true;
-    [HideInInspector] public Vector3 direction = new Vector3();
+
+    [HideInInspector] public Interactable interactable;
+
+    [HideInInspector] public bool IsGrounded() => status.player.characterController.isGrounded;
+    [HideInInspector] public bool isFalling = false;
+    [HideInInspector] public bool canMeleeAttack = true;
+    [HideInInspector] public bool canMagicAttack = true;
+    [HideInInspector] public bool headIsOnWater = false;
+    [HideInInspector] public bool footIsOnWater = false;
+    [HideInInspector] public bool isInteracting = false;
+    [HideInInspector] public bool isChatting;
     [HideInInspector] public bool hasPressedJumpButton = false;
     [HideInInspector] public bool hasPressedMeleeAttackButton = false;
-    [HideInInspector] public int jumpCount = 0;
+    [HideInInspector] public bool hasPressedMagicAttackButton = false;
     [HideInInspector] public bool hasEndedLanding = false;
-    public float searchRadius = 10;
-    public bool headIsOnWater = false;
-    public bool footIsOnWater = false;
-    public bool isInteracting = false;
-    public Interactable interactable;
-    public bool isChatting;
+    public bool hasCompletedMagicTimer = true;
+
+    [HideInInspector] public StateMachine stateMachine;
+    [HideInInspector] public PlayerInputActions playerInputActions;
+    [HideInInspector] public Vector3 direction = new Vector3();
+    [HideInInspector] public int jumpCount = 0;
+
+    public Skill selectedSkill;
+    //public Enemy targetEnemy;
 
     public void SearchForEnemySpawner()
     {
@@ -102,7 +117,7 @@ public class InputHandler : MonoBehaviour
         var floating =
             new Floating(status, this);
         var landOnWater =
-            new LandOnWater(this);
+            new LandOnWater(this, status);
         var meleeAttack =
             new MeleeAttack(status, this);
         var magicAttack =
@@ -131,6 +146,8 @@ public class InputHandler : MonoBehaviour
             (idle, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
         AddTransition
             (idle, meleeAttack, ShouldMeleeAttack());
+        AddTransition
+            (idle, magicAttack, ShouldMagicAttack());
 
 
         AddTransition
@@ -141,6 +158,8 @@ public class InputHandler : MonoBehaviour
             (moving, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
         AddTransition
             (moving, meleeAttack, ShouldMeleeAttack());
+        AddTransition
+            (moving, magicAttack, ShouldMagicAttack());
         AddTransition
             (moving, swimming, () => headIsOnWater && input.sqrMagnitude > 0);
 
@@ -159,6 +178,9 @@ public class InputHandler : MonoBehaviour
              (jumpMoving, moving, ShouldLandInMovement());
         AddTransition
             (jumpMoving, landOnWater, () => headIsOnWater);
+
+        AddTransition
+             (jumpMoving, falling, () => jumpCount == 0 && !IsGrounded() && !headIsOnWater && !footIsOnWater);
 
         AddTransition
             (doubleJumpig, idle, () => input.sqrMagnitude <= 0 &&
@@ -181,14 +203,14 @@ public class InputHandler : MonoBehaviour
             (landing, moving, () => hasEndedLanding && input.sqrMagnitude > 0);
 
         AddTransition
-            (swimming, moving, () => !headIsOnWater && input.sqrMagnitude > 0 && IsGrounded());
+            (swimming, idle, () => !headIsOnWater);
         AddTransition
             (swimming, floating, () => input.sqrMagnitude <= 0);
 
         AddTransition
             (floating, to: swimming, () => headIsOnWater && input.sqrMagnitude > 0);
         AddTransition
-          (floating, to: idle, () => !headIsOnWater && input.sqrMagnitude > 0);
+          (floating, to: idle, () => !headIsOnWater && input.sqrMagnitude <= 0);
 
         AddTransition
             (landOnWater, floating, () => headIsOnWater && input.sqrMagnitude <= 0);
@@ -221,12 +243,18 @@ public class InputHandler : MonoBehaviour
         AddTransition(moving, chatting, () => status.isAlive && isChatting);
         AddTransition(chatting, idle, () => status.isAlive && !isChatting);
 
+        AddTransition(magicAttack, idle,
+            () => IsGrounded() && input.sqrMagnitude <= 0 && canMagicAttack == true);
+        AddTransition(magicAttack, moving,
+           () => IsGrounded() && input.sqrMagnitude > 0 && canMagicAttack == true);
+
         Func<bool> PlayerHasMovementInput() => () =>
         input.sqrMagnitude > 0;
         Func<bool> PlayerHasNoMovementInput() => () =>
         input.sqrMagnitude <= 0;
         Func<bool> ShouldJump() => () =>
         IsGrounded() && hasPressedJumpButton && jumpCount == 0 && !status.dialogueUI.isOpen;
+
         Func<bool> ShouldLandIdle() => () =>
         IsGrounded() && jumpCount == 0 && input.sqrMagnitude <= 0
         || IsGrounded() && input.sqrMagnitude <= 0;
@@ -234,9 +262,12 @@ public class InputHandler : MonoBehaviour
         hasPressedJumpButton && jumpCount == 1 && !status.dialogueUI.isOpen;
         Func<bool> ShouldLandInMovement() => () => input.sqrMagnitude > 0 &&
         IsGrounded() && jumpCount == 0 || input.sqrMagnitude > 0 && IsGrounded();
-        Func<bool> ShouldLand() => () => IsGrounded() && jumpCount == 0 && !footIsOnWater && !headIsOnWater;
+        Func<bool> ShouldLand() => () => IsGrounded() && jumpCount == 0 && !headIsOnWater;
         Func<bool> ShouldMeleeAttack() =>
             () => canMeleeAttack == true && hasPressedMeleeAttackButton && !status.dialogueUI.isOpen;
+
+        Func<bool> ShouldMagicAttack() =>
+            () => canMagicAttack == true && hasPressedMagicAttackButton && !status.dialogueUI.isOpen && hasCompletedMagicTimer == true;
 
         stateMachine.SetState(idle);
     }
@@ -271,6 +302,13 @@ public class InputHandler : MonoBehaviour
             Time.deltaTime);
     }
 
+    public virtual void FaceTarget(Transform target)
+    {
+        Vector3 direction = (target.position - status.player.transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x + 0.0001f, 0f, direction.z + 0.0001f));
+        status.player.transform.rotation = Quaternion.Slerp(status.player.transform.rotation, lookRotation, Time.deltaTime * 5f);
+    }
+
     public void ApplyRotation()
     {
         if (input.sqrMagnitude == 0) return;
@@ -289,7 +327,6 @@ public class InputHandler : MonoBehaviour
         ApplyRotation();
         ApplyMovement();
     }
-
 
     public void DetectWater()
     {
@@ -327,7 +364,9 @@ public class InputHandler : MonoBehaviour
     {
         hasPressedJumpButton = false;
         hasPressedMeleeAttackButton = false;
+        hasPressedMagicAttackButton = false;
         canMeleeAttack = true;
+        canMagicAttack = true;
         hasEndedLanding = false;
         jumpCount = 0;
     }
@@ -380,11 +419,47 @@ public class InputHandler : MonoBehaviour
             return status.player.animations.swordAndShieldAttackDuration[index];
     }
 
+    public void MagicAttackButton()
+    {
+        if (canMagicAttack == false || status.currentEnergy < selectedSkill.energyCost || hasCompletedMagicTimer == false) return;
+        /*
+        if (targetEnemy == null && selectedSkill != cureSkill)
+        {
+            // mandar mensagem que está sem target enemy
+            Debug.Log("No Target Selected");
+        }
+        */
+        else
+        {
+            //FaceTarget(targetEnemy.transform);
+            canMagicAttack = true;
+            hasPressedMagicAttackButton = true;
+        }
+    }
+
+    public float MagicAttack()
+    {
+        status.player.animations.animator.Play(selectedSkill.animationClip);
+        status.uiController.DealMagicTimer(selectedSkill);
+        return selectedSkill.animationDuration;
+    }
+
     public void InteractButton()
     {
         if (interactable == null) return;
         interactable.Interact();
     }
+
+    /*
+    public void TargetEnemy(Enemy enemy)
+    {
+        if (targetEnemy != null)
+        {
+            targetEnemy.ClearTargetForMagicAttack();
+        }
+        targetEnemy = enemy;
+    }
+    */
     #endregion
 
     #region VFX

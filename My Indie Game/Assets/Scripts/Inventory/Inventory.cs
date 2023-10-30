@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -25,9 +24,6 @@ public class Inventory : MonoBehaviour
     public int inventorySpace;
 
     public bool InventoryIsFull(Item item) => GetFirstEmptySlot() == null && !itens.Contains(item);
-
-    public AudioSource _audio;
-
     public InventoryUI inventoryUI;
 
     [SerializeField] Transform inventorySlotsParent;
@@ -48,7 +44,7 @@ public class Inventory : MonoBehaviour
         {
             #region ADD Basic Itens (Coin[0] and Gems(Red[1], Blue[2], Green[3]))
             item.quantity += quantity;
-
+            status.player.soundController.PlayClip(item.audioClip);
             if (item.questObjective != null)
             {
                 item.questObjective.currentQuantity += quantity;
@@ -74,9 +70,9 @@ public class Inventory : MonoBehaviour
             {
                 var text = string.Empty;
 
-                if (inventoryUI.languageControll.isPortuguese)
+                if (inventoryUI.settingsController.IsPortuguese() == true)
                 {
-                    text = "Sem espaço na mochila!";
+                    text = "Sem espaï¿½o na mochila!";
                 }
                 else
                 {
@@ -91,7 +87,7 @@ public class Inventory : MonoBehaviour
             else
             {
                 var usedSlot = GetSlotWithItem(item);
-                _audio.PlayOneShot(item.audioClip, .5f);
+                status.player.soundController.PlayClip(item.audioClip);
                 item.quantity += quantity;
 
                 if (item.questObjective != null)
@@ -149,6 +145,18 @@ public class Inventory : MonoBehaviour
     public void RemoveItem(Item item, int quantity)
     {
         item.quantity -= quantity;
+
+        if (item.questObjective != null)
+        {
+            item.questObjective.currentQuantity -= quantity;
+            OnUpdateQuestObjective?.Invoke
+            (this, new OnUpdateQuestObjectiveEventHandler { questObjective = item.questObjective });
+            if (item.questObjective.currentQuantity < item.questObjective.completeQuantity &&
+            item.questObjective.isCompleted)
+            {
+                item.questObjective.isCompleted = false;
+            }
+        }
 
         if (item.quantity <= 0 && !basicItens.Contains(item))
         {

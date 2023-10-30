@@ -1,17 +1,29 @@
+using System.Collections;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AnimationController))]
+[RequireComponent(typeof(PlayerSoundController))]
 public class Player : MonoBehaviour
 {
-    public CharacterController characterController;
-    public AnimationController animations;
+    [HideInInspector] public CharacterController characterController;
+    [HideInInspector] public AnimationController animations;
+    [HideInInspector] public PlayerSoundController soundController;
+
+    public InputHandler input;
 
     public GameObject handAxe;
     public GameObject handWeapon;
     public GameObject handShield;
     public GameObject backWeapon;
     public GameObject backShield;
+    public GameObject fishingRod;
+
+    public GameObject impactWood_VFX;
+    public GameObject impactStone_VFX;
+
+    public Transform impactTransform;
 
     public float moveSpeed = 3f;
     public float jumpInPlaceHight = 5f;
@@ -33,13 +45,18 @@ public class Player : MonoBehaviour
     public int maxDamage;
 
     public Sword sword;
+    public GameObject rope;
 
     private void Awake()
     {
         animations = GetComponent<AnimationController>();
         characterController = GetComponent<CharacterController>();
+        soundController = GetComponent<PlayerSoundController>();
     }
-
+    private void Start()
+    {
+        input = InputHandler.instance;
+    }
     public EnemyAttackPosition GetEnemyPosition()
     {
         foreach (EnemyAttackPosition pos in enemyPosition)
@@ -54,6 +71,14 @@ public class Player : MonoBehaviour
         return null;
     }
 
+    private IEnumerator ScaleRope()
+    {
+        yield return new WaitForSeconds(.2f);
+        rope.LeanScaleZ(4, 1f);
+        yield return new WaitForSeconds(7.8f);
+        rope.LeanScaleZ(0, 1f);
+    }
+
     public void SetCutWoodConfiguration()
     {
         handWeapon.SetActive(false);
@@ -61,6 +86,20 @@ public class Player : MonoBehaviour
         handAxe.SetActive(true);
         backWeapon.SetActive(true);
         backShield.SetActive(true);
+        fishingRod.SetActive(false);
+    }
+
+    public void SetFishingConfiguration()
+    {
+        handWeapon.SetActive(false);
+        handShield.SetActive(false);
+        handAxe.SetActive(false);
+        backWeapon.SetActive(true);
+        backShield.SetActive(true);
+        fishingRod.SetActive(true);
+
+        StartCoroutine(ScaleRope());
+
     }
 
     public void SetUnarmedConfiguration()
@@ -70,6 +109,7 @@ public class Player : MonoBehaviour
         handAxe.SetActive(false);
         backWeapon.SetActive(true);
         backShield.SetActive(true);
+        fishingRod.SetActive(false);
     }
 
     public void SetSwordAndShieldConfiguration()
@@ -79,5 +119,15 @@ public class Player : MonoBehaviour
         handAxe.SetActive(false);
         backWeapon.SetActive(false);
         backShield.SetActive(false);
+        fishingRod.SetActive(false);
     }
+
+    #region SKILLS
+    public void Fireball()
+    {
+        soundController.FireballSound();
+        Instantiate(input.selectedSkill.skill_VFX, handWeapon.transform.position, transform.rotation);
+
+    }
+    #endregion
 }

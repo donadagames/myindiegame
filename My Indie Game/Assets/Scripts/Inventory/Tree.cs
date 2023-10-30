@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Tree : Interactable
 {
     public override void Interact()

@@ -15,6 +15,8 @@ public class EnemyDie : IState
     public void OnEnter()
     {
         time = Time.time;
+        spawner.enemy.isOnFire = false;
+        spawner.enemy.onFire_VFX.SetActive(false);
         spawner.enemy.ui.healthBar.SetActive(false);
         spawner.shouldSpawn = false;
         spawner.enemy.animator.Play(spawner.enemy.DIE);

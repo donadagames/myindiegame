@@ -49,7 +49,10 @@ public class Interacting : IState
 
     public void Tick()
     {
-        if (Time.time > time + (clipDuration * 3))
+
+        inputHandler.FaceTarget(inputHandler.interactable.transform);
+
+        if (Time.time > time + (clipDuration * inputHandler.interactable.repetitions))
         {
             inputHandler.isInteracting = false;
         }

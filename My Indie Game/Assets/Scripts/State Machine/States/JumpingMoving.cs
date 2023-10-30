@@ -30,6 +30,8 @@ public class JumpingMoving : IState
         inputHandler.jumpCount = 0;
         inputHandler.canMeleeAttack = true;
         inputHandler.hasPressedMeleeAttackButton = false;
+        inputHandler.hasPressedMagicAttackButton = false;
+        inputHandler.canMagicAttack = true;
     }
 
     public void Tick()

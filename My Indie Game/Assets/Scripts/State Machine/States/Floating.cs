@@ -28,7 +28,6 @@ public class Floating : IState
     {
         inputHandler.GetDirection();
         inputHandler.DetectWater();
-        inputHandler.ApplyGravity();
-        inputHandler.ApplyRotation();
+        inputHandler.ApplyAllMovement();
     }
 }

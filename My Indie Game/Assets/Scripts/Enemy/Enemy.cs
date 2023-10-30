@@ -1,13 +1,16 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Enemy : MonoBehaviour, IDamageble
+public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
 {
+    public GameObject onFire_VFX;
+    public bool isTarget = false;
+
     public EnemySpawner spawner;
     public float distance;
     public float distanceToWaypoint;
 
     public float scapeDistance = 11;
-    //public Transform target;
     public Animator animator;
     public float distanceToAttack;
     public float chasingVelocity;
@@ -31,6 +34,7 @@ public class Enemy : MonoBehaviour, IDamageble
     public int waypoint;
 
     public bool isAlive = true;
+    public bool isOnFire = false;
 
     public float health;
     public float currentHealth;
@@ -40,6 +44,8 @@ public class Enemy : MonoBehaviour, IDamageble
     public bool isDamaged = false;
     public bool isVictory = false;
 
+    public bool shouldCheckParticleHit = true;
+
     public virtual void Update()
     {
         spawner.stateMachine.Tick();
@@ -47,6 +53,7 @@ public class Enemy : MonoBehaviour, IDamageble
 
     public virtual void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         currentHealth = health;
         ui.SetMaxHealth(currentHealth);
         ui.healthBar.SetActive(false);
@@ -120,7 +127,20 @@ public class Enemy : MonoBehaviour, IDamageble
             currentHealth -= damage;
             ui.SetValue(currentHealth);
             CheckIfIsDead();
-            isDamaged = isCritical;
+            if (isOnFire == false)
+                isDamaged = isCritical;
+            else
+                isDamaged = false;
+        }
+    }
+
+    private void OnParticleCollision(GameObject other)
+    {
+        if (!shouldCheckParticleHit) return;
+        else
+        {
+            var skill = other.GetComponent<SkillsController>();
+            skill.SkillDamage(this);
         }
     }
 
@@ -132,13 +152,99 @@ public class Enemy : MonoBehaviour, IDamageble
         }
     }
 
+    public void IncreaseParameter(string parameter)
+    {
+        var currentValue = animator.GetInteger(parameter);
+        var randomValue = Random.Range(0, 2);
+        animator.SetInteger(parameter, currentValue + randomValue);
+    }
+
+    public void SetParameterToZero(string parameter)
+    {
+        animator.SetInteger(parameter, 0);
+    }
+
     public void Damage()
     {
         var damage = UnityEngine.Random.Range(minDamage, maxDamage);
         var isCritical = damage >= maxDamage * .8f;
         spawner.status.TakeDamage(damage, isCritical);
+        PunchAudio();
     }
 
+
+    #region AUDIO CONTROLLER
+    [Header("Audio Controller")]
+    public AudioSource audioSource;
+    public AudioClip[] walkAudioClips;
+    public AudioClip[] attackAudioClips;
+    public AudioClip[] deathAudioClips;
+    public AudioClip[] getHitAudioClip;
+    public AudioClip[] victoryAudioClip;
+    public AudioClip[] punchAudioClips;
+    public virtual AudioClip GetRandomAudioClip(AudioClip[] clips)
+    {
+        return clips[Random.Range(0, clips.Length)];
+    }
+
+    public void DeathAudio()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(deathAudioClips));
+    }
+
+    public void WalkAudio()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(walkAudioClips));
+    }
+
+    public void GetHitAudio()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(getHitAudioClip));
+    }
+
+    public void AttackAudio()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(attackAudioClips));
+    }
+
+    public void VictoryAudio()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(victoryAudioClip));
+    }
+
+    public void PunchAudio()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(punchAudioClips));
+    }
+
+    /*
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (spawner.status.input.selectedSkill == null || isTarget == true) return;
+
+        var _distanceFromPlayer = Vector3.Distance(transform.position, spawner.status.player.transform.position);
+
+        if (_distanceFromPlayer >= scapeDistance) return;
+        else 
+        {
+            SetTargetForMagicAttack();
+        }
+    }
+
+    public void SetTargetForMagicAttack()
+    {
+        isTarget = true;
+        ui.targetImage.SetActive(true);
+        spawner.status.input.TargetEnemy(this);
+    }
+
+    public void ClearTargetForMagicAttack()
+    {
+        ui.targetImage.SetActive(false);
+        isTarget = false;
+    }
+    */
+    #endregion
 }
 
 public interface IDamageble

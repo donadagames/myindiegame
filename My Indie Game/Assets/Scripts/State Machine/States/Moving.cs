@@ -7,7 +7,6 @@ public class Moving : IState
 
     private float fallTime;
     private bool shouldCheckFalling = true;
-    private float time;
     public Moving(Status _status, InputHandler _inputHandler)
     {
         status = _status;
@@ -15,7 +14,6 @@ public class Moving : IState
     }
     public void OnEnter()
     {
-        time = Time.time;
         status.player.sword.shouldCheck = false;
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
@@ -46,10 +44,7 @@ public class Moving : IState
             inputHandler.stateMachine.shouldChange = false;
         }
 
-        if (Time.time > time + .25f)
-        {
-            inputHandler.DetectWater();
-        }
+        inputHandler.DetectWater();
     }
 
     void CheckIfIsFalling()

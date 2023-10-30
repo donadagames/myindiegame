@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.DualShock;
 
 public class Crate : Interactable
 {
@@ -22,6 +21,9 @@ public class Crate : Interactable
 
         hasInteract = true;
         uiController.SetDefaultInteractionSprite();
+
+        status.player.soundController.OpenCrateSound();
+
         tampa.LeanRotateAroundLocal(Vector3.right, -45, .5f).
             setOnComplete(GiveItem);
     }

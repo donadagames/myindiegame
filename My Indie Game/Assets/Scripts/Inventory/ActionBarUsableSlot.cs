@@ -34,6 +34,7 @@ public class ActionBarUsableSlot : MonoBehaviour
         else
         {
             item.Use();
+            inventory.RemoveItem(item, 1);
         }
     }
 
