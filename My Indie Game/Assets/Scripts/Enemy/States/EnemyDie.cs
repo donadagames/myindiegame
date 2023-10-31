@@ -17,10 +17,10 @@ public class EnemyDie : IState
         time = Time.time;
         spawner.enemy.isOnFire = false;
         spawner.enemy.onFire_VFX.SetActive(false);
-        spawner.enemy.ui.healthBar.SetActive(false);
+        spawner.enemy.ui.gameObject.SetActive(false);
         spawner.shouldSpawn = false;
         spawner.enemy.animator.Play(spawner.enemy.DIE);
-
+        spawner.enemy.shouldCheckParticleHit = false;
         var experience = spawner.enemy.health * Random.Range(.7f, 1f);
         spawner.status.ReciveExperience(experience);
     }

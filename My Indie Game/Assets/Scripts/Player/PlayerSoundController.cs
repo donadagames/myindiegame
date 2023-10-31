@@ -17,13 +17,17 @@ public class PlayerSoundController : MonoBehaviour
     [SerializeField] private AudioClip[] landAudioClips;
     [SerializeField] private AudioClip[] miningAudioClips;
     [SerializeField] private AudioClip splashAudioClip;
+    [SerializeField] private AudioClip levelUpClip;
     [SerializeField] private AudioClip[] openCrateAudioClips;
 
     [Header("Skills")]
     [SerializeField] AudioClip fireballAudioClip;
+    [SerializeField] AudioClip cureAudioClip;
+    [SerializeField] AudioClip iceAudioClip;
     [SerializeField] AudioClip speakFire;
     [SerializeField] AudioClip speakCure;
     [SerializeField] AudioClip[] speakIce;
+    [SerializeField] AudioClip[] speaklevelUp;
 
     private void Start()
     {
@@ -100,6 +104,16 @@ public class PlayerSoundController : MonoBehaviour
         audioSource.PlayOneShot(GetRandomAudioClip(damageAudioClips));
     }
 
+    public void LevelUpSound()
+    {
+        PlayClip(levelUpClip);
+    }
+
+    public void SpeakLevelUp()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(speaklevelUp));
+    }
+
     public void OpenCrateSound()
     {
         audioSource.PlayOneShot(GetRandomAudioClip(openCrateAudioClips));
@@ -113,6 +127,26 @@ public class PlayerSoundController : MonoBehaviour
     public void FireballSound()
     {
         audioSource.PlayOneShot(fireballAudioClip);
+    }
+
+    public void CureSound()
+    {
+        audioSource.PlayOneShot(cureAudioClip);
+    }
+
+    public void IceSound()
+    {
+        audioSource.PlayOneShot(iceAudioClip);
+    }
+
+    public void BlastSound()
+    {
+        audioSource.PlayOneShot(cureAudioClip);
+    }
+
+    public void StarfallSound()
+    {
+        audioSource.PlayOneShot(cureAudioClip);
     }
 
     public void SpeakFire()

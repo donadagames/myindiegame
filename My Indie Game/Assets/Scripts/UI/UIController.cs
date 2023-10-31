@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Cinemachine;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class UIController : MonoBehaviour
 {
@@ -28,11 +29,19 @@ public class UIController : MonoBehaviour
     public Image energyFill;
 
     [SerializeField] Image interactIcon;
-    [SerializeField] Sprite handSprite;
     private int leanIndex;
     private int leandDefaultIndex;
-
     public Image fillMagicTimer;
+
+    [SerializeField] Transform fireballBtn;
+    [SerializeField] Transform cureBtn;
+    [SerializeField] Transform blastBtn;
+    [SerializeField] Transform iceBtn;
+    [SerializeField] Transform starfallBtn;
+    [SerializeField] Image skillIcon;
+    [SerializeField] Transform skillArrow;
+    [SerializeField] GameObject skillsToHideAndShow;
+    public bool canInteract = true;
 
     private void Awake()
     {
@@ -198,7 +207,7 @@ public class UIController : MonoBehaviour
         status.input.hasCompletedMagicTimer = false;
 
         var value = LeanTween.value(gameObject, 1, 0, .25f).setOnUpdate(UpdateFillImage).setOnComplete(() =>
-        LeanTween.value(gameObject, 0, 1, skill.time).setOnUpdate(UpdateFillImage).setOnComplete(() => 
+        LeanTween.value(gameObject, 0, 1, skill.time).setOnUpdate(UpdateFillImage).setOnComplete(() =>
         status.input.hasCompletedMagicTimer = true));
 
     }
@@ -207,7 +216,62 @@ public class UIController : MonoBehaviour
     {
         fillMagicTimer.fillAmount = value;
     }
+
+    public void OnSkillsOptionsButtonPressed()
+    {
+        if (canInteract == false) return;
+
+        canInteract = false;
+
+        if (skillsToHideAndShow.activeSelf == true)
+        {
+            CloseSkillsOptions();
+        }
+
+        else
+        {
+            OpenSkillsOptions();
+        }
+    }
+
+    private void OpenSkillsOptions()
+    {
+        skillsToHideAndShow.SetActive(true);
+
+        skillArrow.LeanRotateY(180, .25f);
+
+        fireballBtn.LeanMoveLocalY(0, .25f).setEase(LeanTweenType.easeOutBack).setOnComplete
+            (() => cureBtn.LeanMoveLocalY(0, .25f).setEase(LeanTweenType.easeOutBack).setOnComplete
+            (() => blastBtn.LeanMoveLocalY(0, .25f).setEase(LeanTweenType.easeOutBack).setOnComplete
+            (() => iceBtn.LeanMoveLocalY(0, .25f).setEase(LeanTweenType.easeOutBack).setOnComplete
+            (() => starfallBtn.LeanMoveLocalY(0, .25f).setEase(LeanTweenType.easeOutBack).setOnComplete
+            (() => canInteract = true)))));
+    }
+
+    private void CloseSkillsOptions()
+    {
+        skillArrow.LeanRotateY(0, .25f);
+
+        starfallBtn.LeanMoveLocalY(-200, .25f).setEase(LeanTweenType.easeInBack).setOnComplete
+            (() => iceBtn.LeanMoveLocalY(-200, .25f).setEase(LeanTweenType.easeInBack).setOnComplete
+            (() => blastBtn.LeanMoveLocalY(-200, .25f).setEase(LeanTweenType.easeInBack).setOnComplete
+            (() => cureBtn.LeanMoveLocalY(-200, .25f).setEase(LeanTweenType.easeInBack).setOnComplete
+            (() => fireballBtn.LeanMoveLocalY(-200, .25f).setEase(LeanTweenType.easeInBack).setOnComplete
+            (DealCloseSkillsOptions)))));
+    }
+    private void DealCloseSkillsOptions()
+    {
+        skillsToHideAndShow.SetActive(false);
+        canInteract = true;
+    }
+
+    public void UpdateSkillImage(Skill skill)
+    { 
+        skillIcon.sprite = skill.icon;
+        status.input.selectedSkill = skill;
+    }
 }
+
 
 public enum Direction
 {

@@ -32,6 +32,7 @@ public class EnemySpawner : MonoBehaviour
         var getHit = new EnemyGetHit(this);
         var onFire = new EnemyOnFire(this);
         var victory = new EnemyVictory(this);
+        var freezed = new EnemyFreezed(this);
 
         void AddTransition(IState from, IState to,
             Func<bool> condition) =>
@@ -63,8 +64,11 @@ public class EnemySpawner : MonoBehaviour
             (victory, () => enemy.isVictory && enemy.isAlive);
         stateMachine.AddAnyTransition
             (onFire, () => enemy.isAlive && enemy.isOnFire);
+        stateMachine.AddAnyTransition
+            (freezed, () => enemy.isAlive && enemy.isFreezed);
 
-        AddTransition(onFire, chase, EndDizzyAnimation());
+        AddTransition(onFire, chase, ()=> !enemy.isOnFire && enemy.isAlive);
+        AddTransition(freezed, chase, () => !enemy.isFreezed && enemy.isAlive);
 
         Func<bool> IsFarAwayFromPlayer() => () => enemy.distance > chaseDistance + .5f && isIdleEnemy;
         Func<bool> IsFarAwayFromPlayerAndIsPatroll() => () => enemy.distance > chaseDistance + .5f && !isIdleEnemy;
@@ -72,7 +76,6 @@ public class EnemySpawner : MonoBehaviour
         Func<bool> IsCloseToPlayerToChase() => () => enemy.distance < chaseDistance && enemy.distance > enemy.distanceToAttack;
         Func<bool> IsCloseToPlayerToChaseAfterAttack() => () => canAttack;
         Func<bool> EndGetHitAnimation() => () => !enemy.isDamaged && enemy.isAlive;
-        Func<bool> EndDizzyAnimation() => () => !enemy.isOnFire && enemy.isAlive;
     }
 
     private void Start()

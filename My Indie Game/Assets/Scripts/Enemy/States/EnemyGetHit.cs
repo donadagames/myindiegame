@@ -18,7 +18,10 @@ public class EnemyGetHit : IState
     }
     public void OnExit()
     {
-        spawner.enemy.isDamaged = false; 
+        spawner.enemy.isDamaged = false;
+        spawner.enemy.isOnFire = false;
+        spawner.enemy.isFreezed = false;
+        spawner.enemy.shouldCheckParticleHit = true;
         spawner.enemy.onFire_VFX.SetActive(false);
     }
 

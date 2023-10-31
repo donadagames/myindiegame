@@ -167,6 +167,7 @@ public class Status : MonoBehaviour
             currentLevel++;
             currentExperience = 0;
             nextLevelExperienceNeeded = currentLevel * baseExperience;
+            player.soundController.LevelUpSound();
             OnLEvelUp?.Invoke(this, new OnLevelUpEventHandler
             { _isLevelUp = isLevelUp, _currentLevel = currentLevel, _nextLevelExperienceNeeded = nextLevelExperienceNeeded });
         }

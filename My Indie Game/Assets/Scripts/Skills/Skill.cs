@@ -7,7 +7,6 @@ public class Skill : ScriptableObject
     public string animationClip;
     public float animationDuration;
     public Sprite icon;
-    public Color iconColor;
     public float energyCost;
     public float healthRegenaration;
     public float criticalDamageFactor;

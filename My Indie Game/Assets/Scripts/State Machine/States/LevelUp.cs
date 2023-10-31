@@ -3,12 +3,13 @@ using UnityEngine;
 public class LevelUp : IState
 {
     private readonly Status status;
-
+    private readonly InputHandler inputHandler;
     private float time;
 
-    public LevelUp(Status _status)
+    public LevelUp(Status _status, InputHandler _inputHandler)
     {
         status = _status;
+        inputHandler = _inputHandler;
     }
 
     public void OnEnter()
@@ -23,6 +24,12 @@ public class LevelUp : IState
     public void OnExit()
     {
         status.isLevelUp = false;
+        inputHandler.hasPressedJumpButton = false;
+        inputHandler.jumpCount = 0;
+        inputHandler.canMeleeAttack = true;
+        inputHandler.hasPressedMeleeAttackButton = false;
+        inputHandler.hasPressedMagicAttackButton = false;
+        inputHandler.canMagicAttack = true;
     }
 
     public void Tick()

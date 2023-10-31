@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
 {
     public GameObject onFire_VFX;
+    public GameObject freezed_VFX;
     public bool isTarget = false;
 
     public EnemySpawner spawner;
@@ -35,6 +36,7 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
 
     public bool isAlive = true;
     public bool isOnFire = false;
+    public bool isFreezed = false;
 
     public float health;
     public float currentHealth;
@@ -45,6 +47,8 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
     public bool isVictory = false;
 
     public bool shouldCheckParticleHit = true;
+
+    public bool canGetHit = true;
 
     public virtual void Update()
     {
@@ -139,6 +143,7 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
         if (!shouldCheckParticleHit) return;
         else
         {
+            shouldCheckParticleHit = false;
             var skill = other.GetComponent<SkillsController>();
             skill.SkillDamage(this);
         }

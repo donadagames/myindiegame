@@ -5,7 +5,6 @@ public class InputHandler : MonoBehaviour
 {
     public static InputHandler instance;
     public float fallingDuration = .4f;
-    //public Skill cureSkill;
 
     [SerializeField] GameObject puff;
     [SerializeField] GameObject splash;
@@ -48,7 +47,6 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public int jumpCount = 0;
 
     public Skill selectedSkill;
-    //public Enemy targetEnemy;
 
     public void SearchForEnemySpawner()
     {
@@ -125,7 +123,7 @@ public class InputHandler : MonoBehaviour
         var getHit =
             new GetHit(status);
         var die = new Die(status, this);
-        var levelUp = new LevelUp(status);
+        var levelUp = new LevelUp(status, this);
 
         var interacting = new Interacting(status, this);
 
@@ -422,16 +420,9 @@ public class InputHandler : MonoBehaviour
     public void MagicAttackButton()
     {
         if (canMagicAttack == false || status.currentEnergy < selectedSkill.energyCost || hasCompletedMagicTimer == false) return;
-        /*
-        if (targetEnemy == null && selectedSkill != cureSkill)
-        {
-            // mandar mensagem que está sem target enemy
-            Debug.Log("No Target Selected");
-        }
-        */
+        
         else
         {
-            //FaceTarget(targetEnemy.transform);
             canMagicAttack = true;
             hasPressedMagicAttackButton = true;
         }
@@ -449,17 +440,6 @@ public class InputHandler : MonoBehaviour
         if (interactable == null) return;
         interactable.Interact();
     }
-
-    /*
-    public void TargetEnemy(Enemy enemy)
-    {
-        if (targetEnemy != null)
-        {
-            targetEnemy.ClearTargetForMagicAttack();
-        }
-        targetEnemy = enemy;
-    }
-    */
     #endregion
 
     #region VFX

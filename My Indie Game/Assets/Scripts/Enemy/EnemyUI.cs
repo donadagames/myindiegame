@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,14 +8,41 @@ public class EnemyUI : MonoBehaviour
     public Slider _slider;
     public Image fill;
     Enemy _enemy = null;
-    //public TextMeshProUGUI _nameText;
     Transform cam;
     public GameObject healthBar;
-    //public GameObject targetImage;
+    public GameObject displayDamage;
+    public TextMeshProUGUI damageText;
+    public CanvasGroup damageCanvasGroup;
 
     private void Start()
     {
         cam = _enemy.spawner.status.mainCamera.transform;
+    }
+
+
+
+    public void DisplayDamageText(float damage, Color _color)
+    {
+        int _dmg = (int)damage;
+
+        damageText.text = _dmg.ToString();
+        damageText.color = _color;
+        _enemy.canGetHit = false;
+        displayDamage.SetActive(true);
+
+        damageCanvasGroup.LeanAlpha(0, .5f);
+
+        displayDamage.transform.LeanMoveLocalY
+            (displayDamage.transform.position.y + 100, .5f).
+            setEase(LeanTweenType.easeOutBack).setOnComplete(OnCompleteDisplayDamageText);
+    }
+
+    private void OnCompleteDisplayDamageText()
+    {
+        displayDamage.SetActive(false);
+        damageCanvasGroup.alpha = 1;
+        displayDamage.transform.localPosition = new Vector3(0, displayDamage.transform.localPosition.y - 100, 0);
+        _enemy.canGetHit = true;
     }
 
     private void OnEnable()
@@ -38,4 +66,5 @@ public class EnemyUI : MonoBehaviour
     {
         transform.LookAt(transform.position + cam.forward);
     }
+
 }

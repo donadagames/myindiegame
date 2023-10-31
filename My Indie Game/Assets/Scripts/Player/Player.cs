@@ -127,7 +127,31 @@ public class Player : MonoBehaviour
     {
         soundController.FireballSound();
         Instantiate(input.selectedSkill.skill_VFX, handWeapon.transform.position, transform.rotation);
+    }
 
+    public void Cure()
+    {
+        soundController.CureSound();
+        input.status.RecoverHealth(input.status.energy * input.selectedSkill.healthRegenaration);
+        Instantiate(input.selectedSkill.skill_VFX, transform.position, transform.rotation, transform);
+    }
+
+    public void Ice()
+    {
+        soundController.IceSound();
+        Instantiate(input.selectedSkill.skill_VFX, transform.position + new Vector3(0, 0f, .5f), transform.rotation);
+    }
+
+    public void Blast()
+    {
+        soundController.BlastSound();
+        Instantiate(input.selectedSkill.skill_VFX, transform.position, transform.rotation);
+    }
+
+    public void Starfall()
+    {
+        soundController.StarfallSound();
+        Instantiate(input.selectedSkill.skill_VFX, transform.position, transform.rotation);
     }
     #endregion
 }
