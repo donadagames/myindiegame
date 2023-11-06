@@ -33,6 +33,7 @@ public class EnemySpawner : MonoBehaviour
         var onFire = new EnemyOnFire(this);
         var victory = new EnemyVictory(this);
         var freezed = new EnemyFreezed(this);
+        var dizzy = new EnemyDizzy(this);
 
         void AddTransition(IState from, IState to,
             Func<bool> condition) =>
@@ -59,16 +60,20 @@ public class EnemySpawner : MonoBehaviour
         stateMachine.AddAnyTransition
             (die, () => !enemy.isAlive);
         stateMachine.AddAnyTransition
-            (getHit, () => enemy.isAlive && enemy.isDamaged);
+            (getHit, () => enemy.isAlive && enemy.isDamaged && !enemy.isDizzy && !enemy.isFreezed && !enemy.isOnFire);
         stateMachine.AddAnyTransition
             (victory, () => enemy.isVictory && enemy.isAlive);
         stateMachine.AddAnyTransition
             (onFire, () => enemy.isAlive && enemy.isOnFire);
         stateMachine.AddAnyTransition
             (freezed, () => enemy.isAlive && enemy.isFreezed);
+        stateMachine.AddAnyTransition
+          (dizzy, () => enemy.isAlive && enemy.isDizzy);
 
         AddTransition(onFire, chase, ()=> !enemy.isOnFire && enemy.isAlive);
         AddTransition(freezed, chase, () => !enemy.isFreezed && enemy.isAlive);
+        AddTransition(dizzy, chase, () => !enemy.isDizzy && enemy.isAlive);
+
 
         Func<bool> IsFarAwayFromPlayer() => () => enemy.distance > chaseDistance + .5f && isIdleEnemy;
         Func<bool> IsFarAwayFromPlayerAndIsPatroll() => () => enemy.distance > chaseDistance + .5f && !isIdleEnemy;

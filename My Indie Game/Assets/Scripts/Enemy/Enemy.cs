@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
+public class Enemy : MonoBehaviour, IDamageble
 {
     public GameObject onFire_VFX;
     public GameObject freezed_VFX;
+    public GameObject dizzy_VFX;
     public bool isTarget = false;
 
     public EnemySpawner spawner;
@@ -37,6 +38,7 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
     public bool isAlive = true;
     public bool isOnFire = false;
     public bool isFreezed = false;
+    public bool isDizzy = false;
 
     public float health;
     public float currentHealth;
@@ -45,6 +47,8 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
     public EnemyUI ui;
     public bool isDamaged = false;
     public bool isVictory = false;
+
+    [HideInInspector] public Rigidbody rb;
 
     public bool shouldCheckParticleHit = true;
 
@@ -58,6 +62,7 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
     public virtual void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody>();
         currentHealth = health;
         ui.SetMaxHealth(currentHealth);
         ui.healthBar.SetActive(false);
@@ -177,6 +182,24 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
         PunchAudio();
     }
 
+    public void DamageWithForce(float force = 10)
+    {
+        var damage = UnityEngine.Random.Range(minDamage, maxDamage);
+        spawner.status.TakeDamage(damage, true);
+        spawner.status.input.impact = transform.forward * force;
+        spawner.status.input.isHit = true;
+        PunchAudio();
+    }
+
+
+    public void DamageWithDizzy()
+    {
+        var damage = UnityEngine.Random.Range(minDamage, maxDamage);
+        spawner.status.TakeDamage(damage, true);
+        spawner.status.input.isDizzy = true;
+        PunchAudio();
+    }
+
 
     #region AUDIO CONTROLLER
     [Header("Audio Controller")]
@@ -221,34 +244,6 @@ public class Enemy : MonoBehaviour, IDamageble//, IPointerDownHandler
     {
         audioSource.PlayOneShot(GetRandomAudioClip(punchAudioClips));
     }
-
-    /*
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (spawner.status.input.selectedSkill == null || isTarget == true) return;
-
-        var _distanceFromPlayer = Vector3.Distance(transform.position, spawner.status.player.transform.position);
-
-        if (_distanceFromPlayer >= scapeDistance) return;
-        else 
-        {
-            SetTargetForMagicAttack();
-        }
-    }
-
-    public void SetTargetForMagicAttack()
-    {
-        isTarget = true;
-        ui.targetImage.SetActive(true);
-        spawner.status.input.TargetEnemy(this);
-    }
-
-    public void ClearTargetForMagicAttack()
-    {
-        ui.targetImage.SetActive(false);
-        isTarget = false;
-    }
-    */
     #endregion
 }
 

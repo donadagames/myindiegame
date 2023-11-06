@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
 {
@@ -35,11 +38,15 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public bool footIsOnWater = false;
     [HideInInspector] public bool isInteracting = false;
     [HideInInspector] public bool isChatting;
+    [HideInInspector] public bool isDizzy;
+    [HideInInspector] public bool isHit;
     [HideInInspector] public bool hasPressedJumpButton = false;
     [HideInInspector] public bool hasPressedMeleeAttackButton = false;
     [HideInInspector] public bool hasPressedMagicAttackButton = false;
     [HideInInspector] public bool hasEndedLanding = false;
     public bool hasCompletedMagicTimer = true;
+
+    [HideInInspector] public Vector3 impact = Vector3.zero;
 
     [HideInInspector] public StateMachine stateMachine;
     [HideInInspector] public PlayerInputActions playerInputActions;
@@ -95,6 +102,14 @@ public class InputHandler : MonoBehaviour
 
         playerInputActions = new PlayerInputActions();
         playerInputActions.Enable();
+
+        playerInputActions.Player.Jump.performed += PlayerJump;
+        playerInputActions.Player.MeleeAttack.performed += PlayerMeleeAttack;
+        playerInputActions.Player.Interact.performed += PlayerInteract;
+        playerInputActions.Player.MagicAttack.performed += PlayerMagicAttack;
+        playerInputActions.Player.MouseWheel.performed += MouseWheel;
+
+
 
         var idle =
             new IdleGrounded(status, this);
@@ -229,7 +244,7 @@ public class InputHandler : MonoBehaviour
            () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
 
         stateMachine.AddAnyTransition(die, () => !status.isAlive);
-        stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged);
+        stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged && canMagicAttack);
 
         AddTransition(getHit, idle, () => status.isAlive && !status.isDamaged);
 
@@ -273,6 +288,9 @@ public class InputHandler : MonoBehaviour
     private void Start()
     {
         status.OnSafeZoneChange += OnSafeZoneChanged;
+
+
+
     }
 
     private void Update()
@@ -364,6 +382,7 @@ public class InputHandler : MonoBehaviour
         hasPressedMeleeAttackButton = false;
         hasPressedMagicAttackButton = false;
         canMeleeAttack = true;
+        status.isDamaged = false;
         canMagicAttack = true;
         hasEndedLanding = false;
         jumpCount = 0;
@@ -398,11 +417,23 @@ public class InputHandler : MonoBehaviour
         else return;
     }
 
+    private void PlayerJump(InputAction.CallbackContext callback)
+    {
+        JumpButton();
+    }
+
     public void MeleeAttackButton()
     {
         if (canMeleeAttack == false) return;
         canMeleeAttack = true;
         hasPressedMeleeAttackButton = true;
+    }
+
+    private void PlayerMeleeAttack(InputAction.CallbackContext callback)
+    {
+        if (IsPointerOverUIElement()) return;
+
+        MeleeAttackButton();
     }
 
     public float MeleeAttack()
@@ -420,12 +451,17 @@ public class InputHandler : MonoBehaviour
     public void MagicAttackButton()
     {
         if (canMagicAttack == false || status.currentEnergy < selectedSkill.energyCost || hasCompletedMagicTimer == false) return;
-        
+
         else
         {
             canMagicAttack = true;
             hasPressedMagicAttackButton = true;
         }
+    }
+
+    private void PlayerMagicAttack(InputAction.CallbackContext callback)
+    {
+        MagicAttackButton();
     }
 
     public float MagicAttack()
@@ -439,6 +475,23 @@ public class InputHandler : MonoBehaviour
     {
         if (interactable == null) return;
         interactable.Interact();
+    }
+
+    private void PlayerInteract(InputAction.CallbackContext callback)
+    {
+        InteractButton();
+    }
+
+    Vector3 _newZoomPos = new Vector3();
+
+    private void MouseWheel(InputAction.CallbackContext callback)
+    {
+        var zoom = Mathf.Sign(((Vector2)callback.ReadValueAsObject()).y);
+        // Clamp the new zoom value between min/max.
+        zoom = Mathf.Clamp(_newZoomPos.y - zoom, 3f, 9f);
+        _newZoomPos = new Vector3(0f, zoom, -zoom);
+        status.uiController.ZoomSlider(_newZoomPos.y);
+        status.uiController.OnZoomUpdate(_newZoomPos.y);
     }
     #endregion
 
@@ -454,6 +507,36 @@ public class InputHandler : MonoBehaviour
         Instantiate(original: puff, status.player.footPos.position, Quaternion.AngleAxis(-90, Vector3.left));
 
     }
+
+    public static bool IsPointerOverUIElement()
+    {
+        return IsPointerOverUIElement(GetEventSystemRaycastResults());
+    }
+
+    public static bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaysastResults)
+    {
+        for (int index = 0; index < eventSystemRaysastResults.Count; index++)
+        {
+            RaycastResult curRaysastResult = eventSystemRaysastResults[index];
+
+            if (curRaysastResult.gameObject.layer == LayerMask.NameToLayer("UI"))
+                return true;
+        }
+
+        return false;
+    }
+
+    ///Gets all event systen raycast results of current mouse or touch position.
+    static List<RaycastResult> GetEventSystemRaycastResults()
+    {
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Input.mousePosition;
+
+        List<RaycastResult> raysastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, raysastResults);
+
+        return raysastResults;
+    }
     #endregion
 
     public void OnSafeZoneChanged(object sender, Status.OnSafeZoneChangeEventHandler handler)
@@ -465,4 +548,6 @@ public class InputHandler : MonoBehaviour
 
         stateMachine.shouldChange = true;
     }
+
+
 }

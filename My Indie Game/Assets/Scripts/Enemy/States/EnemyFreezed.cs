@@ -26,6 +26,7 @@ public class EnemyFreezed : IState
     {
         spawner.enemy.isDamaged = false;
         spawner.enemy.isOnFire = false;
+        spawner.enemy.isDizzy = false;
         spawner.enemy.isFreezed = false;
         spawner.enemy.shouldCheckParticleHit = true;
     }

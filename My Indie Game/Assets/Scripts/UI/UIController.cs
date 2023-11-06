@@ -4,6 +4,9 @@ using TMPro;
 using Cinemachine;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
+using static UnityEngine.Rendering.DebugUI;
+using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class UIController : MonoBehaviour
 {
@@ -72,6 +75,7 @@ public class UIController : MonoBehaviour
 
         zoomSlider.value = zoomSlider.maxValue;
         body.m_CameraDistance = zoomSlider.value;
+        virtualCamera.transform.eulerAngles = new Vector3 (zoomSlider.value * 5, 0, 0);
     }
     public void PlayDefaultAudioClip() => status.player.soundController.PlayClip(defaultClickAudioClip);
 
@@ -155,9 +159,10 @@ public class UIController : MonoBehaviour
         experienceSlider.value = 0;
     }
 
-    public void ZoomSlider(float value)
+    public void ZoomSlider(float value) // 3 a 9 
     {
         body.m_CameraDistance = value;
+        virtualCamera.transform.eulerAngles = new Vector3(value * 5, 0, 0);
     }
 
     public void SetDialogueCamera()
@@ -167,10 +172,12 @@ public class UIController : MonoBehaviour
         var zoom = LeanTween.value(zoomSlider.gameObject, currentDistance, zoomSlider.maxValue, .5f).setOnUpdate(OnZoomUpdate);
     }
 
-    private void OnZoomUpdate(float value)
+    public void OnZoomUpdate(float value)
     {
         zoomSlider.value = value;
     }
+
+
 
     public void SetInteractionSprite(Sprite sprite)
     {
@@ -223,6 +230,8 @@ public class UIController : MonoBehaviour
 
         canInteract = false;
 
+        status.player.soundController.PlayClip(defaultClickAudioClip);
+
         if (skillsToHideAndShow.activeSelf == true)
         {
             CloseSkillsOptions();
@@ -266,10 +275,12 @@ public class UIController : MonoBehaviour
     }
 
     public void UpdateSkillImage(Skill skill)
-    { 
+    {
         skillIcon.sprite = skill.icon;
         status.input.selectedSkill = skill;
     }
+
+ 
 }
 
 

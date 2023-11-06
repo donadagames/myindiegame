@@ -7,7 +7,7 @@ public class Status : MonoBehaviour
     public static Status instance;
     public Camera mainCamera;
     public Player player;
-
+    public Inventory inventory;
     [HideInInspector] public List<Enemy> enemies = new List<Enemy>();
     [HideInInspector] public DialogueUI dialogueUI;
     [HideInInspector] public Quests quests;
@@ -30,11 +30,12 @@ public class Status : MonoBehaviour
         input = InputHandler.instance;
         dialogueUI = DialogueUI.instance;
         quests = Quests.instance;
+        inventory = Inventory.instance;
     }
 
     #region EVENTS
     #region SAFE ZONE EVENTS
-    [HideInInspector] public bool isSafeZone = true;
+    public bool isSafeZone = true;
 
     public event EventHandler<OnSafeZoneChangeEventHandler> OnSafeZoneChange;
 

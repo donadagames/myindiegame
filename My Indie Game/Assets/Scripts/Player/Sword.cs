@@ -4,7 +4,7 @@ public class Sword : MonoBehaviour
 {
     Player player;
     public bool shouldCheck = true;
-
+    public Color _color;
     private void Start()
     {
         player = GetComponentInParent<Player>();
@@ -28,7 +28,7 @@ public class Sword : MonoBehaviour
             if (damage > player.maxDamage * .70f && !enemy.isDamaged)
             {
                 enemy.TakeDamage(damage, true);
-                enemy.ui.DisplayDamageText(damage, Color.red);
+                enemy.ui.DisplayDamageText(damage, _color);
             }
 
             else

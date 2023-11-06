@@ -20,7 +20,6 @@ public class MagicAttack : IState
         inputHandler.hasPressedMagicAttackButton = false;
         nextAttackTime = inputHandler.MagicAttack();
         magicAttackTime = Time.time;
-
         status.ConsumeEnergy(inputHandler.selectedSkill.energyCost);
     }
 

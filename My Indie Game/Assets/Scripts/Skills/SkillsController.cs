@@ -5,8 +5,6 @@ public class SkillsController : MonoBehaviour, ISkillDamage
 {
     public Skill skill;
 
-  
-
     public virtual void SkillDamage(Enemy enemy)
     {
         if (enemy != null && enemy.isAlive)
@@ -15,16 +13,7 @@ public class SkillsController : MonoBehaviour, ISkillDamage
 
             var index = Random.Range(0, skill.hit_SFX.Length);
             enemy.audioSource.PlayOneShot(skill.hit_SFX[index]);
-
-            if (damage > skill.maxDamage * skill.criticalDamageFactor && !enemy.isDamaged)
-            {
-                enemy.TakeDamage(damage, true);
-            }
-
-            else
-            {
-                enemy.TakeDamage(damage, false);
-            }
+            enemy.TakeDamage(damage, true);
         }
     }
 

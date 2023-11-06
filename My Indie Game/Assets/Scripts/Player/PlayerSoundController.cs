@@ -23,6 +23,7 @@ public class PlayerSoundController : MonoBehaviour
     [Header("Skills")]
     [SerializeField] AudioClip fireballAudioClip;
     [SerializeField] AudioClip cureAudioClip;
+    [SerializeField] AudioClip blastAudioClip;
     [SerializeField] AudioClip iceAudioClip;
     [SerializeField] AudioClip speakFire;
     [SerializeField] AudioClip speakCure;
@@ -141,7 +142,7 @@ public class PlayerSoundController : MonoBehaviour
 
     public void BlastSound()
     {
-        audioSource.PlayOneShot(cureAudioClip);
+        audioSource.PlayOneShot(blastAudioClip);
     }
 
     public void StarfallSound()

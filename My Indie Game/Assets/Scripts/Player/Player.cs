@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     [HideInInspector] public AnimationController animations;
     [HideInInspector] public PlayerSoundController soundController;
 
+    public const float mass = 10;
+
     public InputHandler input;
 
     public GameObject handAxe;
@@ -153,5 +155,16 @@ public class Player : MonoBehaviour
         soundController.StarfallSound();
         Instantiate(input.selectedSkill.skill_VFX, transform.position, transform.rotation);
     }
+
+    public void OnParticleCollision(GameObject other)
+    {
+        var diamond = other.GetComponent<Diamond>();
+
+        if (diamond != null)
+        {
+            diamond.Interact(input.status.inventory, this);
+        }
+    }
+
     #endregion
 }

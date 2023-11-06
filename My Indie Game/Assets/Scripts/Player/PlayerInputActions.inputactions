@@ -15,6 +15,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "MouseWheel",
+                    "type": "Value",
+                    "id": "061c5c4b-1d55-4db5-94f7-c73d16e3e434",
+                    "expectedControlType": "Vector2",
+                    "processors": "StickDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "c7a82332-60b1-481b-bb76-910005b30c87",
@@ -24,9 +33,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Press",
+                    "name": "Interact",
                     "type": "Button",
-                    "id": "634c86d3-bd0c-4a16-9d28-f9277a51f17c",
+                    "id": "56385855-07c5-4c1e-804b-714d819aa735",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MeleeAttack",
+                    "type": "Button",
+                    "id": "bb427e82-3839-4167-b99e-a4e3f784167e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MagicAttack",
+                    "type": "Button",
+                    "id": "a5af1e4d-8a92-4b8b-95a6-104e565e67bf",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -122,23 +149,56 @@
                 },
                 {
                     "name": "",
-                    "id": "4a1ad93a-b7c6-4cd7-80aa-be4362e8f7fc",
-                    "path": "<Touchscreen>/Press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Press",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "47e19e6b-b004-40d1-a734-cefc3d355fb5",
                     "path": "<Touchscreen>/primaryTouch/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "ScreenPos",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2fcd6bdd-9462-496d-862e-10decd2dfba3",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c6da41b1-c5cf-44f8-9c66-d730ccf2e607",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MeleeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e5c122e8-f5a4-483d-ad11-dd7156529554",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MagicAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "49f1f0a2-05c6-4bb8-b28a-0f009e26616c",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "",
+                    "action": "MouseWheel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

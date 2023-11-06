@@ -21,6 +21,7 @@ public class SkillSlot : MonoBehaviour
         if (isAvailable == false) return;
 
         uiController.UpdateSkillImage(skill);
+        uiController.PlayDefaultAudioClip();
     }
 
     public void ReciveSkill(Skill _skill)

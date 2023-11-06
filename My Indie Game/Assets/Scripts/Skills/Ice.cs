@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Ice : SkillsController
 {
+    public Color _color;
     public override void SkillDamage(Enemy enemy)
     {
         if (enemy != null && enemy.isAlive)
@@ -14,7 +15,7 @@ public class Ice : SkillsController
             enemy.audioSource.PlayOneShot(skill.hit_SFX[index]);
             enemy.TakeDamage(damage, false);
             enemy.isFreezed = true;
-            enemy.ui.DisplayDamageText(damage, Color.blue);
+            enemy.ui.DisplayDamageText(damage, _color);
         }
     }
 }

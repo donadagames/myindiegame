@@ -3,13 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Skill/Skill")]
 public class Skill : ScriptableObject
 {
-    public string _name;
     public string animationClip;
     public float animationDuration;
     public Sprite icon;
     public float energyCost;
     public float healthRegenaration;
-    public float criticalDamageFactor;
     public float minDamage;
     public float maxDamage;
     public GameObject skill_VFX;

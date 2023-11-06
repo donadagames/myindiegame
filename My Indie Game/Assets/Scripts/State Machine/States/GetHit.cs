@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class GetHit : IState
 {
@@ -31,5 +32,14 @@ public class GetHit : IState
         {
             status.isDamaged = false;
         }
+
+        if (status.input.isHit)
+        {
+            if (status.input.impact.magnitude > 0.2F) 
+                status.player.characterController.Move(status.input.impact * Time.deltaTime);
+            // consumes the impact energy each cycle:
+            status.input.impact = Vector3.Lerp(status.input.impact, Vector3.zero, 5 * Time.deltaTime);
+        }
+
     }
 }

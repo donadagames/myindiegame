@@ -19,8 +19,6 @@ public class EnemyUI : MonoBehaviour
         cam = _enemy.spawner.status.mainCamera.transform;
     }
 
-
-
     public void DisplayDamageText(float damage, Color _color)
     {
         int _dmg = (int)damage;
@@ -33,15 +31,16 @@ public class EnemyUI : MonoBehaviour
         damageCanvasGroup.LeanAlpha(0, .5f);
 
         displayDamage.transform.LeanMoveLocalY
-            (displayDamage.transform.position.y + 100, .5f).
+            (displayDamage.transform.position.y + 80, .5f).
             setEase(LeanTweenType.easeOutBack).setOnComplete(OnCompleteDisplayDamageText);
     }
 
     private void OnCompleteDisplayDamageText()
     {
         displayDamage.SetActive(false);
+        _enemy.shouldCheckParticleHit = true;
         damageCanvasGroup.alpha = 1;
-        displayDamage.transform.localPosition = new Vector3(0, displayDamage.transform.localPosition.y - 100, 0);
+        displayDamage.transform.localPosition = new Vector3(0, displayDamage.transform.localPosition.y - 80, 0);
         _enemy.canGetHit = true;
     }
 

@@ -20,6 +20,7 @@ public class EnemyGetHit : IState
     {
         spawner.enemy.isDamaged = false;
         spawner.enemy.isOnFire = false;
+        spawner.enemy.isDizzy = false;
         spawner.enemy.isFreezed = false;
         spawner.enemy.shouldCheckParticleHit = true;
         spawner.enemy.onFire_VFX.SetActive(false);
