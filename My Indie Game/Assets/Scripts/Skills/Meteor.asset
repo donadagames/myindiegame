@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5a5ad708c00db429bc221a0e90873f, type: 3}
+  m_Name: Meteor
+  m_EditorClassIdentifier: 
+  animationClip: Meteor
+  animationDuration: 1.667
+  icon: {fileID: 21300000, guid: c817aa34fd12640a982c59cf0db24eed, type: 3}
+  energyCost: 50
+  healthRegenaration: 0
+  minDamage: 50
+  maxDamage: 100
+  skill_VFX: {fileID: 1135581048890362, guid: 9fac195ef94109246bdeb29d75467e8d, type: 3}
+  enemy_Hit_VFX: {fileID: 1850291782047516, guid: 39e6808e995d14e46aae8b87bde2a278,
+    type: 3}
+  hit_SFX:
+  - {fileID: 8300000, guid: d225dd6977762914eb4c2f2d759a00ec, type: 3}
+  - {fileID: 8300000, guid: 18c221185332cd54f98cb2279699c4c3, type: 3}
+  - {fileID: 8300000, guid: 45747a6fa57b898449e665179660ef86, type: 3}
+  - {fileID: 8300000, guid: c2bd0f1662f996b4da08826a51b3b370, type: 3}
+  index: 0
+  time: 0

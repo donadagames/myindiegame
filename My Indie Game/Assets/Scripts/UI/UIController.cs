@@ -2,11 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Cinemachine;
-using Unity.VisualScripting;
-using System.Runtime.CompilerServices;
 using static UnityEngine.Rendering.DebugUI;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
 
 public class UIController : MonoBehaviour
 {
@@ -35,7 +31,7 @@ public class UIController : MonoBehaviour
     private int leanIndex;
     private int leandDefaultIndex;
     public Image fillMagicTimer;
-
+    public Image fillMountTimer;
     [SerializeField] Transform fireballBtn;
     [SerializeField] Transform cureBtn;
     [SerializeField] Transform blastBtn;
@@ -45,6 +41,24 @@ public class UIController : MonoBehaviour
     [SerializeField] Transform skillArrow;
     [SerializeField] GameObject skillsToHideAndShow;
     public bool canInteract = true;
+
+    [SerializeField] HorizontalLayoutGroup downLayoutGroup;
+    [SerializeField] HorizontalLayoutGroup upLayoutGroup;
+
+    [SerializeField] VerticalLayoutGroup uiBarsLayoutGroup;
+    [SerializeField] VerticalLayoutGroup itensPanelLayoutGroup;
+
+    [SerializeField] VerticalLayoutGroup rightJoystickLayoutGroup;
+    [SerializeField] HorizontalLayoutGroup leftJoystickLayoutGroup;
+
+    [SerializeField] RectTransform meleeAttackBtn;
+    [SerializeField] Transform magicAttackBtn;
+    [SerializeField] Transform animalInteractionBtn;
+    [SerializeField] Transform interactBtn;
+    [SerializeField] Transform skillArrowBtn;
+
+    private int mountLeanIndex;
+
 
     private void Awake()
     {
@@ -75,7 +89,7 @@ public class UIController : MonoBehaviour
 
         zoomSlider.value = zoomSlider.maxValue;
         body.m_CameraDistance = zoomSlider.value;
-        virtualCamera.transform.eulerAngles = new Vector3 (zoomSlider.value * 5, 0, 0);
+        virtualCamera.transform.eulerAngles = new Vector3(zoomSlider.value * 5, 0, 0);
     }
     public void PlayDefaultAudioClip() => status.player.soundController.PlayClip(defaultClickAudioClip);
 
@@ -177,7 +191,86 @@ public class UIController : MonoBehaviour
         zoomSlider.value = value;
     }
 
+    public void SetCameraTarget(Transform target)
+    {
+        virtualCamera.Follow = target;
+    }
 
+
+    public void SetLeftControlsConfigurations()
+    {
+        downLayoutGroup.reverseArrangement = false;
+        downLayoutGroup.childAlignment = TextAnchor.LowerLeft;
+
+        upLayoutGroup.reverseArrangement = false;
+        upLayoutGroup.childAlignment = TextAnchor.UpperLeft;
+
+        uiBarsLayoutGroup.childAlignment = TextAnchor.MiddleLeft;
+        uiBarsLayoutGroup.padding.right = 200;
+        uiBarsLayoutGroup.transform.localEulerAngles = new Vector3(0, 0, 0);
+        itensPanelLayoutGroup.childAlignment = TextAnchor.MiddleRight;
+
+        leftJoystickLayoutGroup.childAlignment = TextAnchor.LowerLeft;
+        rightJoystickLayoutGroup.childAlignment = TextAnchor.LowerRight;
+        rightJoystickLayoutGroup.padding = new RectOffset(390, 75, 0, 20);
+        rightJoystickLayoutGroup.transform.eulerAngles = new Vector3(0, 0, 0);
+
+        meleeAttackBtn.localEulerAngles = new Vector3(0, 0f, 0);
+        magicAttackBtn.localEulerAngles = new Vector3(0, 0, 0);
+        animalInteractionBtn.localEulerAngles = new Vector3(0, 0, 0);
+        interactBtn.localEulerAngles = new Vector3(0, 0, 0);
+
+        skillArrowBtn.localEulerAngles = new Vector3(0, 0, 0);
+        fireballBtn.localEulerAngles = new Vector3(0, 0, 0);
+        cureBtn.localEulerAngles = new Vector3(0, 0, 0);
+        blastBtn.localEulerAngles = new Vector3(0, 0, 0);
+        iceBtn.localEulerAngles = new Vector3(0, 0, 0);
+        starfallBtn.localEulerAngles = new Vector3(0, 0, 0);
+
+        skillArrowBtn.localPosition = new Vector3(-35, 0, 0);
+        skillsToHideAndShow.transform.localEulerAngles = new Vector3(0, 0, 0);
+        skillsToHideAndShow.transform.localPosition = new Vector3(-220, 40, 0);
+
+        level.transform.localEulerAngles = new Vector3(0, 0, 0);
+
+    }
+
+    public void SetRightControlsConfigurations()
+    {
+        downLayoutGroup.reverseArrangement = true;
+        downLayoutGroup.childAlignment = TextAnchor.LowerLeft;
+
+        upLayoutGroup.reverseArrangement = true;
+        upLayoutGroup.childAlignment = TextAnchor.UpperLeft;
+
+        uiBarsLayoutGroup.childAlignment = TextAnchor.MiddleRight;
+        uiBarsLayoutGroup.padding.right = 1540;
+        uiBarsLayoutGroup.transform.localEulerAngles = new Vector3(0, 180, 0);
+        itensPanelLayoutGroup.childAlignment = TextAnchor.MiddleLeft;
+
+        leftJoystickLayoutGroup.childAlignment = TextAnchor.LowerRight;
+        rightJoystickLayoutGroup.childAlignment = TextAnchor.LowerRight;
+        rightJoystickLayoutGroup.padding = new RectOffset(1258, -836, 0, 20);
+        rightJoystickLayoutGroup.transform.eulerAngles = new Vector3(0, 180, 0);
+
+        meleeAttackBtn.localEulerAngles = new Vector3(0, 180f, 0);
+        magicAttackBtn.localEulerAngles = new Vector3(0, 180, 0);
+        animalInteractionBtn.localEulerAngles = new Vector3(0, 180, 0);
+        interactBtn.localEulerAngles = new Vector3(0, 180, 0);
+
+        skillArrowBtn.localEulerAngles = new Vector3(0, 180, 0);
+        fireballBtn.localEulerAngles = new Vector3(0, 180, 0);
+        cureBtn.localEulerAngles = new Vector3(0, 180, 0);
+        blastBtn.localEulerAngles = new Vector3(0, 180, 0);
+        iceBtn.localEulerAngles = new Vector3(0, 180, 0);
+        starfallBtn.localEulerAngles = new Vector3(0, 180, 0);
+        skillArrowBtn.localPosition = new Vector3(40, 0, 0);
+        skillsToHideAndShow.transform.localEulerAngles = new Vector3(0, 180, 0);
+        skillsToHideAndShow.transform.localPosition = new Vector3(365, 40, 0);
+
+        level.transform.localEulerAngles = new Vector3(0, 180, 0);
+
+    }
 
     public void SetInteractionSprite(Sprite sprite)
     {
@@ -216,7 +309,6 @@ public class UIController : MonoBehaviour
         var value = LeanTween.value(gameObject, 1, 0, .25f).setOnUpdate(UpdateFillImage).setOnComplete(() =>
         LeanTween.value(gameObject, 0, 1, skill.time).setOnUpdate(UpdateFillImage).setOnComplete(() =>
         status.input.hasCompletedMagicTimer = true));
-
     }
 
     private void UpdateFillImage(float value)
@@ -242,6 +334,92 @@ public class UIController : MonoBehaviour
             OpenSkillsOptions();
         }
     }
+
+    public void DealMountTimer()
+    {
+        status.input.hasCompletedMountTimer = false;
+
+        var value = LeanTween.value(1, 0, .25f).setOnUpdate(UpdateMountFillImage).setOnComplete(DealMount);
+    }
+
+    private void DealMount()
+    {
+
+        var call = LeanTween.value(0, 1, 10).setOnUpdate(UpdateMountFillImage).setOnComplete(OnCompleteMountTimer);
+        status.input.isMounted = true;
+    }
+
+    private void UpdateMountFillImage(float value)
+    {
+        fillMountTimer.fillAmount = value;
+    }
+
+
+    public void Dismount()
+    {
+        LeanTween.cancelAll(false);
+        OnCompleteMountTimer();
+    }
+
+    private void OnCompleteMountTimer()
+    {
+        status.player = status.lili;
+        Instantiate(status.pet.mount_VFX, status.player.transform.position, Quaternion.identity);
+
+        status.player.soundController.FireballSound();
+
+        status.pet.transform.position = status.player.transform.position + new Vector3(Random.Range(1.5f, 2.5f), 0, Random.Range(-2.5f, -1.5f));
+        status.pet.gameObject.SetActive(true);
+        status.pet.hasInteract = false;
+
+        Destroy(status.mount.gameObject);
+        status.mount = null;
+        status.mountTransform = null;
+        status.input.isMounting = false;
+        status.input.isMounted = false;
+
+        if (status.isSafeZone == false)
+        {
+            status.player.SetSwordAndShieldConfiguration();
+        }
+        else
+        {
+            status.player.SetUnarmedConfiguration();
+
+        }
+
+        status.uiController.SetCameraTarget(status.player.transform);
+
+        if (status.isSafeZone == true)
+        {
+            status.player.animations.animator.Play("Dismounting_NoWeapon");
+        }
+
+        else
+        {
+            status.player.animations.animator.Play("Dismounting_SwordAndShield");
+        }
+
+        if (status.input.input.magnitude > 0)
+        {
+            status.player.animations.animator.SetBool("IsMoving", true);
+        }
+        else
+        {
+            status.player.animations.animator.SetBool("IsMoving", false);
+        }
+
+        status.player.transform.SetParent(null);
+        DealMountWaitingTime();
+
+    }
+
+    private void DealMountWaitingTime()
+    {
+        var value = LeanTween.value(gameObject, 1, 0, .25f).setOnUpdate(UpdateMountFillImage).setOnComplete(() =>
+            LeanTween.value(gameObject, 0, 1, 120).setOnUpdate(UpdateMountFillImage).setOnComplete(() => status.input.hasCompletedMountTimer = true));
+    }
+
 
     private void OpenSkillsOptions()
     {
@@ -280,7 +458,7 @@ public class UIController : MonoBehaviour
         status.input.selectedSkill = skill;
     }
 
- 
+
 }
 
 

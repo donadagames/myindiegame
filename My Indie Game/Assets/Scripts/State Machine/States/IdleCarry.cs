@@ -1,12 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class IdleGrounded : IState
+public class IdleCarry : IState
 {
-    private readonly InputHandler inputHandler;
     private readonly Status status;
+    private readonly InputHandler inputHandler;
+
     private float fallTime;
     private bool shouldCheckFalling = true;
-    public IdleGrounded(Status _status, InputHandler _inputHandler)
+
+    public IdleCarry(Status _status, InputHandler _inputHandler)
     {
         status = _status;
         inputHandler = _inputHandler;
@@ -18,33 +22,21 @@ public class IdleGrounded : IState
         status.player.sword.shouldCheck = false;
         inputHandler.hasEndedLanding = false;
         shouldCheckFalling = true;
-
-        if (inputHandler.isCarrying)
-        {
-            status.player.animations.animator.Play("CarryMoveIdle");
-        }
-
-        else
-        {
-            status.player.animations.PlayAnimation(status.player.animations.IDLE,
-               status.isSafeZone);
-        }
-
+        status.player.animations.animator.Play("CarryMoveIdle");
     }
 
     public void OnExit()
     {
-        return;
+        inputHandler.hasPressedJumpButton = false;
+        inputHandler.jumpCount = 0;
     }
 
     public void Tick()
     {
         inputHandler.GetDirection();
-        inputHandler.ApplyGravity();
-        //ApplyRotation();
-        // ApplyMovement();
-        //inputHandler.SearchForEnemySpawner();
-        //CheckIfIsFalling();
+        inputHandler.ApplyAllMovement();
+        inputHandler.SearchForEnemySpawner();
+        CheckIfIsFalling();
     }
 
     void CheckIfIsFalling()

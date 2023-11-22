@@ -25,11 +25,13 @@ public class PlayerSoundController : MonoBehaviour
     [SerializeField] AudioClip cureAudioClip;
     [SerializeField] AudioClip blastAudioClip;
     [SerializeField] AudioClip iceAudioClip;
+    [SerializeField] AudioClip meteoreAudioClip;
     [SerializeField] AudioClip speakFire;
-    [SerializeField] AudioClip speakCure;
+    [SerializeField] AudioClip[] speakCure;
+    [SerializeField] AudioClip speakBurn;
     [SerializeField] AudioClip[] speakIce;
     [SerializeField] AudioClip[] speaklevelUp;
-
+    [SerializeField] AudioClip[] healdAudioClips;
     private void Start()
     {
         inputHandler = InputHandler.instance;
@@ -147,7 +149,7 @@ public class PlayerSoundController : MonoBehaviour
 
     public void StarfallSound()
     {
-        audioSource.PlayOneShot(cureAudioClip);
+        audioSource.PlayOneShot(meteoreAudioClip);
     }
 
     public void SpeakFire()
@@ -157,7 +159,18 @@ public class PlayerSoundController : MonoBehaviour
 
     public void SpeakCure()
     {
-        audioSource.PlayOneShot(speakCure);
+        audioSource.PlayOneShot(GetRandomAudioClip(speakCure));
+    }
+
+    public void HealingSound()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(healdAudioClips));
+    }
+
+
+    public void SpeakBurne()
+    {
+        audioSource.PlayOneShot(speakBurn);
     }
 
     public void SpeakIce()

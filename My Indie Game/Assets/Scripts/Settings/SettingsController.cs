@@ -77,6 +77,12 @@ public class SettingsController : MonoBehaviour
     [SerializeField] GameObject otherGamesPanel;
     [SerializeField] TextMeshProUGUI otherGamesTitleText;
 
+    [SerializeField] TextMeshProUGUI leftText;
+    [SerializeField] TextMeshProUGUI rightText;
+    [SerializeField] Image leftArrow;
+    [SerializeField] Image rightArrow;
+    [SerializeField] TextMeshProUGUI controllsText;
+
     [HideInInspector] public UIController uiController;
 
     private bool isPortuguese = false;
@@ -250,6 +256,34 @@ public class SettingsController : MonoBehaviour
         OnLanguageChanged?.Invoke(this, new OnLanguageChangeEventHandler { _isPortuguese = isPortuguese });
     }
 
+
+    public void OnLeftControllPressed()
+    {
+        uiController.PlayDefaultAudioClip();
+
+        leftArrow.color = flagColors[0];
+        rightArrow.color = flagColors[1];
+
+        leftText.color = flagTextColors[0];
+        rightText.color = flagTextColors[1];
+
+        uiController.SetLeftControlsConfigurations();
+    }
+
+    public void OnRightControllPressed()
+    {
+        uiController.PlayDefaultAudioClip();
+
+        leftArrow.color = flagColors[1];
+        rightArrow.color = flagColors[0];
+
+        leftText.color = flagTextColors[1];
+        rightText.color = flagTextColors[0];
+
+        uiController.SetRightControlsConfigurations();
+    }
+
+
     public void OnFollowPressed()
     {
         uiController.PlayDefaultAudioClip();
@@ -352,9 +386,13 @@ public class SettingsController : MonoBehaviour
 
             creditsTitleText.text = "Creditos";
             leftCreditsText.text = "<uppercase><size=40><color=#F6E19C>Gráficos</color></uppercase></size><color=white>\r\n\r\nArt by Kandles (artbykandles.com)\r\nBorodar (borodar.com)\r\nBroken Vector (brokenvector.com)\r\nDungeon Mason (alexkim0415.wixsite.com/dungeonmason)\r\nEmacEArt (www.emaceart.com)\r\nCreativetrio (creativetrio.art)\r\nInfinity PBR (infinitypbr.com)\r\nJean Moreno (jeanmoreno.com)\r\nLayer Lab (layerlabgames.com)\r\nMalbers Animations (malbersanimations.artstation.com)\r\nMeshtint Studio (meshtint.com)\r\nOMABUARTS STUDIO (www.omabuarts.com)\r\nRetroVistas (artstation.com/ramonavladut)\r\nRunemark Studio (runemarkstudio.com)\r\nSynty Studios (syntystudios.com)\r\n";
-            rightCreditsText.text = "<uppercase><size=40><color=#F6E19C>Efeitos Sonoros e Áudio</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>Ferramentas</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
+            rightCreditsText.text = "<uppercase><size=40><color=#F6E19C>Efeitos Sonoros e Áudio</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nCicifyre (cicifyre.carrd.co)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>Ferramentas</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
 
             otherGamesTitleText.text = "Outros Jogos";
+
+            leftText.text = "Esquerda";
+            rightText.text = "Direita";
+            controllsText.text = "Controles";
         }
 
         else
@@ -376,10 +414,13 @@ public class SettingsController : MonoBehaviour
 
             creditsTitleText.text = "Credits";
             leftCreditsText.text = "<uppercase><size=40><color=#F6E19C>Graphics</color></uppercase></size><color=white>\r\n\r\nArt by Kandles (artbykandles.com)\r\nBorodar (borodar.com)\r\nBroken Vector (brokenvector.com)\r\nDungeon Mason (alexkim0415.wixsite.com/dungeonmason)\r\nEmacEArt (www.emaceart.com)\r\nCreativetrio (creativetrio.art)\r\nInfinity PBR (infinitypbr.com)\r\nJean Moreno (jeanmoreno.com)\r\nLayer Lab (layerlabgames.com)\r\nMalbers Animations (malbersanimations.artstation.com)\r\nMeshtint Studio (meshtint.com)\r\nOMABUARTS STUDIO (www.omabuarts.com)\r\nRetroVistas (artstation.com/ramonavladut)\r\nRunemark Studio (runemarkstudio.com)\r\nSynty Studios (syntystudios.com)\r\n";
-            rightCreditsText.text = "<uppercase><size=40><color=#F6E19C>Sound Effects and Audio</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>Tools</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
+            rightCreditsText.text = "<uppercase><size=40><color=#F6E19C>Sound Effects and Audio</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nCicifyre (cicifyre.carrd.co)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>Tools</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
 
             otherGamesTitleText.text = "Other Games";
 
+            leftText.text = "Left";
+            rightText.text = "Right";
+            controllsText.text = "Controls";
         }
     }
 

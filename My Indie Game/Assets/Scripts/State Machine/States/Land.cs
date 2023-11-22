@@ -17,6 +17,7 @@ public class Land : IState
     {
         landTime = Time.time;
         inputHandler.hasEndedLanding = false;
+        inputHandler.SearchForInteractables();
 
         inputHandler.LandPuff();
         status.player.animations.PlayAnimation(status.player.animations.LAND,

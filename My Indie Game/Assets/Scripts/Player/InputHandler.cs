@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -20,12 +21,16 @@ public class InputHandler : MonoBehaviour
     [SerializeField] LayerMask interactablesLayer;
     [SerializeField] LayerMask enemySpawnerLayer;
 
+    [SerializeField] AudioClip wrongAudioClip;
+
+    public bool isMounting = false;
+
     public Status status;
 
-    private Vector2 input = new Vector2();
+    public Vector2 input = new Vector2();
 
     private const float GRAVITY = -9.8f;
-    private float velocity;
+    public float velocity;
     private float currentVelocity;
 
     [HideInInspector] public Interactable interactable;
@@ -34,26 +39,34 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public bool isFalling = false;
     [HideInInspector] public bool canMeleeAttack = true;
     [HideInInspector] public bool canMagicAttack = true;
+    [HideInInspector] public bool canMount = true;
     [HideInInspector] public bool headIsOnWater = false;
     [HideInInspector] public bool footIsOnWater = false;
     [HideInInspector] public bool isInteracting = false;
     [HideInInspector] public bool isChatting;
     [HideInInspector] public bool isDizzy;
     [HideInInspector] public bool isHit;
+    [HideInInspector] public bool isMounted = false;
     [HideInInspector] public bool hasPressedJumpButton = false;
     [HideInInspector] public bool hasPressedMeleeAttackButton = false;
     [HideInInspector] public bool hasPressedMagicAttackButton = false;
     [HideInInspector] public bool hasEndedLanding = false;
-    public bool hasCompletedMagicTimer = true;
-
+    [HideInInspector] public bool isPushing = false;
+    [HideInInspector] public bool hasCompletedMagicTimer = true;
+    [HideInInspector] public bool hasCompletedMountTimer = true;
+    [HideInInspector] public bool isCarrying = false;
+    [HideInInspector] public bool isOnPlatform = false;
     [HideInInspector] public Vector3 impact = Vector3.zero;
 
     [HideInInspector] public StateMachine stateMachine;
     [HideInInspector] public PlayerInputActions playerInputActions;
-    [HideInInspector] public Vector3 direction = new Vector3();
     [HideInInspector] public int jumpCount = 0;
 
+    [HideInInspector] public CarryObject carryObject;
+    public Transform platform;
+
     public Skill selectedSkill;
+    public Vector3 direction = new Vector3();
 
     public void SearchForEnemySpawner()
     {
@@ -72,7 +85,9 @@ public class InputHandler : MonoBehaviour
         {
             if (HasInteractable())
             {
-                interactable = CheckForInteractable()[0].GetComponentInParent<Interactable>();
+                var _interactable = CheckForInteractable()[0].GetComponentInParent<Interactable>();
+
+                interactable = _interactable;
                 interactable.OnEnter();
             }
         }
@@ -100,6 +115,7 @@ public class InputHandler : MonoBehaviour
         else
             instance = this;
 
+        isMounting = false;
         playerInputActions = new PlayerInputActions();
         playerInputActions.Enable();
 
@@ -110,7 +126,7 @@ public class InputHandler : MonoBehaviour
         playerInputActions.Player.MouseWheel.performed += MouseWheel;
 
 
-
+        var mount = new Mount(status, this);
         var idle =
             new IdleGrounded(status, this);
         var moving =
@@ -119,8 +135,7 @@ public class InputHandler : MonoBehaviour
             new JumpingInPlace(status, this);
         var jumpMoving =
             new JumpingMoving(status, this);
-        var doubleJumpig =
-            new DoubleJumpig(status, this);
+        //var doubleJumpig = new DoubleJumpig(status, this);
         var landing =
             new Land(status, this);
         var falling =
@@ -139,10 +154,13 @@ public class InputHandler : MonoBehaviour
             new GetHit(status);
         var die = new Die(status, this);
         var levelUp = new LevelUp(status, this);
-
         var interacting = new Interacting(status, this);
-
+        var dismount = new Dismount(status, this);
         var chatting = new Chat(status, this);
+        var pushing = new Pushing(status, this);
+        //var idleCarry = new IdleCarry(status, this);
+        //var moveingCarry = new MovingCarry(status, this);
+
 
         stateMachine = new StateMachine();
 
@@ -154,7 +172,7 @@ public class InputHandler : MonoBehaviour
         AddTransition
             (idle, moving, PlayerHasMovementInput());
         AddTransition
-            (idle, jumpInPlace, ShouldJump());
+            (idle, jumpInPlace, () => ShouldJump());
         AddTransition
             (idle, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
         AddTransition
@@ -166,7 +184,7 @@ public class InputHandler : MonoBehaviour
         AddTransition
             (moving, idle, PlayerHasNoMovementInput());
         AddTransition
-            (moving, jumpMoving, ShouldJump());
+            (moving, jumpMoving, () => ShouldJump());
         AddTransition
             (moving, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
         AddTransition
@@ -176,17 +194,12 @@ public class InputHandler : MonoBehaviour
         AddTransition
             (moving, swimming, () => headIsOnWater && input.sqrMagnitude > 0);
 
-
         AddTransition
             (jumpInPlace, idle, () => IsGrounded() && jumpCount == 0);
-        AddTransition
-            (jumpInPlace, doubleJumpig, ShouldDoubleJump());
-
 
         AddTransition
             (jumpMoving, idle, ShouldLandIdle());
-        AddTransition
-            (jumpMoving, doubleJumpig, ShouldDoubleJump());
+
         AddTransition
              (jumpMoving, moving, ShouldLandInMovement());
         AddTransition
@@ -194,6 +207,13 @@ public class InputHandler : MonoBehaviour
 
         AddTransition
              (jumpMoving, falling, () => jumpCount == 0 && !IsGrounded() && !headIsOnWater && !footIsOnWater);
+
+        /*
+        AddTransition
+            (jumpInPlace, doubleJumpig, ShouldDoubleJump());
+
+        AddTransition
+            (jumpMoving, doubleJumpig, ShouldDoubleJump());
 
         AddTransition
             (doubleJumpig, idle, () => input.sqrMagnitude <= 0 &&
@@ -204,6 +224,7 @@ public class InputHandler : MonoBehaviour
             (doubleJumpig, falling, () => jumpCount == 0 && !IsGrounded() && !headIsOnWater && !footIsOnWater);
         AddTransition
             (doubleJumpig, landOnWater, () => headIsOnWater);
+        */
 
         AddTransition
             (falling, landing, ShouldLand());
@@ -244,7 +265,15 @@ public class InputHandler : MonoBehaviour
            () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
 
         stateMachine.AddAnyTransition(die, () => !status.isAlive);
-        stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged && canMagicAttack);
+        stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged && canMagicAttack && !isInteracting);
+
+        AddTransition(idle, mount, () => status.isAlive && isMounting);
+        AddTransition(moving, mount, () => status.isAlive && isMounting);
+
+        AddTransition(idle, pushing, () => status.isAlive && isPushing);
+        AddTransition(moving, pushing, () => status.isAlive && isPushing);
+
+        AddTransition(pushing, idle, () => status.isAlive && !isPushing);
 
         AddTransition(getHit, idle, () => status.isAlive && !status.isDamaged);
 
@@ -261,18 +290,25 @@ public class InputHandler : MonoBehaviour
         AddTransition(magicAttack, moving,
            () => IsGrounded() && input.sqrMagnitude > 0 && canMagicAttack == true);
 
+        AddTransition(mount, idle, () => !isMounting);
+
+        //AddTransition(interacting, idleCarry, () => isCarrying && !isInteracting);
+        // AddTransition
+        //     (idleCarry, moving, PlayerHasMovementInput());
+        ////AddTransition
+        //  (moving, idleCarry, PlayerHasNoMovementInputAndIsCarrying());
+
         Func<bool> PlayerHasMovementInput() => () =>
         input.sqrMagnitude > 0;
         Func<bool> PlayerHasNoMovementInput() => () =>
-        input.sqrMagnitude <= 0;
-        Func<bool> ShouldJump() => () =>
-        IsGrounded() && hasPressedJumpButton && jumpCount == 0 && !status.dialogueUI.isOpen;
+        input.sqrMagnitude <= 0;// && !isCarrying;
+        //Func<bool> PlayerHasNoMovementInputAndIsCarrying() => () =>
+        //input.sqrMagnitude <= 0 && isCarrying;
 
         Func<bool> ShouldLandIdle() => () =>
         IsGrounded() && jumpCount == 0 && input.sqrMagnitude <= 0
         || IsGrounded() && input.sqrMagnitude <= 0;
-        Func<bool> ShouldDoubleJump() => () =>
-        hasPressedJumpButton && jumpCount == 1 && !status.dialogueUI.isOpen;
+        //Func<bool> ShouldDoubleJump() => () => hasPressedJumpButton && jumpCount == 1 && !status.dialogueUI.isOpen;
         Func<bool> ShouldLandInMovement() => () => input.sqrMagnitude > 0 &&
         IsGrounded() && jumpCount == 0 || input.sqrMagnitude > 0 && IsGrounded();
         Func<bool> ShouldLand() => () => IsGrounded() && jumpCount == 0 && !headIsOnWater;
@@ -285,12 +321,12 @@ public class InputHandler : MonoBehaviour
         stateMachine.SetState(idle);
     }
 
+    public bool ShouldJump() =>
+      IsGrounded() && hasPressedJumpButton && jumpCount == 0 && !status.dialogueUI.isOpen;
+
     private void Start()
     {
         status.OnSafeZoneChange += OnSafeZoneChanged;
-
-
-
     }
 
     private void Update()
@@ -313,8 +349,20 @@ public class InputHandler : MonoBehaviour
 
     public void ApplyMovement()
     {
-        status.player.characterController.Move(direction *
+            status.player.characterController.Move(direction *
             status.player.moveSpeed *
+            Time.deltaTime);
+    }
+
+    public void GetDirectionInputForPush(Vector3 side)
+    {
+        direction = side;
+    }
+
+    public void ApplyPushingMovement()
+    {
+        status.player.characterController.Move(direction *
+            (status.player.moveSpeed / 6) *
             Time.deltaTime);
     }
 
@@ -344,6 +392,12 @@ public class InputHandler : MonoBehaviour
         ApplyMovement();
     }
 
+    public void ApplyAllMovementForPushing()
+    {
+        ApplyGravity();
+        ApplyPushingMovement();
+    }
+
     public void DetectWater()
     {
         headIsOnWater = CheckHeadWater();
@@ -352,6 +406,7 @@ public class InputHandler : MonoBehaviour
 
     public void ApplyGravity()
     {
+
         if (IsGrounded() && velocity < 0.0f)
             velocity = -10;
 
@@ -412,9 +467,13 @@ public class InputHandler : MonoBehaviour
 
     public void JumpButton()
     {
-        if (jumpCount == 0 || jumpCount == 1)
+        if (jumpCount == 0 && !isCarrying && !isPushing || jumpCount == 1 && !isCarrying && !isPushing)
             hasPressedJumpButton = true;
-        else return;
+        else
+        {
+            status.player.soundController.PlayClip(wrongAudioClip);
+            return;
+        }
     }
 
     private void PlayerJump(InputAction.CallbackContext callback)
@@ -424,7 +483,13 @@ public class InputHandler : MonoBehaviour
 
     public void MeleeAttackButton()
     {
-        if (canMeleeAttack == false) return;
+        if (canMeleeAttack == false || isCarrying || isPushing)
+
+        {
+            status.player.soundController.PlayClip(wrongAudioClip);
+            return;
+        }
+
         canMeleeAttack = true;
         hasPressedMeleeAttackButton = true;
     }
@@ -450,7 +515,12 @@ public class InputHandler : MonoBehaviour
 
     public void MagicAttackButton()
     {
-        if (canMagicAttack == false || status.currentEnergy < selectedSkill.energyCost || hasCompletedMagicTimer == false) return;
+        if (canMagicAttack == false || status.currentEnergy < selectedSkill.energyCost || hasCompletedMagicTimer == false || isCarrying || isPushing || isMounted)
+
+        {
+            status.player.soundController.PlayClip(wrongAudioClip);
+            return;
+        }
 
         else
         {
@@ -473,14 +543,59 @@ public class InputHandler : MonoBehaviour
 
     public void InteractButton()
     {
-        if (interactable == null) return;
-        interactable.Interact();
+        if (interactable == null || interactable.isPet == true || isPushing || isMounted)
+
+        {
+            status.player.soundController.PlayClip(wrongAudioClip);
+            return;
+        }
+
+        if (isCarrying)
+        {
+            ThrowObjectSpot spot = interactable.GetComponent<ThrowObjectSpot>();
+            if (spot != null)
+            {
+
+                interactable.Interact();
+            }
+        }
+
+        else
+        {
+            interactable.Interact();
+        }
+
     }
 
     private void PlayerInteract(InputAction.CallbackContext callback)
     {
         InteractButton();
     }
+
+    public void AnimalMountButton()
+    {
+        if (isMounted)
+        {
+            status.uiController.Dismount();
+            return;
+        }
+
+        if (canMount = false || interactable == null || interactable.isPet != true || hasCompletedMountTimer == false || isCarrying)
+        {
+            status.player.soundController.PlayClip(wrongAudioClip);
+            return;
+        }
+
+        canMount = false;
+        interactable.Interact();
+        status.uiController.DealMountTimer();
+    }
+
+    private void PlayerAnimalMount(InputAction.CallbackContext callback)
+    {
+        AnimalMountButton();
+    }
+
 
     Vector3 _newZoomPos = new Vector3();
 

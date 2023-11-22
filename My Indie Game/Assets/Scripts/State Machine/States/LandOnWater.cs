@@ -12,6 +12,8 @@ public class LandOnWater : IState
     {
         inputHandler.Splash();
         status.player.soundController.SplashSound();
+        inputHandler.SearchForInteractables();
+
     }
 
 

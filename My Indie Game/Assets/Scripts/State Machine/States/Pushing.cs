@@ -1,12 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Interacting : IState
+public class Pushing : IState
 {
     private readonly InputHandler inputHandler;
     private readonly Status status;
     private float clipDuration;
     private float time;
-    public Interacting(Status _status, InputHandler _inputHandler)
+    public Pushing(Status _status, InputHandler _inputHandler)
     {
         status = _status;
         inputHandler = _inputHandler;
@@ -17,36 +19,29 @@ public class Interacting : IState
         status.player.sword.shouldCheck = false;
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
+        inputHandler.GetDirectionInputForPush(inputHandler.interactable.side);
+        status.player.SetUnarmedConfiguration();
         inputHandler.canMount = false;
-        inputHandler.canMeleeAttack = false;
-        inputHandler.canMagicAttack = false;
-
-
-        var index = inputHandler.interactable.interactionIndex;
-        clipDuration = status.player.animations.interactionsClipsDurations[index];
-        status.player.animations.animator.Play
-            (status.player.animations.INTERACT[index]);
+        clipDuration = (1.667f*2);
+        status.player.animations.animator.Play("Push");
         inputHandler.stateMachine.shouldChange = false;
     }
 
     public void OnExit()
     {
+        inputHandler.interactable.hasInteract = false;
+        inputHandler.interactable.transform.SetParent(null);
         inputHandler.hasPressedJumpButton = false;
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
         inputHandler.hasPressedMeleeAttackButton = false;
         inputHandler.hasPressedMagicAttackButton = false;
-
-        inputHandler.canMount = true;
-        inputHandler.canMeleeAttack = true;
-        inputHandler.canMagicAttack = true;
-
-        if (inputHandler.interactable.item != null)
-            inputHandler.interactable.GiveItem();
-
         inputHandler.interactable = null;
+        inputHandler.canMount = true;
 
-        if (status.isSafeZone || inputHandler.isCarrying)
+
+
+        if (status.isSafeZone)
         {
             status.player.SetUnarmedConfiguration();
         }
@@ -59,13 +54,12 @@ public class Interacting : IState
 
     public void Tick()
     {
-        if (!inputHandler.isCarrying)
-            inputHandler.FaceTarget(inputHandler.interactable.transform);
+        inputHandler.ApplyAllMovementForPushing();
+        inputHandler.SearchForEnemySpawner();
 
         if (Time.time > time + (clipDuration * inputHandler.interactable.repetitions))
         {
-            inputHandler.isInteracting = false;
+            inputHandler.isPushing = false;
         }
     }
-
 }

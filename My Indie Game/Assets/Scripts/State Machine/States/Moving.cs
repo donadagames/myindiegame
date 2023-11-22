@@ -18,9 +18,21 @@ public class Moving : IState
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
         shouldCheckFalling = true;
-        status.player.animations.PlayAnimation(status.player.animations.MOVE,
-            status.isSafeZone);
+
         inputHandler.stateMachine.shouldChange = false;
+
+        if (inputHandler.isCarrying)
+        {
+            status.player.animations.animator.Play(
+                "CarryMoving");
+        }
+
+        else
+        {
+            status.player.animations.PlayAnimation(status.player.animations.MOVE,
+                status.isSafeZone);
+        }
+
     }
 
     public void OnExit()

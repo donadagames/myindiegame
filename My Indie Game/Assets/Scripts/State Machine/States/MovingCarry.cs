@@ -1,12 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class JumpingInPlace : IState
+public class MovingCarry : IState
 {
     private readonly Status status;
     private readonly InputHandler inputHandler;
 
     private float jumpTime;
-    public JumpingInPlace(Status _status, InputHandler _inputHandler)
+    public MovingCarry(Status _status, InputHandler _inputHandler)
     {
         status = _status;
         inputHandler = _inputHandler;

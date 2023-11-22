@@ -2,19 +2,36 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour, IInteractable
 {
+    [Header("----------BASIC INTERACTABLE----------")]
+
     public Status status;
     public UIController uiController;
     public Inventory inventory;
     public bool hasInteract;
     public Sprite icon;
-    public int interactionIndex;
-    public Item item;
     public GameObject displayItem;
+    public AudioClip clip;
+
+    [Header("----------TREE, MINE, FISH INTERACTABLE----------")]
     public int itemQuantity;
-    public Vector3 offset = new Vector3 (0, 0, 0);
+    public int interactionIndex;
     public int repetitions;
+    public Item item;
+    public Vector3 offset = new Vector3 (0, 0, 0);
     public Vector3 vfxOffset = new Vector3(0, 0, 0);
-    
+
+    [Header("----------PUSH INTERACTABLE----------")]
+    public Vector3 side = new Vector3();
+
+    [Header("----------PET INTERACTABLE----------")]
+    public bool isPet = false;
+
+    [Header("----------CARRY INTERACTABLE----------")]
+
+    public Vector3 carryPosition = new Vector3();
+    public Vector3 carryRotation = new Vector3();
+    public Collider[] colliders;
+
     public virtual void Start()
     {
         status = Status.instance;

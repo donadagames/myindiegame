@@ -13,7 +13,10 @@ public class Status : MonoBehaviour
     [HideInInspector] public Quests quests;
     [HideInInspector] public UIController uiController;
     [HideInInspector] public InputHandler input;
-
+    public Transform mountTransform;
+    public Player mount;
+    public Pet pet;
+    public Player lili;
     private void Awake()
     {
         if (instance == null) instance = this;

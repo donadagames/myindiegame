@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Blast : SkillsController
@@ -17,7 +14,7 @@ public class Blast : SkillsController
             enemy.TakeDamage(damage, false);
             enemy.isDizzy = true;
             enemy.ui.DisplayDamageText(damage, _color);
-            Instantiate(skill.enemy_Hit_VFX, enemy.transform.position, Quaternion.identity, enemy.transform);
+            Instantiate(skill.enemy_Hit_VFX, enemy.transform.position + new Vector3(0, .5f, 0), Quaternion.identity, enemy.transform);
             enemy.rb.AddForce(new Vector3(0, enemy.rb.mass * Random.Range(42, 52), 0), ForceMode.Acceleration);
         }
     }

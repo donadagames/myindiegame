@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -35,6 +34,9 @@ public class Player : MonoBehaviour
 
     public Transform footPos;
     public Transform headPos;
+    public Transform carryTransform;
+    public Transform mounsTransform;
+    public Pet pet;
 
     public float jumpClipDuration;
     public float doubleJumpClipDuration;
@@ -59,6 +61,17 @@ public class Player : MonoBehaviour
     {
         input = InputHandler.instance;
     }
+
+    public void JumpInPlace()
+    {
+        input.Jump(jumpInPlaceHight);
+    }
+
+    public void JumpMoving()
+    {
+        input.Jump(jumpMovingHight);
+    }
+
     public EnemyAttackPosition GetEnemyPosition()
     {
         foreach (EnemyAttackPosition pos in enemyPosition)
@@ -153,7 +166,7 @@ public class Player : MonoBehaviour
     public void Starfall()
     {
         soundController.StarfallSound();
-        Instantiate(input.selectedSkill.skill_VFX, transform.position, transform.rotation);
+        Instantiate(input.selectedSkill.skill_VFX, transform.position, Quaternion.identity);
     }
 
     public void OnParticleCollision(GameObject other)

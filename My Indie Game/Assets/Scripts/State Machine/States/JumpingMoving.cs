@@ -18,10 +18,11 @@ public class JumpingMoving : IState
         inputHandler.isFalling = false;
         jumpTime = Time.time;
         inputHandler.jumpCount++;
+
         inputHandler.hasPressedJumpButton = false;
         status.player.animations.PlayAnimation(status.player.animations.JUMP_MOVING,
     status.isSafeZone);
-        inputHandler.Jump(status.player.jumpMovingHight);
+        status.player.JumpMoving();
     }
 
     public void OnExit()
@@ -39,6 +40,7 @@ public class JumpingMoving : IState
         inputHandler.GetInput();
         inputHandler.ApplyAllMovement();
         inputHandler.DetectWater();
+        inputHandler.SearchForInteractables();
         inputHandler.SearchForEnemySpawner();
 
         if (Time.time >= jumpTime + status.player.jumpClipDuration)
