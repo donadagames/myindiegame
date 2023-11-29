@@ -31,6 +31,9 @@ public class MagicAttack : IState
 
     public void Tick()
     {
+        inputHandler.GetDirection();
+        inputHandler.ApplyGravity();
+
         if (Time.time > magicAttackTime + nextAttackTime)
         {
             inputHandler.canMagicAttack = true;

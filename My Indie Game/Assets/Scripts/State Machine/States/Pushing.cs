@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Pushing : IState
@@ -38,7 +36,8 @@ public class Pushing : IState
         inputHandler.hasPressedMagicAttackButton = false;
         inputHandler.interactable = null;
         inputHandler.canMount = true;
-
+        inputHandler.isHit = false;
+        status.isDamaged = false;
 
 
         if (status.isSafeZone)

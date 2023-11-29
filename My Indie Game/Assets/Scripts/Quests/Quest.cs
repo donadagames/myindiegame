@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Quest/Quest")]
 public class Quest : ScriptableObject
 {
-    public string questID;
+    public string saveableEntityId;
     [TextArea(5, 10)]
     [Header("questTexts[0] = Portuguese")]
     public string[] questTexts = new string[2];
@@ -19,7 +19,7 @@ public class Quest : ScriptableObject
     public Dialogue afterCompletedDialogue;
 
     [ContextMenu("Generate ID")]
-    private void GenereteID() => questID = Guid.NewGuid().ToString();
+    private void GenereteID() => saveableEntityId = Guid.NewGuid().ToString();
 
     public void ResetQuest()
     {

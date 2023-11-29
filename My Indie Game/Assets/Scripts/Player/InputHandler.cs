@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -43,7 +42,6 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public bool headIsOnWater = false;
     [HideInInspector] public bool footIsOnWater = false;
     [HideInInspector] public bool isInteracting = false;
-    [HideInInspector] public bool isChatting;
     [HideInInspector] public bool isDizzy;
     [HideInInspector] public bool isHit;
     [HideInInspector] public bool isMounted = false;
@@ -56,6 +54,9 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public bool hasCompletedMountTimer = true;
     [HideInInspector] public bool isCarrying = false;
     [HideInInspector] public bool isOnPlatform = false;
+    [HideInInspector] public bool isRebirth = false;
+    [HideInInspector] public bool isChatting = false;
+
     [HideInInspector] public Vector3 impact = Vector3.zero;
 
     [HideInInspector] public StateMachine stateMachine;
@@ -125,204 +126,181 @@ public class InputHandler : MonoBehaviour
         playerInputActions.Player.MagicAttack.performed += PlayerMagicAttack;
         playerInputActions.Player.MouseWheel.performed += MouseWheel;
 
+        #region DOUBLE JUMP COMMENTS
+        /*var doubleJumpig = new DoubleJumpig(status, this);
+      AddTransition
+          (jumpInPlace, doubleJumpig, ShouldDoubleJump());
 
+      AddTransition
+          (jumpMoving, doubleJumpig, ShouldDoubleJump());
+
+      AddTransition
+          (doubleJumpig, idle, () => input.sqrMagnitude <= 0 &&
+          IsGrounded() && jumpCount == 0);
+      AddTransition
+          (doubleJumpig, moving, ShouldLandInMovement());
+      AddTransition
+          (doubleJumpig, falling, () => jumpCount == 0 && !IsGrounded() && !headIsOnWater && !footIsOnWater);
+      AddTransition
+          (doubleJumpig, landOnWater, () => headIsOnWater);
+
+        //Func<bool> ShouldDoubleJump() => () => hasPressedJumpButton && jumpCount == 1 && !status.dialogueUI.isOpen;
+        */
+        #endregion
+
+        #region STATES
         var mount = new Mount(status, this);
-        var idle =
-            new IdleGrounded(status, this);
-        var moving =
-            new Moving(status, this);
-        var jumpInPlace =
-            new JumpingInPlace(status, this);
-        var jumpMoving =
-            new JumpingMoving(status, this);
-        //var doubleJumpig = new DoubleJumpig(status, this);
-        var landing =
-            new Land(status, this);
-        var falling =
-            new Falling(status, this);
-        var swimming =
-            new Swimming(status, this);
-        var floating =
-            new Floating(status, this);
-        var landOnWater =
-            new LandOnWater(this, status);
-        var meleeAttack =
-            new MeleeAttack(status, this);
-        var magicAttack =
-            new MagicAttack(status, this);
-        var getHit =
-            new GetHit(status);
+        var idle = new IdleGrounded(status, this);
+        var moving = new Moving(status, this);
+        var jumpInPlace = new JumpingInPlace(status, this);
+        var jumpMoving = new JumpingMoving(status, this);
+        var landing = new Land(status, this);
+        var falling = new Falling(status, this);
+        var swimming = new Swimming(status, this);
+        var floating = new Floating(status, this);
+        var landOnWater = new LandOnWater(this, status);
+        var meleeAttack = new MeleeAttack(status, this);
+        var magicAttack = new MagicAttack(status, this);
+        var getHit = new GetHit(status, this);
         var die = new Die(status, this);
         var levelUp = new LevelUp(status, this);
         var interacting = new Interacting(status, this);
         var dismount = new Dismount(status, this);
-        var chatting = new Chat(status, this);
         var pushing = new Pushing(status, this);
-        //var idleCarry = new IdleCarry(status, this);
-        //var moveingCarry = new MovingCarry(status, this);
-
+        var rebirth = new Rebirth(status, this);
+        var chatting = new Chat(status, this);
+        #endregion
 
         stateMachine = new StateMachine();
 
-        void AddTransition(IState from, IState to,
-            Func<bool> condition) =>
-            stateMachine.AddTransition
-            ((IState)from, (IState)to, condition);
+        void AddTransition(IState from, IState to, Func<bool> condition) => stateMachine.AddTransition((IState)from, (IState)to, condition);
 
-        AddTransition
-            (idle, moving, PlayerHasMovementInput());
-        AddTransition
-            (idle, jumpInPlace, () => ShouldJump());
-        AddTransition
-            (idle, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
-        AddTransition
-            (idle, meleeAttack, ShouldMeleeAttack());
-        AddTransition
-            (idle, magicAttack, ShouldMagicAttack());
-
-
-        AddTransition
-            (moving, idle, PlayerHasNoMovementInput());
-        AddTransition
-            (moving, jumpMoving, () => ShouldJump());
-        AddTransition
-            (moving, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
-        AddTransition
-            (moving, meleeAttack, ShouldMeleeAttack());
-        AddTransition
-            (moving, magicAttack, ShouldMagicAttack());
-        AddTransition
-            (moving, swimming, () => headIsOnWater && input.sqrMagnitude > 0);
-
-        AddTransition
-            (jumpInPlace, idle, () => IsGrounded() && jumpCount == 0);
-
-        AddTransition
-            (jumpMoving, idle, ShouldLandIdle());
-
-        AddTransition
-             (jumpMoving, moving, ShouldLandInMovement());
-        AddTransition
-            (jumpMoving, landOnWater, () => headIsOnWater);
-
-        AddTransition
-             (jumpMoving, falling, () => jumpCount == 0 && !IsGrounded() && !headIsOnWater && !footIsOnWater);
-
-        /*
-        AddTransition
-            (jumpInPlace, doubleJumpig, ShouldDoubleJump());
-
-        AddTransition
-            (jumpMoving, doubleJumpig, ShouldDoubleJump());
-
-        AddTransition
-            (doubleJumpig, idle, () => input.sqrMagnitude <= 0 &&
-            IsGrounded() && jumpCount == 0);
-        AddTransition
-            (doubleJumpig, moving, ShouldLandInMovement());
-        AddTransition
-            (doubleJumpig, falling, () => jumpCount == 0 && !IsGrounded() && !headIsOnWater && !footIsOnWater);
-        AddTransition
-            (doubleJumpig, landOnWater, () => headIsOnWater);
-        */
-
-        AddTransition
-            (falling, landing, ShouldLand());
-        AddTransition
-            (falling, landOnWater, () => headIsOnWater && jumpCount == 0);
-
-        AddTransition
-            (landing, idle, () => hasEndedLanding && input.sqrMagnitude <= 0);
-        AddTransition
-            (landing, moving, () => hasEndedLanding && input.sqrMagnitude > 0);
-
-        AddTransition
-            (swimming, idle, () => !headIsOnWater);
-        AddTransition
-            (swimming, floating, () => input.sqrMagnitude <= 0);
-
-        AddTransition
-            (floating, to: swimming, () => headIsOnWater && input.sqrMagnitude > 0);
-        AddTransition
-          (floating, to: idle, () => !headIsOnWater && input.sqrMagnitude <= 0);
-
-        AddTransition
-            (landOnWater, floating, () => headIsOnWater && input.sqrMagnitude <= 0);
-        AddTransition
-           (landOnWater, swimming, () => headIsOnWater && input.sqrMagnitude > 0);
-        AddTransition
-           (landOnWater, moving, () => !headIsOnWater && footIsOnWater && input.sqrMagnitude > 0);
-        AddTransition
-           (landOnWater, idle, () => !headIsOnWater && footIsOnWater && input.sqrMagnitude <= 0);
-
+        #region IDLE TO OTHER STATES
+        AddTransition(idle, moving, PlayerHasMovementInput());
+        AddTransition(idle, jumpInPlace, () => ShouldJump());
+        AddTransition(idle, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
+        AddTransition(idle, meleeAttack, ShouldMeleeAttack());
+        AddTransition(idle, magicAttack, ShouldMagicAttack());
         AddTransition(idle, interacting, () => status.isAlive && isInteracting);
-        AddTransition(moving, interacting, () => status.isAlive && isInteracting);
-        AddTransition(interacting, idle, () => status.isAlive && !isInteracting);
-
-        AddTransition(meleeAttack, idle,
-            () => IsGrounded() && input.sqrMagnitude <= 0 && canMeleeAttack == true);
-        AddTransition(meleeAttack, moving,
-           () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
-
-        stateMachine.AddAnyTransition(die, () => !status.isAlive);
-        stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged && canMagicAttack && !isInteracting);
-
         AddTransition(idle, mount, () => status.isAlive && isMounting);
-        AddTransition(moving, mount, () => status.isAlive && isMounting);
-
         AddTransition(idle, pushing, () => status.isAlive && isPushing);
+        AddTransition(idle, chatting, () => status.isAlive && isChatting);
+
+        #endregion
+
+        #region MOVING TO OTHER STATES
+        AddTransition(moving, idle, PlayerHasNoMovementInput());
+        AddTransition(moving, jumpMoving, () => ShouldJump());
+        AddTransition(moving, falling, () => jumpCount == 0 && !IsGrounded() && isFalling);
+        AddTransition(moving, meleeAttack, ShouldMeleeAttack());
+        AddTransition(moving, magicAttack, ShouldMagicAttack());
+        AddTransition(moving, swimming, () => headIsOnWater && input.sqrMagnitude > 0);
+        AddTransition(moving, interacting, () => status.isAlive && isInteracting);
+        AddTransition(moving, mount, () => status.isAlive && isMounting);
         AddTransition(moving, pushing, () => status.isAlive && isPushing);
+        AddTransition(moving, chatting, () => status.isAlive && isChatting);
+        #endregion
 
-        AddTransition(pushing, idle, () => status.isAlive && !isPushing);
+        #region JUMP MOVING TO OTHER STATES
+        AddTransition(jumpMoving, idle, ShouldLandIdle());
+        AddTransition(jumpMoving, moving, ShouldLandInMovement());
+        AddTransition(jumpMoving, landOnWater, () => headIsOnWater);
+        AddTransition(jumpMoving, falling, () => jumpCount == 0 && !IsGrounded() && !headIsOnWater && !footIsOnWater);
+        #endregion
 
-        AddTransition(getHit, idle, () => status.isAlive && !status.isDamaged);
+        #region JUMP IN PLACE TO OTHER STATES
+        AddTransition(jumpInPlace, idle, () => IsGrounded() && jumpCount == 0);
+        #endregion
 
+        #region FALLING TO OTHER STATES
+        AddTransition(falling, landing, ShouldLand());
+        AddTransition(falling, landOnWater, () => headIsOnWater && jumpCount == 0);
+        #endregion
+
+        #region LAND ON WATER TO OTHER STATES
+        AddTransition(landOnWater, floating, () => headIsOnWater && input.sqrMagnitude <= 0);
+        AddTransition(landOnWater, swimming, () => headIsOnWater && input.sqrMagnitude > 0);
+        AddTransition(landOnWater, moving, () => !headIsOnWater && footIsOnWater && input.sqrMagnitude > 0);
+        AddTransition(landOnWater, idle, () => !headIsOnWater && footIsOnWater && input.sqrMagnitude <= 0);
+        #endregion
+
+        #region LANDING ON GROUND TO OTHER STATES
+        AddTransition(landing, idle, () => hasEndedLanding && input.sqrMagnitude <= 0);
+        AddTransition(landing, moving, () => hasEndedLanding && input.sqrMagnitude > 0);
+        #endregion
+
+        #region SWIMMING TO OTHER STATES 
+        AddTransition(swimming, idle, () => !headIsOnWater);
+        AddTransition(swimming, floating, () => input.sqrMagnitude <= 0);
+        #endregion
+
+        #region FLOATING TO OTHER STATES
+        AddTransition(floating, to: swimming, () => headIsOnWater && input.sqrMagnitude > 0);
+        AddTransition(floating, to: idle, () => !headIsOnWater && input.sqrMagnitude <= 0);
+        #endregion
+
+        #region MELEE ATTACK TO OTHER STATES
+        AddTransition(meleeAttack, idle, () => IsGrounded() && input.sqrMagnitude <= 0 && canMeleeAttack == true);
+        AddTransition(meleeAttack, moving, () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
+        #endregion
+
+        #region MAGIC ATACK TO OTHER STATES
+        AddTransition(magicAttack, idle, () => IsGrounded() && input.sqrMagnitude <= 0 && canMagicAttack == true);
+        AddTransition(magicAttack, moving, () => IsGrounded() && input.sqrMagnitude > 0 && canMagicAttack == true);
+        #endregion
+
+        #region INTERACTING TO OTHER STATES
+        AddTransition(interacting, idle, () => status.isAlive && !isInteracting);
+        #endregion
+
+        #region MOUNTING TO OTHER STATES
+        AddTransition(mount, idle, () => !isMounting);
+        #endregion
+
+        #region GET HIT TO OTHER STATES
+        AddTransition(getHit, idle, () => status.isAlive && !status.isDamaged && input.sqrMagnitude <= 0);
+        AddTransition(getHit, moving, () => status.isAlive && !status.isDamaged && input.sqrMagnitude > 0);
+        #endregion
+
+        #region LEVEL UP TO OTHER STATES REGION
         stateMachine.AddAnyTransition(levelUp, () => status.isAlive && status.isLevelUp);
         AddTransition(levelUp, idle, () => status.isAlive && !status.isLevelUp);
+        #endregion
 
+        #region PUSHING TO OTHER STATES
+        AddTransition(pushing, idle, () => status.isAlive && !isPushing);
+        #endregion
 
-        AddTransition(idle, chatting, () => status.isAlive && isChatting);
-        AddTransition(moving, chatting, () => status.isAlive && isChatting);
-        AddTransition(chatting, idle, () => status.isAlive && !isChatting);
+        #region DEATH TO OTHER STATES
+        AddTransition(die, rebirth, () => isRebirth);
+        #endregion
 
-        AddTransition(magicAttack, idle,
-            () => IsGrounded() && input.sqrMagnitude <= 0 && canMagicAttack == true);
-        AddTransition(magicAttack, moving,
-           () => IsGrounded() && input.sqrMagnitude > 0 && canMagicAttack == true);
+        #region REBIRTH TO OTHER STATES
+        AddTransition(rebirth, idle, () => !isRebirth);
+        #endregion
 
-        AddTransition(mount, idle, () => !isMounting);
+        #region CHATTING TO OTHER STATES
+        AddTransition(chatting, idle, () => !isChatting);
 
-        //AddTransition(interacting, idleCarry, () => isCarrying && !isInteracting);
-        // AddTransition
-        //     (idleCarry, moving, PlayerHasMovementInput());
-        ////AddTransition
-        //  (moving, idleCarry, PlayerHasNoMovementInputAndIsCarrying());
+        #endregion
 
-        Func<bool> PlayerHasMovementInput() => () =>
-        input.sqrMagnitude > 0;
-        Func<bool> PlayerHasNoMovementInput() => () =>
-        input.sqrMagnitude <= 0;// && !isCarrying;
-        //Func<bool> PlayerHasNoMovementInputAndIsCarrying() => () =>
-        //input.sqrMagnitude <= 0 && isCarrying;
+        stateMachine.AddAnyTransition(die, () => !status.isAlive && !isRebirth);
+        stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged && !isInteracting && stateMachine.currentState != magicAttack && !isPushing);
 
-        Func<bool> ShouldLandIdle() => () =>
-        IsGrounded() && jumpCount == 0 && input.sqrMagnitude <= 0
-        || IsGrounded() && input.sqrMagnitude <= 0;
-        //Func<bool> ShouldDoubleJump() => () => hasPressedJumpButton && jumpCount == 1 && !status.dialogueUI.isOpen;
-        Func<bool> ShouldLandInMovement() => () => input.sqrMagnitude > 0 &&
-        IsGrounded() && jumpCount == 0 || input.sqrMagnitude > 0 && IsGrounded();
+        #region CONDITIONS
+        Func<bool> PlayerHasMovementInput() => () => input.sqrMagnitude > 0;
+        Func<bool> PlayerHasNoMovementInput() => () => input.sqrMagnitude <= 0;
+        Func<bool> ShouldLandIdle() => () => IsGrounded() && jumpCount == 0 && input.sqrMagnitude <= 0 || IsGrounded() && input.sqrMagnitude <= 0;
+        Func<bool> ShouldLandInMovement() => () => input.sqrMagnitude > 0 && IsGrounded() && jumpCount == 0 || input.sqrMagnitude > 0 && IsGrounded();
         Func<bool> ShouldLand() => () => IsGrounded() && jumpCount == 0 && !headIsOnWater;
-        Func<bool> ShouldMeleeAttack() =>
-            () => canMeleeAttack == true && hasPressedMeleeAttackButton && !status.dialogueUI.isOpen;
-
-        Func<bool> ShouldMagicAttack() =>
-            () => canMagicAttack == true && hasPressedMagicAttackButton && !status.dialogueUI.isOpen && hasCompletedMagicTimer == true;
+        Func<bool> ShouldMeleeAttack() => () => canMeleeAttack == true && hasPressedMeleeAttackButton && !status.dialogueUI.isOpen && !status.isDamaged;
+        Func<bool> ShouldMagicAttack() => () => canMagicAttack == true && hasPressedMagicAttackButton && !status.dialogueUI.isOpen && hasCompletedMagicTimer == true;
+        #endregion
 
         stateMachine.SetState(idle);
     }
 
-    public bool ShouldJump() =>
-      IsGrounded() && hasPressedJumpButton && jumpCount == 0 && !status.dialogueUI.isOpen;
+    public bool ShouldJump() => IsGrounded() && hasPressedJumpButton && jumpCount == 0 && !status.dialogueUI.isOpen;
 
     private void Start()
     {
@@ -349,9 +327,9 @@ public class InputHandler : MonoBehaviour
 
     public void ApplyMovement()
     {
-            status.player.characterController.Move(direction *
-            status.player.moveSpeed *
-            Time.deltaTime);
+        status.player.characterController.Move(direction *
+        status.player.moveSpeed *
+        Time.deltaTime);
     }
 
     public void GetDirectionInputForPush(Vector3 side)
@@ -483,7 +461,10 @@ public class InputHandler : MonoBehaviour
 
     public void MeleeAttackButton()
     {
-        if (canMeleeAttack == false || isCarrying || isPushing)
+        if (canMeleeAttack == false)
+            return;
+
+        if (isCarrying || isPushing || isInteracting)
 
         {
             status.player.soundController.PlayClip(wrongAudioClip);

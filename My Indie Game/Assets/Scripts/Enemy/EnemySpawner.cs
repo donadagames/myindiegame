@@ -70,7 +70,7 @@ public class EnemySpawner : MonoBehaviour
         stateMachine.AddAnyTransition
           (dizzy, () => enemy.isAlive && enemy.isDizzy);
 
-        AddTransition(onFire, chase, ()=> !enemy.isOnFire && enemy.isAlive);
+        AddTransition(onFire, chase, () => !enemy.isOnFire && enemy.isAlive);
         AddTransition(freezed, chase, () => !enemy.isFreezed && enemy.isAlive);
         AddTransition(dizzy, chase, () => !enemy.isDizzy && enemy.isAlive);
 
@@ -121,7 +121,8 @@ public class EnemySpawner : MonoBehaviour
 
     public void ResetEnemyPositionIndex()
     {
-        enemyPosition.isInUse = false;
+        if (enemyPosition != null)
+            enemyPosition.isInUse = false;
     }
 
     public void DeathVFX()

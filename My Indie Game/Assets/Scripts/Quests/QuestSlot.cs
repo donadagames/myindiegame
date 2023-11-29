@@ -19,21 +19,26 @@ public class QuestSlot : MonoBehaviour
     public void OnCreateQuestSlot(Inventory _inventory)
     {
         inventory = _inventory;
-
         inventory.OnUpdateQuestObjective += UpdateQuest;
         inventory.status.quests.OnQuestCompleted += CompleteQuest;
     }
 
-    public void UpdateLanguage(bool isPortuguese)
+    public void UpdateLanguage(Language language, LanguageController languageController)
     {
-        if (isPortuguese == true)
+        if (language == Language.Portuguese)
         {
+            languageController.SetRegularFont(questText);
             questText.text = quest.questTexts[0];
         }
-
-        else
+        else if (language == Language.English)
         {
+            languageController.SetRegularFont(questText);
             questText.text = quest.questTexts[1];
+        }
+        else if (language == Language.Chinese)
+        {
+            languageController.SetChineseFont(questText);
+            questText.text = quest.questTexts[2];
         }
     }
 

@@ -6,10 +6,10 @@ public class InventorySlot : MonoBehaviour
 {
     public Item item;
     public Image itemIcon;
-    private Inventory inventory;
+    [HideInInspector] public Inventory inventory;
     [SerializeField] GameObject selectedEdge;
     public Image placeHolderIcon;
-    [SerializeField] DragableItem dragableItem;
+    public DragableItem dragableItem;
 
     private void Start()
     {

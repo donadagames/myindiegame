@@ -1,14 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class Status : MonoBehaviour
 {
+    public string saveableEntityId;
+    [ContextMenu("Generate ID")]
+    private void GenereteID() => saveableEntityId = Guid.NewGuid().ToString();
+
+
     public static Status instance;
     public Camera mainCamera;
     public Player player;
     public Inventory inventory;
-    [HideInInspector] public List<Enemy> enemies = new List<Enemy>();
+    public List<Enemy> enemies = new List<Enemy>();
     [HideInInspector] public DialogueUI dialogueUI;
     [HideInInspector] public Quests quests;
     [HideInInspector] public UIController uiController;
@@ -17,6 +24,11 @@ public class Status : MonoBehaviour
     public Player mount;
     public Pet pet;
     public Player lili;
+    public GameObject liliGhost;
+    public SaveSystem saveSystem;
+    public Ghost ghost;
+    public GameObject rebirth_VFX;
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -34,6 +46,7 @@ public class Status : MonoBehaviour
         dialogueUI = DialogueUI.instance;
         quests = Quests.instance;
         inventory = Inventory.instance;
+        saveSystem = SaveSystem.instance;
     }
 
     #region EVENTS
@@ -113,6 +126,12 @@ public class Status : MonoBehaviour
     {
         public bool _isAlive;
     }
+
+    public void DealGhost()
+    {
+        ghost = Instantiate(liliGhost, player.transform.position, player.transform.rotation, player.transform).GetComponent<Ghost>();
+    }
+
     #endregion
 
     #region ENERGY EVENTS
@@ -172,7 +191,7 @@ public class Status : MonoBehaviour
             currentExperience = 0;
             nextLevelExperienceNeeded = currentLevel * baseExperience;
             player.soundController.LevelUpSound();
-            OnLEvelUp?.Invoke(this, new OnLevelUpEventHandler
+            OnLevelUp?.Invoke(this, new OnLevelUpEventHandler
             { _isLevelUp = isLevelUp, _currentLevel = currentLevel, _nextLevelExperienceNeeded = nextLevelExperienceNeeded });
         }
     }
@@ -191,10 +210,38 @@ public class Status : MonoBehaviour
         public float _nextLevelExperienceNeeded;
     }
 
-    public event EventHandler<OnLevelUpEventHandler> OnLEvelUp;
+    public event EventHandler<OnLevelUpEventHandler> OnLevelUp;
     #endregion
 
     #region SAVE EVENTS
+    public object CaptureState()
+    {
+        return new StatusData(this);
+    }
+
+    public void RestoreState(object state)
+    {
+        var data = (StatusData)state;
+
+        Vector3 playerPos = new Vector3(data._playerXPosition, data._playerYPosition, data._playerZPosition);
+        player.transform.position = playerPos;
+    }
+
     #endregion
     #endregion
+}
+
+[System.Serializable]
+public class StatusData
+{
+    public float _playerXPosition;
+    public float _playerYPosition;
+    public float _playerZPosition;
+
+    public StatusData(Status status)
+    {
+        _playerXPosition = status.player.transform.position.x;
+        _playerYPosition = status.player.transform.position.y;
+        _playerZPosition = status.player.transform.position.z;
+    }
 }

@@ -6,20 +6,15 @@ public class InventoryUI : MonoBehaviour
 {
     public InventorySlot selectedInventorySlot;
 
+    [SerializeField] TextMeshProUGUI itemNameTPM;
+    [SerializeField] TextMeshProUGUI itemDescriptionTPM;
     [SerializeField] GameObject inventoryPanel;
     [SerializeField] GameObject itemInfoPanel;
-
-    [Header("Top Panel")]
-    [SerializeField] TextMeshProUGUI actionBarTPM;
 
     [Header("Intem Info Panel")]
     public TextMeshProUGUI itemQuantityTPM;
 
-    [SerializeField] TextMeshProUGUI inventoryTMP;
-    [SerializeField] TextMeshProUGUI itemNameTPM;
-    [SerializeField] TextMeshProUGUI itemDescriptionTPM;
     [SerializeField] TextMeshProUGUI deleteQuantityTPM;
-    [SerializeField] TextMeshProUGUI quantityTPM;
     [SerializeField] GameObject deletePanel;
     [SerializeField] Image itemIcon;
 
@@ -46,24 +41,6 @@ public class InventoryUI : MonoBehaviour
     {
         settingsController = SettingsController.instance;
         inventory = Inventory.instance;
-        settingsController.OnLanguageChanged += OnLanguageUpdate;
-    }
-
-    public void OnLanguageUpdate(object sender, SettingsController.OnLanguageChangeEventHandler handler)
-    {
-        if (handler._isPortuguese == true)
-        {
-            actionBarTPM.text = "Barra de ação";
-            quantityTPM.text = "Quantidade";
-            inventoryTMP.text = "Mochila";
-        }
-
-        else
-        {
-            actionBarTPM.text = "Action bar";
-            quantityTPM.text = "Quantity:";
-            inventoryTMP.text = "Inventory";
-        }
     }
 
     public void DisplayItemInformation(Item item)
@@ -75,18 +52,37 @@ public class InventoryUI : MonoBehaviour
             selectedItem = item;
             settingsController.uiController.PlayDefaultAudioClip();
 
-            if (settingsController.IsPortuguese() == true)
+            if (settingsController.languageController.GetGlobalLanguage() == Language.Portuguese)
             {
+                settingsController.languageController.SetRegularFont(itemNameTPM);
+                settingsController.languageController.SetRegularFont(itemDescriptionTPM);
+                settingsController.languageController.SetRegularFont(itemQuantityTPM);
+
                 itemNameTPM.text = item.itemNames[0];
                 itemDescriptionTPM.text = item.descriptions[0];
                 itemQuantityTPM.text = item.quantity.ToString();
 
             }
 
-            else
+            else if(settingsController.languageController.GetGlobalLanguage() == Language.English)
             {
+                settingsController.languageController.SetRegularFont(itemNameTPM);
+                settingsController.languageController.SetRegularFont(itemDescriptionTPM);
+                settingsController.languageController.SetRegularFont(itemQuantityTPM);
+
                 itemNameTPM.text = item.itemNames[1];
                 itemDescriptionTPM.text = item.descriptions[1];
+                itemQuantityTPM.text = item.quantity.ToString();
+            }
+
+            else if (settingsController.languageController.GetGlobalLanguage() == Language.Chinese)
+            {
+                settingsController.languageController.SetChineseFont(itemNameTPM);
+                settingsController.languageController.SetChineseFont(itemDescriptionTPM);
+                settingsController.languageController.SetChineseFont(itemQuantityTPM);
+
+                itemNameTPM.text = item.itemNames[2];
+                itemDescriptionTPM.text = item.descriptions[2];
                 itemQuantityTPM.text = item.quantity.ToString();
             }
 

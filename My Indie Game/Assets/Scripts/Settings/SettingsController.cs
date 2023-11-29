@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -18,6 +19,11 @@ public class SettingsController : MonoBehaviour
             Destroy(this);
     }
 
+    [SerializeField] TextMeshProUGUI minTextSoundFx;
+    [SerializeField] TextMeshProUGUI minTextMusic;
+    [SerializeField] TextMeshProUGUI leftText;
+    [SerializeField] TextMeshProUGUI rightText;
+
     [SerializeField] GameObject settingsPanel;
 
     [SerializeField] AudioMixer soundFxAudioMixer;
@@ -34,33 +40,15 @@ public class SettingsController : MonoBehaviour
 
     [SerializeField] Slider soundFXSlider;
     [SerializeField] Slider musicSlider;
-
-    [SerializeField] TextMeshProUGUI minTextSoundFx;
-    [SerializeField] TextMeshProUGUI minTextMusic;
-
-    [SerializeField] TextMeshProUGUI englishText;
-    [SerializeField] TextMeshProUGUI portugueseText;
-
     [SerializeField] GameObject toggleONText;
     [SerializeField] GameObject toggleOFFText;
-
-    [SerializeField] TextMeshProUGUI followText;
-    [SerializeField] TextMeshProUGUI rateText;
-    [SerializeField] TextMeshProUGUI creditsText;
-    [SerializeField] TextMeshProUGUI otherGamesText;
-
-    [SerializeField] TextMeshProUGUI soundFXText;
-    [SerializeField] TextMeshProUGUI musicText;
-    [SerializeField] TextMeshProUGUI vibrationText;
-    [SerializeField] TextMeshProUGUI languageText;
-
-    [SerializeField] TextMeshProUGUI settingsText;
 
     [SerializeField] Image soundFXIcon;
     [SerializeField] Image musicIcon;
 
     [SerializeField] Image englishFlag;
     [SerializeField] Image portugueseFlag;
+    [SerializeField] Image chineseFlag;
 
     [SerializeField] Image toggleBackground;
     [SerializeField] Image toggleHandle;
@@ -68,24 +56,14 @@ public class SettingsController : MonoBehaviour
     [SerializeField] GameObject followGoldIcon;
     [SerializeField] GameObject rateGoldIcon;
     [SerializeField] GameObject downloadGoldIcon;
-
-    [SerializeField] TextMeshProUGUI creditsTitleText;
-    [SerializeField] TextMeshProUGUI leftCreditsText;
-    [SerializeField] TextMeshProUGUI rightCreditsText;
     [SerializeField] GameObject creditsPanel;
-
     [SerializeField] GameObject otherGamesPanel;
-    [SerializeField] TextMeshProUGUI otherGamesTitleText;
 
-    [SerializeField] TextMeshProUGUI leftText;
-    [SerializeField] TextMeshProUGUI rightText;
     [SerializeField] Image leftArrow;
     [SerializeField] Image rightArrow;
-    [SerializeField] TextMeshProUGUI controllsText;
 
     [HideInInspector] public UIController uiController;
-
-    private bool isPortuguese = false;
+    [HideInInspector] public LanguageController languageController;
 
     private bool hasFollowInstagram = false;
     private bool hasDownloadFocusedMonsters = false;
@@ -93,13 +71,11 @@ public class SettingsController : MonoBehaviour
 
     private Inventory inventory;
 
-    public bool IsPortuguese() => isPortuguese;
-
     private void Start()
     {
+        languageController = LanguageController.instance;
         uiController = UIController.instance;
         inventory = Inventory.instance;
-        OnLanguageChanged += LanguageChanged;
 
         CheckInteraction(hasRatedGame, rateGoldIcon);
         CheckInteraction(hasFollowInstagram, followGoldIcon);
@@ -226,36 +202,42 @@ public class SettingsController : MonoBehaviour
 
     public void OnEnglishPressed()
     {
-        if (!isPortuguese) return;
+        if (languageController.GetGlobalLanguage() == Language.English) return;
 
         uiController.PlayDefaultAudioClip();
 
-        isPortuguese = false;
         englishFlag.color = flagColors[0];
         portugueseFlag.color = flagColors[1];
-
-        englishText.color = flagTextColors[0];
-        portugueseText.color = flagTextColors[1];
-
-        OnLanguageChanged?.Invoke(this, new OnLanguageChangeEventHandler { _isPortuguese = isPortuguese });
+        chineseFlag.color = flagColors[1];
+        languageController.SetGlobalLanguage(Language.English);
+        OnLanguageChanged?.Invoke(this, new OnLanguageChangeEventHandler { language = Language.English });
     }
 
     public void OnPortuguesePressed()
     {
-        if (isPortuguese) return;
+        if (languageController.GetGlobalLanguage() == Language.Portuguese) return;
 
         uiController.PlayDefaultAudioClip();
 
-        isPortuguese = true;
         portugueseFlag.color = flagColors[0];
         englishFlag.color = flagColors[1];
-
-        portugueseText.color = flagTextColors[0];
-        englishText.color = flagTextColors[1];
-
-        OnLanguageChanged?.Invoke(this, new OnLanguageChangeEventHandler { _isPortuguese = isPortuguese });
+        chineseFlag.color = flagColors[1];
+        languageController.SetGlobalLanguage(Language.Portuguese);
+        OnLanguageChanged?.Invoke(this, new OnLanguageChangeEventHandler { language = Language.Portuguese });
     }
 
+    public void OnChinesePressed()
+    {
+        if (languageController.GetGlobalLanguage() == Language.Chinese) return;
+
+        uiController.PlayDefaultAudioClip();
+
+        portugueseFlag.color = flagColors[1];
+        englishFlag.color = flagColors[1];
+        chineseFlag.color = flagColors[0];
+        languageController.SetGlobalLanguage(Language.Chinese);
+        OnLanguageChanged?.Invoke(this, new OnLanguageChangeEventHandler { language = Language.Chinese });
+    }
 
     public void OnLeftControllPressed()
     {
@@ -282,7 +264,6 @@ public class SettingsController : MonoBehaviour
 
         uiController.SetRightControlsConfigurations();
     }
-
 
     public void OnFollowPressed()
     {
@@ -357,73 +338,6 @@ public class SettingsController : MonoBehaviour
         Application.OpenURL(url);
     }
 
-    public event EventHandler<OnLanguageChangeEventHandler> OnLanguageChanged;
-
-    public class OnLanguageChangeEventHandler : EventArgs
-    {
-        public bool _isPortuguese;
-    }
-
-    private void LanguageChanged(object sender, OnLanguageChangeEventHandler handler)
-    {
-        if (handler._isPortuguese == true)
-        {
-            englishText.text = "Inglês";
-            portugueseText.text = "Português";
-
-            languageText.text = "Idioma";
-            musicText.text = "Música";
-            soundFXText.text = "Efeitos Sonoros";
-            vibrationText.text = "Vibrar";
-
-
-            followText.text = "Seguir";
-            rateText.text = "Avaliar";
-            creditsText.text = "Créditos";
-            otherGamesText.text = "Outros Jogos";
-
-            settingsText.text = "Configurações";
-
-            creditsTitleText.text = "Creditos";
-            leftCreditsText.text = "<uppercase><size=40><color=#F6E19C>Gráficos</color></uppercase></size><color=white>\r\n\r\nArt by Kandles (artbykandles.com)\r\nBorodar (borodar.com)\r\nBroken Vector (brokenvector.com)\r\nDungeon Mason (alexkim0415.wixsite.com/dungeonmason)\r\nEmacEArt (www.emaceart.com)\r\nCreativetrio (creativetrio.art)\r\nInfinity PBR (infinitypbr.com)\r\nJean Moreno (jeanmoreno.com)\r\nLayer Lab (layerlabgames.com)\r\nMalbers Animations (malbersanimations.artstation.com)\r\nMeshtint Studio (meshtint.com)\r\nOMABUARTS STUDIO (www.omabuarts.com)\r\nRetroVistas (artstation.com/ramonavladut)\r\nRunemark Studio (runemarkstudio.com)\r\nSynty Studios (syntystudios.com)\r\n";
-            rightCreditsText.text = "<uppercase><size=40><color=#F6E19C>Efeitos Sonoros e Áudio</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nCicifyre (cicifyre.carrd.co)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>Ferramentas</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
-
-            otherGamesTitleText.text = "Outros Jogos";
-
-            leftText.text = "Esquerda";
-            rightText.text = "Direita";
-            controllsText.text = "Controles";
-        }
-
-        else
-        {
-            englishText.text = "English";
-            portugueseText.text = "Portuguese";
-
-            languageText.text = "Language";
-            musicText.text = "Music";
-            soundFXText.text = "Sound Fx";
-            vibrationText.text = "Vibration";
-
-            followText.text = "Follow";
-            rateText.text = "Rate";
-            creditsText.text = "Credits";
-            otherGamesText.text = "Other Games";
-
-            settingsText.text = "Settings";
-
-            creditsTitleText.text = "Credits";
-            leftCreditsText.text = "<uppercase><size=40><color=#F6E19C>Graphics</color></uppercase></size><color=white>\r\n\r\nArt by Kandles (artbykandles.com)\r\nBorodar (borodar.com)\r\nBroken Vector (brokenvector.com)\r\nDungeon Mason (alexkim0415.wixsite.com/dungeonmason)\r\nEmacEArt (www.emaceart.com)\r\nCreativetrio (creativetrio.art)\r\nInfinity PBR (infinitypbr.com)\r\nJean Moreno (jeanmoreno.com)\r\nLayer Lab (layerlabgames.com)\r\nMalbers Animations (malbersanimations.artstation.com)\r\nMeshtint Studio (meshtint.com)\r\nOMABUARTS STUDIO (www.omabuarts.com)\r\nRetroVistas (artstation.com/ramonavladut)\r\nRunemark Studio (runemarkstudio.com)\r\nSynty Studios (syntystudios.com)\r\n";
-            rightCreditsText.text = "<uppercase><size=40><color=#F6E19C>Sound Effects and Audio</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nCicifyre (cicifyre.carrd.co)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>Tools</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
-
-            otherGamesTitleText.text = "Other Games";
-
-            leftText.text = "Left";
-            rightText.text = "Right";
-            controllsText.text = "Controls";
-        }
-    }
-
     private void CheckInteraction(bool interaction, GameObject coinIcon)
     {
         if (interaction == true)
@@ -432,4 +346,10 @@ public class SettingsController : MonoBehaviour
             coinIcon.SetActive(true);
     }
 
+    public event EventHandler<OnLanguageChangeEventHandler> OnLanguageChanged;
+
+    public class OnLanguageChangeEventHandler : EventArgs
+    {
+        public Language language;
+    }
 }

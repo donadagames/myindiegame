@@ -1,15 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
-using UnityEngine.InputSystem.XR;
-using static UnityEngine.TouchScreenKeyboard;
 
 public class CarryObject : Interactable
 {
+    private Vector3 defaultPosition = new Vector3();
+
     public override void Start()
     {
         base.Start();
+        defaultPosition = transform.position;
     }
 
     public override void Interact()
@@ -44,4 +43,18 @@ public class CarryObject : Interactable
         status.input.carryObject = this;
     }
 
+    public void SetDefaultPosition()
+    {
+        transform.SetParent(null);
+        transform.position = defaultPosition;
+        status.input.isCarrying = false;
+        status.input.carryObject = null;
+
+        foreach (Collider collider in colliders)
+        {
+            collider.enabled = true;
+        }
+
+        hasInteract = false;
+    }
 }

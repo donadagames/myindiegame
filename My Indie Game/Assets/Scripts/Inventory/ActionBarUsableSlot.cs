@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +24,7 @@ public class ActionBarUsableSlot : MonoBehaviour
     private void OnUpdateInventory(object sender, Inventory.OnUpdateInventoryEventHandler handler)
     {
         if (handler.item == item)
-        { 
+        {
             quantity.text = $"{item.quantity}";
         }
     }
@@ -37,5 +38,4 @@ public class ActionBarUsableSlot : MonoBehaviour
             inventory.RemoveItem(item, 1);
         }
     }
-
 }

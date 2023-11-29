@@ -34,11 +34,13 @@ public class Enemy : MonoBehaviour, IDamageble
     public float patrollVelocity;
     public int waypoint;
 
+
     public bool isAlive = true;
     public bool isOnFire = false;
     public bool isFreezed = false;
     public bool isDizzy = false;
 
+    public int experience;
     public float health;
     public float currentHealth;
     public int minDamage;

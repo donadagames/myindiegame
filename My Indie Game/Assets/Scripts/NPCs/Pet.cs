@@ -1,6 +1,4 @@
-using Unity.Burst.CompilerServices;
 using UnityEngine;
-using UnityEngine.InputSystem.DualShock;
 
 public class Pet : Interactable
 {
@@ -43,13 +41,13 @@ public class Pet : Interactable
 
     private void MoveToTarget()
     {
-        if (player.input.isOnPlatform)
+        if (player.input.isOnPlatform || status.isLevelUp || player.input.isInteracting)
         {
             SetAnimation("Idle");
             return;
         }
 
-        if (distance > mindDistance && !player.input.isPushing  && distance < 14 || player.input.input.magnitude > 0 && !player.input.isPushing && distance < 14 || player.input.isInteracting)
+        if (distance > mindDistance && !player.input.isPushing  && distance < 14 || player.input.input.magnitude > 0 && !player.input.isPushing && distance < 14 )
         {
             direction = new Vector3(_direction.x, -10, _direction.z);
             controller.Move(direction * speed * Time.deltaTime);
@@ -78,7 +76,7 @@ public class Pet : Interactable
 
         if (distance > 14)
         {
-            transform.position = target.position + new Vector3(.5f, 0, .34f);
+            transform.position = target.position + new Vector3(.5f, .5f, .34f);
             Instantiate(mount_VFX, transform.position, Quaternion.identity);
         }
     }

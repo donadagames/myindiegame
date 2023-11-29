@@ -17,6 +17,11 @@ public class Floating : IState
         inputHandler.jumpCount = 0;
         status.player.animations.PlayAnimation(status.player.animations.FLOAT,
             status.isSafeZone);
+
+        if (inputHandler.isCarrying)
+        {
+            inputHandler.carryObject.SetDefaultPosition();
+        }
     }
 
     public void OnExit()

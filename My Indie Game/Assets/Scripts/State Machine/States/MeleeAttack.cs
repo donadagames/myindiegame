@@ -32,6 +32,9 @@ public class MeleeAttack : IState
 
     public void Tick()
     {
+        inputHandler.GetDirection();
+        inputHandler.ApplyGravity();
+
         if (Time.time > meleeAttackTime + nextAttackTime)
         {
             inputHandler.canMeleeAttack = true;

@@ -25,6 +25,7 @@ public class Chat : IState
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
         inputHandler.hasPressedMeleeAttackButton = false;
+        inputHandler.hasPressedMagicAttackButton = false;
     }
 
     public void Tick()

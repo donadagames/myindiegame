@@ -10,6 +10,12 @@ public class Player : MonoBehaviour
     [HideInInspector] public AnimationController animations;
     [HideInInspector] public PlayerSoundController soundController;
 
+    public Mesh[] mouthNormalAndDeath;
+    public Mesh[] eyeNormalAndDeath;
+
+    public MeshFilter eyeRenderer;
+    public MeshFilter mouthRenderer;
+
     public const float mass = 10;
 
     public InputHandler input;
@@ -44,6 +50,7 @@ public class Player : MonoBehaviour
     public float getHitClipDuration;
     public float dieClipDuration;
     public float levelUpClipDuration;
+    public float rebirthClipDuration;
 
     public int minDamage;
     public int maxDamage;

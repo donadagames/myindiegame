@@ -3,12 +3,13 @@ using UnityEngine;
 public class GetHit : IState
 {
     private readonly Status status;
-
+    private readonly InputHandler inputHandler;
     private float time;
 
-    public GetHit(Status _status)
+    public GetHit(Status _status, InputHandler _inputHandler)
     {
         status = _status;
+        this.inputHandler = _inputHandler;
     }
 
     public void OnEnter()
@@ -27,6 +28,9 @@ public class GetHit : IState
 
     public void Tick()
     {
+        inputHandler.GetDirection();
+        inputHandler.ApplyGravity();
+
         if (Time.time > time + status.player.getHitClipDuration)
         {
             status.isDamaged = false;

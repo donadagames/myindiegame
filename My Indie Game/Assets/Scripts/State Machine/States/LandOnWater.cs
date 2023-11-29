@@ -14,6 +14,11 @@ public class LandOnWater : IState
         status.player.soundController.SplashSound();
         inputHandler.SearchForInteractables();
 
+        if (inputHandler.isCarrying)
+        {
+            inputHandler.carryObject.SetDefaultPosition();
+        }
+
     }
 
 

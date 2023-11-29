@@ -8,8 +8,8 @@ public class QuestsUI : MonoBehaviour
     public GameObject questPanel;
     public Transform inProgressQuestsParent;
     public Transform completedQuestParent;
-    public TextMeshProUGUI inProgressText;
-    public TextMeshProUGUI completedText;
+    [SerializeField] TextMeshProUGUI inProgressText;
+    [SerializeField] TextMeshProUGUI completedText;
     [Header("Sprite[0] = default")]
     public Sprite[] inProgressSprites = new Sprite[2];
     public Sprite[] completedSprites = new Sprite[2];
@@ -21,11 +21,10 @@ public class QuestsUI : MonoBehaviour
     [HideInInspector] public SettingsController settingsController;
 
     [SerializeField] GameObject questSlot;
-    [SerializeField] TextMeshProUGUI questTitle;
 
     private Inventory inventory;
     private Quests quests;
-   private List<QuestSlot> questSlots = new List<QuestSlot>();
+    private List<QuestSlot> questSlots = new List<QuestSlot>();
     #region Singleton
     public static QuestsUI instance;
     private void Awake()
@@ -45,23 +44,9 @@ public class QuestsUI : MonoBehaviour
 
     public void OnLanguageUpdate(object sender, SettingsController.OnLanguageChangeEventHandler handler)
     {
-        if (handler._isPortuguese == true)
-        {
-            questTitle.text = "Missões";
-            inProgressText.text = "Em andamento";
-            completedText.text = "Finalizadas";
-        }
-
-        else
-        {
-            questTitle.text = "Quests";
-            inProgressText.text = "In Progress";
-            completedText.text = "Completed";
-        }
-
         foreach (QuestSlot slot in questSlots)
         {
-            slot.UpdateLanguage(handler._isPortuguese);
+            slot.UpdateLanguage(handler.language, settingsController.languageController);
         }
     }
 
@@ -102,16 +87,25 @@ public class QuestsUI : MonoBehaviour
         slot.rewardIcon.sprite = quest.rewardItem.icon;
         slot.rewardText.text = $"{quest.rewardQuantity}";
 
-        if (settingsController.IsPortuguese() == true)
+        if (settingsController.languageController.GetGlobalLanguage() == Language.Portuguese)
         {
+            settingsController.languageController.SetRegularFont(slot.questText);
             slot.questText.text = quest.questTexts[0];
         }
-
-        else
+        else if (settingsController.languageController.GetGlobalLanguage() == Language.English)
         {
+            settingsController.languageController.SetRegularFont(slot.questText);
             slot.questText.text = quest.questTexts[1];
         }
+        else if (settingsController.languageController.GetGlobalLanguage() == Language.Chinese)
+        {
+            settingsController.languageController.SetChineseFont(slot.questText);
+            slot.questText.text = quest.questTexts[2];
+        }
     }
+
+
+    //TEM QUE FAZER ON COMPLETE QUEST
 
     public void OnCompleteQuest(Quest quest)
     {

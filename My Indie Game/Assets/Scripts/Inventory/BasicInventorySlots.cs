@@ -13,7 +13,6 @@ public class BasicInventorySlots : MonoBehaviour
         inventory.OnUpdateInventory += OnUpdateInventory;
     }
 
-
     public virtual void OnUpdateInventory(object sender, Inventory.OnUpdateInventoryEventHandler handler)
     {
         if (handler.item == item)

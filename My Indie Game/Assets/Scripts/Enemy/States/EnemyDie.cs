@@ -25,7 +25,7 @@ public class EnemyDie : IState
         spawner.shouldSpawn = false;
         spawner.enemy.animator.Play(spawner.enemy.DIE);
         spawner.enemy.shouldCheckParticleHit = false;
-        var experience = spawner.enemy.health * Random.Range(.7f, 1f);
+        var experience = spawner.enemy.experience;
         spawner.status.ReciveExperience(experience);
     }
 

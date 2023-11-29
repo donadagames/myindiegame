@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     public Transform parentTransform;
-
     public Transform changebleParentTransform;
     InputHandler input;
     public InventorySlot parentSlot;
@@ -14,14 +13,12 @@ public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, I
     private void Start()
     {
         input = InputHandler.instance;
-        parentSlot = GetComponentInParent<InventorySlot>();
-        image = GetComponentInParent<Image>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         changebleParentTransform = parentTransform;
-        transform.SetParent(transform.root);
+        transform.SetParent(parentSlot.inventory.draggingParent);
         transform.SetAsLastSibling();
         parentSlot.placeHolderIcon.enabled = true;
         image.raycastTarget = false;
@@ -59,5 +56,11 @@ public class DragableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, I
                 actionbarSlot = null;
             }
         }
+    }
+
+    public void RestoreOnLoad()
+    {
+        //changebleParentTransform = parentTransform;
+        parentSlot.placeHolderIcon.enabled = true;
     }
 }

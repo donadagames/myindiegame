@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Cinemachine;
-using static UnityEngine.Rendering.DebugUI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class UIController : MonoBehaviour
 {
@@ -13,13 +14,22 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider energySlider;
     [SerializeField] private Slider experienceSlider;
-
+    [SerializeField] GameObject deathPanel;
     [SerializeField] private TextMeshProUGUI level;
+    [SerializeField] CanvasGroup deathPanelBackgroundCanvasGroup;
+    [SerializeField] CanvasGroup deathPanelTextsCanvasGroup;
+    [SerializeField] CanvasGroup deathPanelButtonsCanvasGroup;
+    [SerializeField] GameObject deathButtonsPanel;
+    [SerializeField] GameObject fadeBackgroundPanel;
+    [SerializeField] CanvasGroup fadeBackgroundCanvasGroup;
 
+    [SerializeField] GameObject displayInfoTextPrefab;
+    [SerializeField] Transform infoPanel;
     [SerializeField] CinemachineVirtualCamera virtualCamera;
-
+    public bool canDisplayMessage = true;
     private CinemachineFramingTransposer body;
     private Status status;
+    private bool canRebirth = true;
 
     public Gradient healthGradient;
     public Gradient energyGradient;
@@ -71,9 +81,9 @@ public class UIController : MonoBehaviour
         status = Status.instance;
         status.OnHealthChange += OnHealthChange;
         status.OnExperienceChange += OnExperienceChange;
-        status.OnLEvelUp += OnLevelUp;
+        status.OnLevelUp += OnLevelUp;
         status.OnEnergyChange += OnEnergyChange;
-
+        status.OnDie += OnPlayerDies;
         body = virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
 
         healthSlider.minValue = 0;
@@ -458,6 +468,89 @@ public class UIController : MonoBehaviour
         status.input.selectedSkill = skill;
     }
 
+
+    public void OnPlayerDies(object sender, Status.OnDieEventHandler handler)
+    {
+        deathPanelBackgroundCanvasGroup.alpha = 0;
+        deathPanelTextsCanvasGroup.alpha = 0;
+        deathPanelButtonsCanvasGroup.alpha = 0;
+        deathPanel.SetActive(true);
+        deathButtonsPanel.SetActive(true);
+
+        var currentDistance = body.m_CameraDistance;
+
+        var zoom = LeanTween.value(zoomSlider.gameObject, currentDistance, zoomSlider.minValue, 1f).setOnUpdate(OnZoomUpdate);
+
+        deathPanelBackgroundCanvasGroup.LeanAlpha(1, 1f).setOnComplete(() => deathPanelTextsCanvasGroup.LeanAlpha(1, 3f).setOnComplete(() => deathPanelButtonsCanvasGroup.LeanAlpha(1, .5f)));
+
+    }
+
+    public void OnQuitButtonPressed()
+    {
+        PlayDefaultAudioClip();
+        Application.Quit();
+    }
+
+    public void OnTryAgainButtonPressed()
+    {
+        if (!canRebirth) return;
+
+        PlayDefaultAudioClip();
+        canRebirth = false;
+        fadeBackgroundCanvasGroup.alpha = 0;
+        fadeBackgroundPanel.SetActive(true);
+        deathPanelButtonsCanvasGroup.LeanAlpha(0, .5f);
+        deathPanelBackgroundCanvasGroup.LeanAlpha(0, 1.6f).setOnComplete(() => deathPanel.SetActive(false));
+        deathPanelTextsCanvasGroup.LeanAlpha(0, 1.5f).setOnComplete(() => deathButtonsPanel.SetActive(false));
+        fadeBackgroundCanvasGroup.LeanAlpha(1, 1.6f).setOnComplete(() => StartCoroutine(DealDeath()));
+    }
+
+    private IEnumerator DealDeath()
+    {
+        yield return new WaitForSeconds(1f);
+        status.saveSystem.Load();
+
+        foreach (Enemy enemy in status.enemies)
+        {
+            enemy.spawner.shouldSpawn = true;
+            enemy.spawner.ResetEnemyPositionIndex();
+            Destroy(enemy.gameObject);
+        }
+
+        status.enemies = new List<Enemy>();
+
+        yield return new WaitForSeconds(3f);
+
+        fadeBackgroundCanvasGroup.LeanAlpha(0, 3f).setOnComplete(() => fadeBackgroundPanel.SetActive(false));
+
+        yield return new WaitForSeconds(.5f);
+        var currentDistance = body.m_CameraDistance;
+        var zoom = LeanTween.value(zoomSlider.gameObject, currentDistance, zoomSlider.maxValue, 1f).setOnUpdate(OnZoomUpdate);
+        canRebirth = true;
+        status.ghost.animator.Play("GoDown");
+
+        yield return new WaitForSeconds(.833f);
+        Instantiate(status.rebirth_VFX, status.player.transform.position, Quaternion.identity);
+        status.player.soundController.FireballSound();
+        Destroy(status.ghost.gameObject);
+        status.ghost = null;
+        status.input.isRebirth = true;
+    }
+
+    public void DisplayInfoText(string text, LanguageController languageController)
+    {
+        if (!canDisplayMessage) return;
+
+        canDisplayMessage = false;
+        DisplayMessage message = Instantiate(displayInfoTextPrefab, infoPanel).GetComponent<DisplayMessage>();
+        message.controller = this;
+        message.text.text = text;
+
+        if (languageController.GetGlobalLanguage() == Language.Portuguese || languageController.GetGlobalLanguage() == Language.English)
+            languageController.SetRegularFont(message.text);
+        else
+            languageController.SetChineseFont(message.text);
+    }
 
 }
 

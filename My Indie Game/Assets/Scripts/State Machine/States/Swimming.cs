@@ -18,6 +18,11 @@ public class Swimming : IState
         inputHandler.jumpCount = 0;
         status.player.animations.PlayAnimation(status.player.animations.SWIM,
             status.isSafeZone);
+
+        if (inputHandler.isCarrying)
+        {
+            inputHandler.carryObject.SetDefaultPosition();
+        }
     }
 
     public void OnExit()

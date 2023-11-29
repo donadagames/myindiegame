@@ -1,9 +1,14 @@
+using System;
+using System.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ActionBarSlot : MonoBehaviour, IDropHandler
 {
+    [ContextMenu("Generate ID")]
+    private void GenereteID() => saveableEntityId = Guid.NewGuid().ToString();
+    public string saveableEntityId;
     public Item item;
     public ActionBarUsableSlot usableActionBarSlot;
     public TextMeshProUGUI quantity;
@@ -96,5 +101,37 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler
         dragable.transform.LeanScale(new Vector3(1, 1, 1), .15f);
 
         dragable.image.raycastTarget = true;
+    }
+
+    public object CaptureState()
+    {
+        return new ActionBarSlotData(this);
+    }
+
+    public void RestoreState(object state, Inventory _inventory)
+    {
+        var data = (ActionBarSlotData)state;
+
+        if (data.itemID != string.Empty)
+        {
+            var _dragableItem = _inventory.GetDragableFromItem(_inventory.status.saveSystem.GetItemFromID(data.itemID));
+            _dragableItem.RestoreOnLoad();
+
+            UpdateActionbarSlot(this, _dragableItem);
+        }
+    }
+}
+
+[System.Serializable]
+public class ActionBarSlotData
+{
+    public string itemID;
+
+    public ActionBarSlotData(ActionBarSlot slot)
+    {
+        if (slot.item != null)
+            itemID = slot.item.saveableEntityId;
+        else
+            itemID = string.Empty;
     }
 }
