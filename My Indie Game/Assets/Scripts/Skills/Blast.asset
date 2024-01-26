@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5a5ad708c00db429bc221a0e90873f, type: 3}
   m_Name: Blast
   m_EditorClassIdentifier: 
-  animationClip: Blast
-  animationDuration: 0.533
+  animationClip: Spell_Blast_SwordAndShield
+  animationDuration: 0.7835
   icon: {fileID: 21300000, guid: 552a79769311d471e8b687e4b55efa57, type: 3}
   energyCost: 10
   healthRegenaration: 0

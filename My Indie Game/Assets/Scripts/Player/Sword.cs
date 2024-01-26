@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class Sword : MonoBehaviour
 {
-    Player player;
+    //Player player;
+    Status status;
     public bool shouldCheck = true;
     public Color _color;
     private void Start()
     {
-        player = GetComponentInParent<Player>();
+        status = Status.instance;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -19,13 +20,11 @@ public class Sword : MonoBehaviour
 
         if (damageble != null && enemy.isAlive && enemy.canGetHit == true)
         {
-            var damage = (float)Random.Range(player.minDamage, player.maxDamage);
+            var damage = (float)Random.Range(status.force, status.force * 2);
 
-            player.soundController.SwordHitSound();
+            status.player.soundController.SwordHitSound();
 
-
-
-            if (damage > player.maxDamage * .70f && !enemy.isDamaged)
+            if (damage > status.force * 2 * .70f && !enemy.isDamaged)
             {
                 enemy.TakeDamage(damage, true);
                 enemy.ui.DisplayDamageText(damage, _color);

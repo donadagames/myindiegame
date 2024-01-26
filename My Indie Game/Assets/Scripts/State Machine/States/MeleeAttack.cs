@@ -17,10 +17,16 @@ public class MeleeAttack : IState
 
     public void OnEnter()
     {
+        
+
         inputHandler.canMeleeAttack = false;
         status.player.sword.shouldCheck = true;
         inputHandler.hasPressedMeleeAttackButton = false;
         meleeAttackTime = Time.time;
+
+        if (status.uiController.aim != null)
+            status.uiController.aim.m_Damping = status.dampingTime;
+
         nextAttackTime = inputHandler.MeleeAttack();
     }
 
@@ -28,6 +34,7 @@ public class MeleeAttack : IState
     {
         inputHandler.SetDefaultConfigurations();
         status.player.sword.shouldCheck = false;
+        status.uiController.aim.m_Damping = 999999999f;
     }
 
     public void Tick()

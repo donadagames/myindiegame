@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BridgeBroken : MonoBehaviour
+public class BridgeBroken : SavableEntity
 {
     public Transform[] tabuas;
     int tabuasCount = -1;
@@ -19,6 +19,8 @@ public class BridgeBroken : MonoBehaviour
 
     public void BuildBridge()
     {
+        shouldSave = true;
+        SaveSystem.instance.SaveEntities();
         DealWoods();
     }
 
@@ -75,4 +77,28 @@ public class BridgeBroken : MonoBehaviour
             rightWoods[tabuasCountright].LeanMoveLocalZ(0, .25f).setEase(LeanTweenType.easeOutBack).setOnComplete(DealRightWoods);
         }
     }
+
+    public override void RestoreState(SerializableSavableEntity savable)
+    {
+        _collider.SetActive(true);
+        shouldSave = true;
+        foreach (var tabua in tabuas)
+        { 
+            tabua.gameObject.SetActive(true);
+            tabua.transform.localPosition = new Vector3(0,0,0);
+        }
+
+        foreach (var tabua in leftWoods)
+        {
+            tabua.gameObject.SetActive(true);
+            tabua.transform.localPosition = new Vector3(0, 0, 0);
+        }
+
+        foreach (var tabua in rightWoods)
+        {
+            tabua.gameObject.SetActive(true);
+            tabua.transform.localPosition = new Vector3(0, 0, 0);
+        }
+    }
 }
+

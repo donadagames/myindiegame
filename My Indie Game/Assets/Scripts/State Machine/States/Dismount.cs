@@ -33,7 +33,7 @@ public class Dismount : IState
 
         status.uiController.SetCameraTarget(status.player.transform);
         //status.player.animations.animator.Play("Mounting");
-        //status.player.transform.SetParent(null);
+        status.player.transform.SetParent(status.playerParentTransform);
     }
 
 

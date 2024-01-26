@@ -9,6 +9,9 @@ public class InputHandler : MonoBehaviour
     public static InputHandler instance;
     public float fallingDuration = .4f;
 
+    //[SerializeField] Transform cam;
+    public Vector3 camRelative = new Vector3(0, 0, 0);
+
     [SerializeField] GameObject puff;
     [SerializeField] GameObject splash;
 
@@ -27,7 +30,7 @@ public class InputHandler : MonoBehaviour
     public Status status;
 
     public Vector2 input = new Vector2();
-
+    public bool canMove = true;
     private const float GRAVITY = -9.8f;
     public float velocity;
     private float currentVelocity;
@@ -125,6 +128,7 @@ public class InputHandler : MonoBehaviour
         playerInputActions.Player.Interact.performed += PlayerInteract;
         playerInputActions.Player.MagicAttack.performed += PlayerMagicAttack;
         playerInputActions.Player.MouseWheel.performed += MouseWheel;
+        playerInputActions.Player.ScreenShot.performed += ScreenShot;
 
         #region DOUBLE JUMP COMMENTS
         /*var doubleJumpig = new DoubleJumpig(status, this);
@@ -240,8 +244,9 @@ public class InputHandler : MonoBehaviour
         #endregion
 
         #region MELEE ATTACK TO OTHER STATES
-        AddTransition(meleeAttack, idle, () => IsGrounded() && input.sqrMagnitude <= 0 && canMeleeAttack == true);
-        AddTransition(meleeAttack, moving, () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
+        AddTransition(meleeAttack, idle, () => canMeleeAttack == true);
+        //AddTransition(meleeAttack, idle, () => IsGrounded() && input.sqrMagnitude <= 0 && canMeleeAttack == true);
+        //AddTransition(meleeAttack, moving, () => IsGrounded() && input.sqrMagnitude > 0 && canMeleeAttack == true);
         #endregion
 
         #region MAGIC ATACK TO OTHER STATES
@@ -288,7 +293,7 @@ public class InputHandler : MonoBehaviour
         stateMachine.AddAnyTransition(getHit, () => status.isAlive && status.isDamaged && !isInteracting && stateMachine.currentState != magicAttack && !isPushing);
 
         #region CONDITIONS
-        Func<bool> PlayerHasMovementInput() => () => input.sqrMagnitude > 0;
+        Func<bool> PlayerHasMovementInput() => () => input.sqrMagnitude > .2f;
         Func<bool> PlayerHasNoMovementInput() => () => input.sqrMagnitude <= 0;
         Func<bool> ShouldLandIdle() => () => IsGrounded() && jumpCount == 0 && input.sqrMagnitude <= 0 || IsGrounded() && input.sqrMagnitude <= 0;
         Func<bool> ShouldLandInMovement() => () => input.sqrMagnitude > 0 && IsGrounded() && jumpCount == 0 || input.sqrMagnitude > 0 && IsGrounded();
@@ -314,6 +319,11 @@ public class InputHandler : MonoBehaviour
 
     public void GetInput()
     {
+        if (!canMove)
+        {
+            input = new Vector2(0, 0);
+            return;
+        }
         input = playerInputActions.Player.Move.ReadValue<Vector2>();
         status.uiController.SetPositionFocusUI(GetJoystickDirection(input));
     }
@@ -322,11 +332,31 @@ public class InputHandler : MonoBehaviour
     public void GetDirection()
     {
         GetInput();
-        direction = new Vector3(input.x, 0, input.y);
+        Vector3 forward = status.mainCamera.transform.forward;
+        Vector3 right = status.mainCamera.transform.right;
+
+        //Debug.DrawLine(status.mainCamera.transform.localPosition, forward, Color.red);
+
+        forward.y = 0;
+        right.y = 0;
+
+        forward = forward.normalized;
+        right = right.normalized;
+
+        direction = input.y * forward + input.x * right;
+
+
+        // Vector3 relativeForward = input.x * forward;
+        // Vector3 relativeRight = input.y * right;
+
+        // Vector3 dir = relativeForward + relativeRight;
+
+        //direction = new Vector3(input.x, 0, input.y);
     }
 
     public void ApplyMovement()
     {
+
         status.player.characterController.Move(direction *
         status.player.moveSpeed *
         Time.deltaTime);
@@ -426,6 +456,7 @@ public class InputHandler : MonoBehaviour
         status.player.handShield.SetActive(!isSafeZone);
         status.player.handWeapon.SetActive(!isSafeZone);
         status.player.backWeapon.SetActive(isSafeZone);
+        status.player.backShield.SetActive(isSafeZone);
     }
 
     public void SetSwimmingConfiguration()
@@ -467,12 +498,17 @@ public class InputHandler : MonoBehaviour
         if (isCarrying || isPushing || isInteracting)
 
         {
-            status.player.soundController.PlayClip(wrongAudioClip);
+            PlayWrongAudioClip();
             return;
         }
 
         canMeleeAttack = true;
         hasPressedMeleeAttackButton = true;
+    }
+
+    public void PlayWrongAudioClip()
+    {
+        status.player.soundController.PlayClip(wrongAudioClip);
     }
 
     private void PlayerMeleeAttack(InputAction.CallbackContext callback)
@@ -513,6 +549,12 @@ public class InputHandler : MonoBehaviour
     private void PlayerMagicAttack(InputAction.CallbackContext callback)
     {
         MagicAttackButton();
+    }
+
+    private void ScreenShot(InputAction.CallbackContext callback)
+    {
+        ScreenShoter.instance.Photo();
+        //FindObjectOfType<NPC_Gruff>().BuildBridge();
     }
 
     public float MagicAttack()

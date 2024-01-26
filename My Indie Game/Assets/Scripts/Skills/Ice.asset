@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5a5ad708c00db429bc221a0e90873f, type: 3}
   m_Name: Ice
   m_EditorClassIdentifier: 
-  _name: Ice
-  animationClip: Ice
+  animationClip: Spell_Ice_SwordAndShield
   animationDuration: 0.567
   icon: {fileID: 21300000, guid: f6586dd90ab51455d845c2088444b73a, type: 3}
   energyCost: 200
   healthRegenaration: 0
-  criticalDamageFactor: 1
   minDamage: 10
   maxDamage: 50
   skill_VFX: {fileID: 4437157893299135498, guid: b1ff807464774714583e1d9856569244,

@@ -89,6 +89,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ScreenShot"",
+                    ""type"": ""Button"",
+                    ""id"": ""83bd785a-a13f-4c68-bffb-6e337a0228e1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -223,6 +232,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""MouseWheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2ba0a7da-b98d-4cf2-8b08-7b9726eb2fb5"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScreenShot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -238,6 +258,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_MeleeAttack = m_Player.FindAction("MeleeAttack", throwIfNotFound: true);
         m_Player_MagicAttack = m_Player.FindAction("MagicAttack", throwIfNotFound: true);
         m_Player_ScreenPos = m_Player.FindAction("ScreenPos", throwIfNotFound: true);
+        m_Player_ScreenShot = m_Player.FindAction("ScreenShot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -306,6 +327,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MeleeAttack;
     private readonly InputAction m_Player_MagicAttack;
     private readonly InputAction m_Player_ScreenPos;
+    private readonly InputAction m_Player_ScreenShot;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -317,6 +339,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @MeleeAttack => m_Wrapper.m_Player_MeleeAttack;
         public InputAction @MagicAttack => m_Wrapper.m_Player_MagicAttack;
         public InputAction @ScreenPos => m_Wrapper.m_Player_ScreenPos;
+        public InputAction @ScreenShot => m_Wrapper.m_Player_ScreenShot;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -347,6 +370,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ScreenPos.started += instance.OnScreenPos;
             @ScreenPos.performed += instance.OnScreenPos;
             @ScreenPos.canceled += instance.OnScreenPos;
+            @ScreenShot.started += instance.OnScreenShot;
+            @ScreenShot.performed += instance.OnScreenShot;
+            @ScreenShot.canceled += instance.OnScreenShot;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -372,6 +398,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ScreenPos.started -= instance.OnScreenPos;
             @ScreenPos.performed -= instance.OnScreenPos;
             @ScreenPos.canceled -= instance.OnScreenPos;
+            @ScreenShot.started -= instance.OnScreenShot;
+            @ScreenShot.performed -= instance.OnScreenShot;
+            @ScreenShot.canceled -= instance.OnScreenShot;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -398,5 +427,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnMeleeAttack(InputAction.CallbackContext context);
         void OnMagicAttack(InputAction.CallbackContext context);
         void OnScreenPos(InputAction.CallbackContext context);
+        void OnScreenShot(InputAction.CallbackContext context);
     }
 }

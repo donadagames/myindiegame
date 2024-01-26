@@ -16,6 +16,7 @@ public class Chat : IState
         status.player.animations.PlayAnimation(status.player.animations.IDLE,
     status.isSafeZone);
 
+        inputHandler.input = new UnityEngine.Vector2(0, 0);
         inputHandler.stateMachine.shouldChange = false;
     }
 

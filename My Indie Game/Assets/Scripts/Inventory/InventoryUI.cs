@@ -117,7 +117,17 @@ public class InventoryUI : MonoBehaviour
 
         selectedItem = null;
         quantityToDelete = 0;
-        inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+        if (inventoryPanel.activeSelf == true)
+        {
+            inventoryPanel.SetActive(false);
+            inventory.status.saveSystem.SaveInventory();
+        }
+
+        else
+        {
+            inventoryPanel.SetActive(true);
+        }
+
         itemInfoPanel.SetActive(false);
     }
 

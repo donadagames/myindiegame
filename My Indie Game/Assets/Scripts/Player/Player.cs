@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     public GameObject backWeapon;
     public GameObject backShield;
     public GameObject fishingRod;
+    public GameObject handPickAxe;
 
     public GameObject impactWood_VFX;
     public GameObject impactStone_VFX;
@@ -109,6 +110,7 @@ public class Player : MonoBehaviour
         backWeapon.SetActive(true);
         backShield.SetActive(true);
         fishingRod.SetActive(false);
+        handPickAxe.SetActive(false);
     }
 
     public void SetFishingConfiguration()
@@ -119,9 +121,21 @@ public class Player : MonoBehaviour
         backWeapon.SetActive(true);
         backShield.SetActive(true);
         fishingRod.SetActive(true);
+        handPickAxe.SetActive(false);
 
         StartCoroutine(ScaleRope());
 
+    }
+
+    public void SetMinningConfiguration()
+    {
+        handWeapon.SetActive(false);
+        handShield.SetActive(false);
+        handAxe.SetActive(false);
+        backWeapon.SetActive(true);
+        backShield.SetActive(true);
+        fishingRod.SetActive(false);
+        handPickAxe.SetActive(true);
     }
 
     public void SetUnarmedConfiguration()
@@ -132,6 +146,41 @@ public class Player : MonoBehaviour
         backWeapon.SetActive(true);
         backShield.SetActive(true);
         fishingRod.SetActive(false);
+        handPickAxe.SetActive(false);
+    }
+
+    public void SetOnlyShieldConfiguration()
+    {
+        handWeapon.SetActive(false);
+        handShield.SetActive(false);
+        handAxe.SetActive(false);
+        backWeapon.SetActive(false);
+        backShield.SetActive(true);
+        fishingRod.SetActive(false);
+        handPickAxe.SetActive(false);
+    }
+
+    public void SetOnlySwordConfiguration()
+    {
+        handWeapon.SetActive(false);
+        handShield.SetActive(false);
+        handAxe.SetActive(false);
+        backWeapon.SetActive(true);
+        backShield.SetActive(false);
+        fishingRod.SetActive(false);
+        handPickAxe.SetActive(false);
+    }
+
+    public void SetUnequipedConfiguration()
+    {
+        handWeapon.SetActive(false);
+        handShield.SetActive(false);
+        handAxe.SetActive(false);
+        backWeapon.SetActive(false);
+        backShield.SetActive(false);
+        fishingRod.SetActive(false);
+        handPickAxe.SetActive(false);
+
     }
 
     public void SetSwordAndShieldConfiguration()
@@ -142,6 +191,7 @@ public class Player : MonoBehaviour
         backWeapon.SetActive(false);
         backShield.SetActive(false);
         fishingRod.SetActive(false);
+        handPickAxe.SetActive(false);
     }
 
     #region SKILLS

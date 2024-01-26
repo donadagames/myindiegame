@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class Quests : MonoBehaviour
@@ -22,6 +22,7 @@ public class Quests : MonoBehaviour
     public QuestsUI questsUI;
     private Status status;
 
+
     private void Start()
     {
         status = Status.instance;
@@ -37,7 +38,11 @@ public class Quests : MonoBehaviour
         else
         {
             quests.Add(quest);
-            questsUI.AddNewQuest(quest);
+
+            if (!quest.isOnlyForDialogues)
+                questsUI.AddNewQuest(quest);
+
+            status.saveSystem.SaveQuests();
         }
     }
 
@@ -48,6 +53,8 @@ public class Quests : MonoBehaviour
     {
         OnQuestCompleted?.Invoke(this, new OnQuestCompletedEventHandler { quest = quest });
         quest.isCompleted = true;
+
+        status.saveSystem.SaveQuests();
     }
 
     public event EventHandler<OnQuestCompletedEventHandler> OnQuestCompleted;
@@ -68,9 +75,11 @@ public class Quests : MonoBehaviour
 
         return new SaveData { savedQuests = listOfSavedQuests };
     }
-
     public void RestoreState(object state)
     {
+
+        questsUI.ResetAllQuestSlots();
+
         var saveData = (SaveData)state;
 
         for (int i = 0; i < saveData.savedQuests.Count; i++)

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5a5ad708c00db429bc221a0e90873f, type: 3}
   m_Name: Meteor
   m_EditorClassIdentifier: 
-  animationClip: Meteor
+  animationClip: Spell_Meteor_SwordAndShield
   animationDuration: 1.667
   icon: {fileID: 21300000, guid: c817aa34fd12640a982c59cf0db24eed, type: 3}
   energyCost: 50

@@ -9,8 +9,30 @@ public class Chest : Interactable
     {
         if (hasInteract) return;
 
-        hasInteract = true;
-        uiController.SetDefaultInteractionSprite();
-        tampa.LeanRotateAroundLocal(Vector3.right, -45, .5f);
+        if (inventory.InventoryIsFull(item) == true)
+        {
+            inventory.DisplayFullInventoyText();
+            return;
+        }
+
+        if (!inventory.itens.Contains(key))
+        {
+            status.input.PlayWrongAudioClip();
+            return;
+        }
+
+        else
+        {
+            hasInteract = true;
+            uiController.SetDefaultInteractionSprite();
+            tampa.LeanRotateAroundLocal(Vector3.right, -45, .5f).setOnComplete(DealInteraction);
+        }
+    }
+
+    private void DealInteraction()
+    {
+        //GiveItem();
+        status.input.isInteracting = true;
+        status.player.SetUnarmedConfiguration();
     }
 }

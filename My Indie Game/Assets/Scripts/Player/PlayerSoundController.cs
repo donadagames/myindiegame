@@ -77,6 +77,12 @@ public class PlayerSoundController : MonoBehaviour
         Instantiate(player.impactWood_VFX, player.impactTransform.position, Quaternion.identity);
     }
 
+    public void MinningSound()
+    {
+        audioSource.PlayOneShot(GetRandomAudioClip(miningAudioClips));
+        Instantiate(player.impactStone_VFX, player.impactTransform.position, Quaternion.identity);
+    }
+
     public void MiningSound()
     {
         audioSource.PlayOneShot(GetRandomAudioClip(miningAudioClips));

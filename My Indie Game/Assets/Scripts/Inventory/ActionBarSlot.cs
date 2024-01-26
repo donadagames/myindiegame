@@ -1,5 +1,4 @@
 using System;
-using System.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -115,9 +114,11 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler
         if (data.itemID != string.Empty)
         {
             var _dragableItem = _inventory.GetDragableFromItem(_inventory.status.saveSystem.GetItemFromID(data.itemID));
-            _dragableItem.RestoreOnLoad();
-
-            UpdateActionbarSlot(this, _dragableItem);
+            if (_dragableItem != null)
+            {
+                _dragableItem.RestoreOnLoad();
+                UpdateActionbarSlot(this, _dragableItem);
+            }
         }
     }
 }

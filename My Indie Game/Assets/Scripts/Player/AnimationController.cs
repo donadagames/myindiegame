@@ -43,6 +43,8 @@ public class AnimationController : MonoBehaviour
     public string[] MAGIC_ATTACK_04 = new string[2];
     public string[] LEVELUP = new string[2];
     public string[] REBIRTH = new string[2];
+    //public string[] WALKING = new string[2];
+    public string[] MOUNT = new string[2];
 
     public List<string[]> MELEE_ATTACKS = new List<string[]>(4);
     public List<string[]> MAGIC_ATTACKS = new List<string[]>(4);
@@ -71,9 +73,13 @@ public class AnimationController : MonoBehaviour
     public void PlayAnimation(string[] animation, bool isSafeZone)
     {
         if (isSafeZone)
+        {
             animator.Play(animation[0]);
+        }
         else
+        {
             animator.Play(animation[1]);
+        }
     }
 
     public int GetMeleeAttack()

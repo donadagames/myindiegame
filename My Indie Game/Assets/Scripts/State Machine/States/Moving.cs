@@ -18,8 +18,8 @@ public class Moving : IState
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
         shouldCheckFalling = true;
-
         inputHandler.stateMachine.shouldChange = false;
+
 
         if (inputHandler.isCarrying)
         {
@@ -29,6 +29,7 @@ public class Moving : IState
 
         else
         {
+
             status.player.animations.PlayAnimation(status.player.animations.MOVE,
                 status.isSafeZone);
         }
@@ -49,6 +50,14 @@ public class Moving : IState
 
         inputHandler.SearchForInteractables();
 
+        /*if (inputHandler.input.sqrMagnitude <= .75f)
+        {
+            status.player.animations.PlayAnimation(status.player.animations.WALKING,
+                status.isSafeZone);
+        }
+
+        else
+                 */
         if (inputHandler.stateMachine.shouldChange)
         {
             status.player.animations.PlayAnimation(status.player.animations.MOVE,

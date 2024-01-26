@@ -9,6 +9,12 @@ public class ScreenShoter : MonoBehaviour
     [Range(1, 5)]
     private int size = 1;
 
+    public static ScreenShoter instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
     // Update is called once per frame
     public void Photo()
     {

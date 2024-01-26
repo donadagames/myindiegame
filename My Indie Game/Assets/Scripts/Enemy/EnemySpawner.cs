@@ -16,9 +16,14 @@ public class EnemySpawner : MonoBehaviour
     public Transform[] waypoints;
     public float minDistanceToWaypoint;
     public bool isIdleEnemy;
-
+    public bool shouldSave = false;
     public EnemyAttackPosition enemyPosition;
     public Transform playerTarget;
+
+    [ContextMenu("Generate ID")]
+    private void GenereteID() => saveableEntityId = Guid.NewGuid().ToString();
+
+    public string saveableEntityId;
 
     private void Awake()
     {
@@ -132,7 +137,29 @@ public class EnemySpawner : MonoBehaviour
         {
             status.enemies.Remove(enemy);
         }
+
+        shouldSave = true;
+
+        if (saveableEntityId == string.Empty)
+            return;
+
+        status.saveSystem.SaveEnemies();
         Destroy(enemy.gameObject);
     }
 
+
+    public virtual void CaptureState()
+    {
+        return;
+    }
+
+    public virtual void RestoreState()
+    {
+        shouldSpawn = false;
+        shouldSave = true;
+
+        if (enemy != null)
+        { Destroy(enemy); }
+
+    }
 }

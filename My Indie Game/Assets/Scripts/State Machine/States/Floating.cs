@@ -12,6 +12,10 @@ public class Floating : IState
     public void OnEnter()
     {
         status.player.sword.shouldCheck = false;
+
+        if (status.uiController.aim != null)
+            status.uiController.aim.m_Damping = status.dampingTime;
+
         inputHandler.SetSwimmingConfiguration();
         inputHandler.isFalling = false;
         inputHandler.jumpCount = 0;
@@ -26,6 +30,9 @@ public class Floating : IState
 
     public void OnExit()
     {
+
+        status.uiController.aim.m_Damping = 999999999f;
+
         inputHandler.SetDefaultConfigurations();
     }
 

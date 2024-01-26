@@ -18,6 +18,8 @@ public class Quest : ScriptableObject
     public Dialogue onCompleteDialogue;
     public Dialogue afterCompletedDialogue;
 
+    public bool isOnlyForDialogues = false;
+
     [ContextMenu("Generate ID")]
     private void GenereteID() => saveableEntityId = Guid.NewGuid().ToString();
 

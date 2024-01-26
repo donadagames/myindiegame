@@ -1,19 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
-using UnityEditor;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SaveSystem : MonoBehaviour
 {
+    private UIController uiController;
+
     #region INVENTORY AND ITENS
     public Item[] allItens;
+    public Dialogue[] allDialogues;
     [SerializeField] private List<ActionBarSlot> actionBarSlots = new List<ActionBarSlot>();
     public Dictionary<string, Item> itensID = new Dictionary<string, Item>();
     public Dictionary<string, Quest> questsID = new Dictionary<string, Quest>();
-
+    public Dictionary<string, Dialogue> dialoguesID = new Dictionary<string, Dialogue>();
     #endregion
 
     #region QUESTS AND QUESTOBJECTIVES
@@ -25,8 +27,15 @@ public class SaveSystem : MonoBehaviour
     private Status status;
     #endregion
 
-    private UIController uiController;
-    public string path => $"{Application.persistentDataPath}/data.txt";
+    #region PATHS
+    public string statusPath => $"{Application.persistentDataPath}/statusData.txt";
+    public string inventoryPath => $"{Application.persistentDataPath}/inventoryData.txt";
+    public string interactablesPath => $"{Application.persistentDataPath}/interactablesData.txt";
+    public string questsPath => $"{Application.persistentDataPath}/questsData.txt";
+    public string dialoguesPath => $"{Application.persistentDataPath}/dialogueData.txt";
+    public string entitiesPath => $"{Application.persistentDataPath}/entitiesData.txt";
+    public string enemiesPath => $"{Application.persistentDataPath}/enemiesData.txt";
+    #endregion
 
     #region SINGLETON
     public static SaveSystem instance;
@@ -38,9 +47,15 @@ public class SaveSystem : MonoBehaviour
 
         PopulateItensIDDict();
         PopulateQuestsIDDict();
+        PopulateDialoguesIDDict();
+        PopulateScenesIDDict();
     }
     #endregion
 
+    #region SCENES
+    public SceneData[] allScenes;
+    public Dictionary<string, SceneData> scenesBuildNames = new Dictionary<string, SceneData>();
+    #endregion
     private void Start()
     {
         status = Status.instance;
@@ -48,9 +63,69 @@ public class SaveSystem : MonoBehaviour
         ResetAllItens();
         ResetAllQuests();
         ResetAllQuestsObjetives();
+        //StartCoroutine(OnStartCoroutine());
+
+    }
+
+    private IEnumerator OnStartCoroutine()
+    {
+        yield return new WaitForSeconds(.25f);
+
+        RestoreAllStates();
     }
 
     #region INVENTORY METHODS
+
+    #region SAVE INVENTORY METHODS
+    private void SaveInventoryFile(object state)
+    {
+        using (var stream = File.Open(inventoryPath, FileMode.Create))
+        {
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, state);
+        }
+    }
+    private Dictionary<string, object> LoadInventoryFile()
+    {
+        if (!File.Exists(inventoryPath))
+        {
+            //ResetAllItens();
+            return new Dictionary<string, object>();
+        }
+
+        using (FileStream stream = File.Open(inventoryPath, FileMode.Open))
+        {
+            var formatter = new BinaryFormatter();
+            return (Dictionary<string, object>)formatter.Deserialize(stream);
+        }
+    }
+
+    [ContextMenu("SaveInventory")]
+    public void SaveInventory()
+    {
+        var state = LoadInventoryFile();
+        CaptureInventoryData(state);
+        SaveInventoryFile(state);
+    }
+    [ContextMenu("LoadInventory")]
+    public void LoadInventory()
+    {
+        var state = LoadInventoryFile();
+        if (state.Count <= 0) return;
+        RestoreInventoryData(state);
+    }
+
+    [ContextMenu("Delete Inventory Saved File")]
+    public void DeleteSavedInventoryFile()
+    {
+        if (File.Exists(inventoryPath))
+        {
+            ResetAllItens();
+            File.Delete(inventoryPath);
+        }
+    }
+    #endregion
+
     private void PopulateItensIDDict()
     {
         foreach (Item item in allItens)
@@ -98,7 +173,7 @@ public class SaveSystem : MonoBehaviour
         {
             if (state.TryGetValue(slot.saveableEntityId, out object value))
             {
-               slot.RestoreState(value, status.inventory);
+                slot.RestoreState(value, status.inventory);
             }
         }
 
@@ -131,13 +206,60 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    private void CaptureQuestsData(Dictionary<string, object> state)
+    #region SAVE QUESTS METHODS
+    private void SaveQuestsFile(object state)
+    {
+        using (var stream = File.Open(questsPath, FileMode.Create))
+        {
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, state);
+        }
+    }
+    private Dictionary<string, object> LoadQuestsFile()
+    {
+        if (!File.Exists(questsPath))
+        {
+            return new Dictionary<string, object>();
+        }
 
+        using (FileStream stream = File.Open(questsPath, FileMode.Open))
+        {
+            var formatter = new BinaryFormatter();
+            return (Dictionary<string, object>)formatter.Deserialize(stream);
+        }
+    }
+
+    [ContextMenu("Save Quests")]
+    public void SaveQuests()
+    {
+        var state = LoadQuestsFile();
+        CaptureQuestsState(state);
+        SaveQuestsFile(state);
+    }
+    [ContextMenu("Load Quests")]
+    public void LoadQuests()
+    {
+        var state = LoadQuestsFile();
+        if (state.Count <= 0) return;
+        RestoreQuestsState(state);
+    }
+
+    [ContextMenu("Delete Quests")]
+    public void DeleteQuestsFile()
+    {
+        if (File.Exists(questsPath))
+        {
+            File.Delete(questsPath);
+        }
+    }
+    #endregion
+
+    private void CaptureQuestsState(Dictionary<string, object> state)
     {
         state[status.quests.saveableEntityId] = status.quests.CaptureState();
     }
 
-    private void RestoreQuestsData(Dictionary<string, object> state)
+    private void RestoreQuestsState(Dictionary<string, object> state)
     {
         if (state.TryGetValue(status.quests.saveableEntityId, out object value))
         {
@@ -149,61 +271,366 @@ public class SaveSystem : MonoBehaviour
     #region STATUS METHODS
     private void CapturePlayerStatusData(Dictionary<string, object> state)
     {
-        state[status.saveableEntityId] = status.CaptureState();
+        state[status.saveableEntityId] = status.CapturePlayerStatusState();
     }
 
     private void RestorePlayerStatusData(Dictionary<string, object> state)
     {
         if (state.TryGetValue(status.saveableEntityId, out object value))
         {
-            status.RestoreState(value);
+            status.RestorePlayerStatusState(value);
         }
     }
-    #endregion
 
-    #region CAPTURE AND RESTORE METHODS
-    private void CaptureState(Dictionary<string, object> state)
+    #region SAVE STATUS METHODS
+
+    public bool HasSavedStatus() => File.Exists(statusPath);
+
+    private void SaveStatusFile(object state)
     {
-        CaptureInventoryData(state);
-        CapturePlayerStatusData(state);
-        CaptureQuestsData(state);
-    }
-
-
-    private void RestoreState(Dictionary<string, object> state)
-    {
-        RestoreQuestsData(state);
-        RestoreInventoryData(state);
-        RestorePlayerStatusData(state);
-    }
-    #endregion
-
-    #region SAVE METHODS
-    private void SaveFile(object state)
-    {
-        using (var stream = File.Open(path, FileMode.Create))
+        using (var stream = File.Open(statusPath, FileMode.Create))
         {
             var formatter = new BinaryFormatter();
             formatter.Serialize(stream, state);
         }
     }
-    private Dictionary<string, object> LoadFile()
+    private Dictionary<string, object> LoadStatusFile()
     {
-        if (!File.Exists(path))
+        if (!File.Exists(statusPath))
         {
-            ResetAllItens();
             return new Dictionary<string, object>();
         }
 
-        using (FileStream stream = File.Open(path, FileMode.Open))
+        using (FileStream stream = File.Open(statusPath, FileMode.Open))
         {
             var formatter = new BinaryFormatter();
             return (Dictionary<string, object>)formatter.Deserialize(stream);
         }
     }
 
-    [ContextMenu("Save")]
-    public void Save()
+    [ContextMenu("Save Status")]
+    public void SaveStatus()
+    {
+        var state = LoadStatusFile();
+        CapturePlayerStatusData(state);
+        SaveStatusFile(state);
+    }
+    [ContextMenu("Load Status")]
+    public void LoadStatus()
+    {
+        var state = LoadStatusFile();
+        RestorePlayerStatusData(state);
+    }
+
+    [ContextMenu("Delete Status")]
+    public void DeleteStatusFile()
+    {
+        if (File.Exists(statusPath))
+        {
+            ResetAllQuestsObjetives();
+            ResetAllItens();
+            ResetAllQuests();
+            File.Delete(statusPath);
+        }
+    }
+    #endregion
+
+    #endregion
+
+    #region DIALOGUE METHODS
+    private void PopulateDialoguesIDDict()
+    {
+        foreach (Dialogue dialogue in allDialogues)
+        {
+            if (!dialoguesID.ContainsValue(dialogue))
+            {
+                dialoguesID.Add(dialogue.dialogueID, dialogue);
+            }
+        }
+    }
+
+    public Dialogue GetDialogueFromID(string id)
+    {
+        if (dialoguesID.TryGetValue(id, out Dialogue dialogue))
+            return dialogue;
+        return null;
+    }
+
+    #region SAVE DIALOGUES METHODS
+    private void SaveDialoguesFile(object state)
+    {
+        using (var stream = File.Open(dialoguesPath, FileMode.Create))
+        {
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, state);
+        }
+    }
+    private Dictionary<string, object> LoadDialoguesFile()
+    {
+        if (!File.Exists(dialoguesPath))
+        {
+            return new Dictionary<string, object>();
+        }
+
+        using (FileStream stream = File.Open(dialoguesPath, FileMode.Open))
+        {
+            var formatter = new BinaryFormatter();
+            return (Dictionary<string, object>)formatter.Deserialize(stream);
+        }
+    }
+
+    [ContextMenu("Save Dialogues")]
+    public void SaveDialogues()
+    {
+        var state = LoadDialoguesFile();
+        CaptureDialoguesState(state);
+        SaveDialoguesFile(state);
+    }
+    [ContextMenu("Load Dialogues")]
+    public void LoadDialogues()
+    {
+        var state = LoadDialoguesFile();
+        if (state.Count <= 0) return;
+        RestoreDialoguesState(state);
+    }
+
+    [ContextMenu("Delete Dialogues")]
+    public void DeleteSavedDialoguesFile()
+    {
+        if (File.Exists(dialoguesPath))
+        {
+            File.Delete(dialoguesPath);
+        }
+    }
+    #endregion
+
+    private void CaptureDialoguesState(Dictionary<string, object> state)
+    {
+        state[status.saveableEntityId] = status.CaptureDialogueActivatorsState();
+    }
+
+    private void RestoreDialoguesState(Dictionary<string, object> state)
+    {
+        if (state.TryGetValue(status.saveableEntityId, out object value))
+        {
+            status.RestoreDialogueActivatorsState(value);
+        }
+    }
+
+    #endregion
+
+    #region INTERACTABLES METHODS
+
+    #region SAVE INTERACTABLES METHODS
+    private void SaveInteractablesFile(object state)
+    {
+        using (var stream = File.Open(interactablesPath, FileMode.Create))
+        {
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, state);
+        }
+    }
+    private Dictionary<string, object> LoadInteractablesFile()
+    {
+        if (!File.Exists(interactablesPath))
+        {
+            return new Dictionary<string, object>();
+        }
+
+        using (FileStream stream = File.Open(interactablesPath, FileMode.Open))
+        {
+            var formatter = new BinaryFormatter();
+            return (Dictionary<string, object>)formatter.Deserialize(stream);
+        }
+    }
+
+    [ContextMenu("Save Interactables")]
+    public void SaveInteractables()
+    {
+        var state = LoadInteractablesFile();
+        CaptureInteractablesState(state);
+        SaveInteractablesFile(state);
+    }
+    [ContextMenu("Load Interactables")]
+    public void LoadInteractables()
+    {
+        var state = LoadInteractablesFile();
+        if (state.Count <= 0) return;
+        RestoreInteractablesState(state);
+    }
+
+    [ContextMenu("Delete Interactables")]
+    public void DeleteSavedInteractablesFile()
+    {
+        if (File.Exists(interactablesPath))
+        {
+            File.Delete(interactablesPath);
+        }
+    }
+    #endregion
+
+    private void CaptureInteractablesState(Dictionary<string, object> state)
+    {
+        state[status.saveableEntityId] = status.CaptureInteractablesState();
+    }
+
+    private void RestoreInteractablesState(Dictionary<string, object> state)
+    {
+        if (state.TryGetValue(status.saveableEntityId, out object value))
+        {
+            status.RestoreInteractablesState(value);
+        }
+    }
+    #endregion
+
+    #region SAVABLES ENTITIES
+    #region SAVE SAVABLES ENTITIES METHODS
+    private void SaveEntitiesFile(object state)
+    {
+        using (var stream = File.Open(entitiesPath, FileMode.Create))
+        {
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, state);
+        }
+    }
+    private Dictionary<string, object> LoadEntitiesFile()
+    {
+        if (!File.Exists(entitiesPath))
+        {
+            return new Dictionary<string, object>();
+        }
+
+        using (FileStream stream = File.Open(entitiesPath, FileMode.Open))
+        {
+            var formatter = new BinaryFormatter();
+            return (Dictionary<string, object>)formatter.Deserialize(stream);
+        }
+    }
+
+    [ContextMenu("Save Entities")]
+    public void SaveEntities()
+    {
+        var state = LoadEntitiesFile();
+        CaptureEntitiesState(state);
+        SaveEntitiesFile(state);
+    }
+    [ContextMenu("Load Entities")]
+    public void LoadEntities()
+    {
+        var state = LoadEntitiesFile();
+        if (state.Count <= 0) return;
+        RestoreEntitiesState(state);
+    }
+
+    [ContextMenu("Delete Entities")]
+    public void DeleteEntitiesFile()
+    {
+        if (File.Exists(entitiesPath))
+        {
+            File.Delete(entitiesPath);
+        }
+    }
+    #endregion
+
+    private void CaptureEntitiesState(Dictionary<string, object> state)
+    {
+        state[status.saveableEntityId] = status.CaptureSavableEntitiesState();
+    }
+
+    private void RestoreEntitiesState(Dictionary<string, object> state)
+    {
+        if (state.TryGetValue(status.saveableEntityId, out object value))
+        {
+            status.RestoreSavableEntitiesState(value);
+        }
+    }
+    #endregion
+
+    #region SCENES
+
+    private void PopulateScenesIDDict()
+    {
+        foreach (SceneData scene in allScenes)
+        {
+            if (!scenesBuildNames.ContainsValue(scene))
+            {
+                scenesBuildNames.Add(scene.builtName, scene);
+            }
+        }
+    }
+
+    public SceneData GetSceneDataFromBuildName(string buildName)
+    {
+        if (scenesBuildNames.TryGetValue(buildName, out SceneData scenedata))
+            return scenedata;
+        return null;
+    }
+    #endregion
+
+    #region ENEMIES SPAWNERS METHODS
+    #region SAVE ENEMIES SPAWNERS METHODS
+    private void SaveEnemiesFile(object state)
+    {
+        using (var stream = File.Open(enemiesPath, FileMode.Create))
+        {
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, state);
+        }
+    }
+    private Dictionary<string, object> LoadEnemiesFile()
+    {
+        if (!File.Exists(enemiesPath))
+        {
+            return new Dictionary<string, object>();
+        }
+
+        using (FileStream stream = File.Open(enemiesPath, FileMode.Open))
+        {
+            var formatter = new BinaryFormatter();
+            return (Dictionary<string, object>)formatter.Deserialize(stream);
+        }
+    }
+
+    [ContextMenu("Save Enemies")]
+    public void SaveEnemies()
+    {
+        var state = LoadEnemiesFile();
+        CaptureEnemiesState(state);
+        SaveEnemiesFile(state);
+    }
+    [ContextMenu("Load Enemies")]
+    public void LoadEnemies()
+    {
+        var state = LoadEnemiesFile();
+        if (state.Count <= 0) return;
+        RestoreEnemiesState(state);
+    }
+
+    [ContextMenu("Delete Enemies")]
+    public void DeleteEnemiesFile()
+    {
+        if (File.Exists(enemiesPath))
+        {
+            File.Delete(enemiesPath);
+        }
+    }
+    #endregion
+
+    private void CaptureEnemiesState(Dictionary<string, object> state)
+    {
+        state[status.saveableEntityId] = status.CaptureEnemiesState();
+    }
+
+    private void RestoreEnemiesState(Dictionary<string, object> state)
+    {
+        if (state.TryGetValue(status.saveableEntityId, out object value))
+        {
+            status.RestoreEnemiesState(value);
+        }
+    }
+    #endregion
+
+    public void DisplaySaveText()
     {
         var text = string.Empty;
 
@@ -221,38 +648,66 @@ public class SaveSystem : MonoBehaviour
         }
 
         uiController.DisplayInfoText(text, status.inventory.inventoryUI.settingsController.languageController);
-
-        var state = LoadFile();
-        CaptureState(state);
-        SaveFile(state);
-    }
-    [ContextMenu("Load")]
-    public void Load()
-    {
-        var state = LoadFile();
-        RestoreState(state);
     }
 
-    [ContextMenu("Delete")]
-    public void DeleteSavedeFile()
+    #region CAPTURE ALL AND RESTORE ALL METHODS
+    [ContextMenu("Save All")]
+    public void CaptureAllStates()
     {
-        if (File.Exists(path))
-        {
-            ResetAllQuestsObjetives();
-            ResetAllItens();
-            ResetAllQuests();
-            File.Delete(path);
-        }
+        SaveInventory();
+        SaveQuests();
+        SaveStatus();
+        SaveInteractables();
+        SaveEntities();
+        SaveDialogues();
+        SaveEnemies();
+        DisplaySaveText();
     }
+
+    [ContextMenu("Load All")]
+    public void RestoreAllStates()
+    {
+        LoadInventory();
+        LoadInteractables();
+        LoadDialogues();
+        LoadEntities();
+        LoadQuests();
+        LoadStatus();
+        LoadEnemies();
+    }
+
+    [ContextMenu("Delete All")]
+    public void DeleteAllFiles()
+    {
+        DeleteEntitiesFile();
+        DeleteQuestsFile();
+        DeleteSavedDialoguesFile();
+        DeleteSavedInteractablesFile();
+        DeleteStatusFile();
+        DeleteSavedInventoryFile();
+        DeleteEnemiesFile();
+    }
+
     #endregion
 
 }
 
-public interface ISaveable
+public class SavableEntity : MonoBehaviour
 {
-    //SAVE GAME
-    object CaptureState();
+    public string saveableEntityId;
+    [ContextMenu("Generate ID")]
+    private void GenereteID() => saveableEntityId = Guid.NewGuid().ToString();
 
-    //LOAD GAME
-    void RestoreState(object state);
+    public bool shouldSave = false;
+
+
+    public virtual void CaptureState()
+    {
+        return;
+    }
+
+    public virtual void RestoreState(SerializableSavableEntity savable)
+    {
+        return;
+    }
 }

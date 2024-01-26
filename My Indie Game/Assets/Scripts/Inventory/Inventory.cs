@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Inventory : MonoBehaviour
 {
@@ -27,7 +27,7 @@ public class Inventory : MonoBehaviour
     public List<InventorySlot> slots = new List<InventorySlot>();
     public Sprite fullInventoryIcon;
     public int inventorySpace;
-
+    public Item[] swordAndShield = new Item[2];
     public bool InventoryIsFull(Item item) => GetFirstEmptySlot() == null && !itens.Contains(item);
     public InventoryUI inventoryUI;
 
@@ -69,6 +69,28 @@ public class Inventory : MonoBehaviour
 
         else
         {
+
+            if (item.isOnlyQuestObjective)
+            {
+                status.player.soundController.PlayClip(item.audioClip);
+                itens.Add(item);
+                item.quantity += quantity;
+
+                if (item.questObjective != null)
+                {
+                    item.questObjective.currentQuantity += quantity;
+                    OnUpdateQuestObjective?.Invoke(this, new OnUpdateQuestObjectiveEventHandler { questObjective = item.questObjective });
+                    if (item.questObjective.currentQuantity >= item.questObjective.completeQuantity &&
+                    !item.questObjective.isCompleted)
+                    {
+                        item.questObjective.isCompleted = true;
+                    }
+                }
+
+                OnUpdateInventory?.Invoke(this, new OnUpdateInventoryEventHandler { item = item });
+                return;
+            }
+
             var slot = GetFirstEmptySlot();
             #region Inventory is full
             if (slot == null)
@@ -82,6 +104,7 @@ public class Inventory : MonoBehaviour
             {
                 var usedSlot = GetSlotWithItem(item);
                 status.player.soundController.PlayClip(item.audioClip);
+                itens.Add(item);
                 item.quantity += quantity;
 
                 if (item.questObjective != null)
@@ -100,7 +123,6 @@ public class Inventory : MonoBehaviour
                 if (usedSlot == null)
                 {
                     slot.AddItem(item, quantity); // Add to inventory
-                    //ShowItemInfo(item, quantity.ToString());
                     OnUpdateInventory?.Invoke(this, new OnUpdateInventoryEventHandler { item = item });
                     return;
                 }
@@ -109,13 +131,14 @@ public class Inventory : MonoBehaviour
                 #region Inventory already have this specific item
                 else
                 {
-                    //ShowItemInfo(item, quantity.ToString());
                     OnUpdateInventory?.Invoke(this, new OnUpdateInventoryEventHandler { item = item });
                 }
                 #endregion
             }
             #endregion
         }
+
+        status.saveSystem.SaveInventory();
     }
 
     public void DiplayMensage(string text)
@@ -180,6 +203,8 @@ public class Inventory : MonoBehaviour
         if (item.quantity <= 0 && !basicItens.Contains(item))
         {
             itens.Remove(item);
+            var _slot = GetSlotWithItem(item);
+            _slot.ClearInventorySlot();
         }
 
         OnUpdateInventory?.Invoke(this, new OnUpdateInventoryEventHandler { item = item });
@@ -233,6 +258,8 @@ public class Inventory : MonoBehaviour
     public void RestoreState(object state)
     {
         var saveData = (SaveData)state;
+        itens = new List<Item>();
+        
 
         foreach (InventorySlot slot in slots)
         {
@@ -292,8 +319,28 @@ public class Inventory : MonoBehaviour
 
         else
         {
-            var slot = GetFirstEmptySlot();
+            if (item.isOnlyQuestObjective)
+            {
+                itens.Add(item);
+                item.quantity += quantity;
 
+                if (item.questObjective != null)
+                {
+                    item.questObjective.currentQuantity += quantity;
+                    OnUpdateQuestObjective?.Invoke(this, new OnUpdateQuestObjectiveEventHandler { questObjective = item.questObjective });
+                    if (item.questObjective.currentQuantity >= item.questObjective.completeQuantity &&
+                    !item.questObjective.isCompleted)
+                    {
+                        item.questObjective.isCompleted = true;
+                    }
+                }
+
+                OnUpdateInventory?.Invoke(this, new OnUpdateInventoryEventHandler { item = item });
+                return;
+            }
+
+            var slot = GetFirstEmptySlot();
+            itens.Add(item);
             item.quantity = quantity;
 
             if (item.questObjective != null)

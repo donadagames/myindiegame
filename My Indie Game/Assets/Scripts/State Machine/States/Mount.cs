@@ -17,7 +17,7 @@ public class Mount : IState
     {
         time = Time.time;
         status.uiController.SetCameraTarget(status.mount.transform);
-        status.player.animations.animator.Play("Mounting");
+        status.player.animations.PlayAnimation(status.player.animations.MOUNT, status.isSafeZone);
         status.player.transform.SetParent(status.mountTransform);
 
         status.player.transform.localEulerAngles = new Vector3(0,0,0);

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class Status : MonoBehaviour
@@ -10,7 +8,7 @@ public class Status : MonoBehaviour
     [ContextMenu("Generate ID")]
     private void GenereteID() => saveableEntityId = Guid.NewGuid().ToString();
 
-
+    public SceneManagerController sceneManager;
     public static Status instance;
     public Camera mainCamera;
     public Player player;
@@ -18,9 +16,11 @@ public class Status : MonoBehaviour
     public List<Enemy> enemies = new List<Enemy>();
     [HideInInspector] public DialogueUI dialogueUI;
     [HideInInspector] public Quests quests;
-    [HideInInspector] public UIController uiController;
+    public UIController uiController;
     [HideInInspector] public InputHandler input;
+    public LoadSceneController loadSceneController;
     public Transform mountTransform;
+    public Transform playerParentTransform;
     public Player mount;
     public Pet pet;
     public Player lili;
@@ -28,23 +28,23 @@ public class Status : MonoBehaviour
     public SaveSystem saveSystem;
     public Ghost ghost;
     public GameObject rebirth_VFX;
+    public SceneData sceneData;
+    public float dampingTime = 12f;
 
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(this);
-
-        mainCamera = Camera.main;
         currentHealth = health;
         currentEnergy = energy;
     }
 
     private void Start()
     {
-        uiController = UIController.instance;
         input = InputHandler.instance;
         dialogueUI = DialogueUI.instance;
         quests = Quests.instance;
+        loadSceneController = LoadSceneController.instance;
         inventory = Inventory.instance;
         saveSystem = SaveSystem.instance;
     }
@@ -70,6 +70,7 @@ public class Status : MonoBehaviour
     #region HEALTH EVENTS
     public float health;
     public float currentHealth;
+    public int force;
     [HideInInspector] public bool isDamaged = false;
     [HideInInspector] public bool isAlive = true;
 
@@ -214,19 +215,138 @@ public class Status : MonoBehaviour
     #endregion
 
     #region SAVE EVENTS
-    public object CaptureState()
+    public object CapturePlayerStatusState()
     {
-        return new StatusData(this);
+        return new SaveData { statusData = new StatusData(this) };
     }
 
-    public void RestoreState(object state)
+    public object CaptureInteractablesState()
     {
-        var data = (StatusData)state;
+        var listOfSavables = new List<Savable>();
+        foreach (var savable in sceneManager.iSavables)
+        {
+            if (savable.hasInteract)
+            {
+                listOfSavables.Add(new Savable(savable.saveableEntityId));
+            }
+        }
 
-        Vector3 playerPos = new Vector3(data._playerXPosition, data._playerYPosition, data._playerZPosition);
+        return new SaveData { savables = listOfSavables };
+    }
+
+    public object CaptureSavableEntitiesState()
+    {
+        var listOfSavableEntities = new List<SerializableSavableEntity>();
+
+        foreach (var savable in sceneManager.savableEntities)
+        {
+            if (savable.shouldSave)
+            {
+                listOfSavableEntities.Add(new SerializableSavableEntity(savable.saveableEntityId));
+            }
+        }
+        return new SaveData { savablesEntities = listOfSavableEntities };
+    }
+
+    public object CaptureEnemiesState()
+    {
+        var listOfEnemies = new List<SerializableEnemySpawner>();
+
+        foreach (var enemySpawner in sceneManager.enemySpawners)
+        {
+            if (enemySpawner.shouldSave)
+            {
+                listOfEnemies.Add(new SerializableEnemySpawner(enemySpawner.saveableEntityId));
+            }
+        }
+        return new SaveData { enemySpawners = listOfEnemies };
+    }
+
+    public object CaptureDialogueActivatorsState()
+    {
+        var listOfDialogueActivators = new List<SavableDialogueActivator>();
+
+        foreach (var savable in sceneManager.iSavablesDialogueActivators)
+        {
+            listOfDialogueActivators.Add(new SavableDialogueActivator(savable.saveableEntityId, savable.currentDialogue.dialogueID));
+        }
+
+        return new SaveData { savablesDialogueActivators = listOfDialogueActivators };
+    }
+
+    public void RestoreInteractablesState(object state)
+    {
+        var data = (SaveData)state;
+
+        for (int i = 0; i < data.savables.Count; i++)
+        {
+            if (sceneManager.savablesID.TryGetValue(data.savables[i].savableID, out Interactable savable))
+            {
+                savable.RestoreState(data.savables[i]);
+            }
+        }
+    }
+
+    public void RestoreSavableEntitiesState(object state)
+    {
+        var data = (SaveData)state;
+
+        for (int i = 0; i < data.savablesEntities.Count; i++)
+        {
+            if (sceneManager.savableEntitiesID.TryGetValue(data.savablesEntities[i].savableID, out SavableEntity savable))
+            {
+                savable.RestoreState(data.savablesEntities[i]);
+            }
+        }
+
+    }
+
+    public void RestoreEnemiesState(object state)
+    {
+        var data = (SaveData)state;
+
+        for (int i = 0; i < data.enemySpawners.Count; i++)
+        {
+            if (sceneManager.enemySpawnersID.TryGetValue(data.enemySpawners[i].savableID, out EnemySpawner spawner))
+            {
+                spawner.RestoreState();
+            }
+        }
+
+    }
+
+    public void RestoreDialogueActivatorsState(object state)
+    {
+        var data = (SaveData)state;
+
+        for (int i = 0; i < data.savablesDialogueActivators.Count; i++)
+        {
+            if (sceneManager.savablesDialogueActivatorsID.TryGetValue(data.savablesDialogueActivators[i].savableID, out Interactable savable))
+            {
+                savable.RestoreState(null, data.savablesDialogueActivators[i]);
+            }
+        }
+    }
+
+    public void RestorePlayerStatusState(object state)
+    {
+        var data = (SaveData)state;
+
+        Vector3 playerPos = new Vector3(data.statusData.playerPos.x, data.statusData.playerPos.y, data.statusData.playerPos.z);
         player.transform.position = playerPos;
+
+        sceneData = saveSystem.GetSceneDataFromBuildName(data.statusData.sceneBuildName);
     }
 
+    [Serializable]
+    private struct SaveData
+    {
+        public StatusData statusData;
+        public List<Savable> savables;
+        public List<SavableDialogueActivator> savablesDialogueActivators;
+        public List<SerializableSavableEntity> savablesEntities;
+        public List<SerializableEnemySpawner> enemySpawners;
+    }
     #endregion
     #endregion
 }
@@ -234,14 +354,73 @@ public class Status : MonoBehaviour
 [System.Serializable]
 public class StatusData
 {
-    public float _playerXPosition;
-    public float _playerYPosition;
-    public float _playerZPosition;
+    public SerializedVector3 playerPos;
+    public string sceneBuildName;
 
     public StatusData(Status status)
     {
-        _playerXPosition = status.player.transform.position.x;
-        _playerYPosition = status.player.transform.position.y;
-        _playerZPosition = status.player.transform.position.z;
+        playerPos = new SerializedVector3(status.player.transform.position.x, status.player.transform.position.y, status.player.transform.position.z);
+        sceneBuildName = status.sceneManager.sceneData.builtName;
+    }
+}
+
+[System.Serializable]
+public class Savable
+{
+    public string savableID;
+
+    public Savable(string _savableID)
+    {
+        savableID = _savableID;
+    }
+}
+
+[System.Serializable]
+public class SavableDialogueActivator
+{
+    public string savableID;
+    public string dialogueID;
+
+    public SavableDialogueActivator(string _savableID, string _dialogueID)
+    {
+        savableID = _savableID;
+        dialogueID = _dialogueID;
+    }
+}
+
+[System.Serializable]
+public class SerializableSavableEntity
+{
+    public string savableID;
+
+    public SerializableSavableEntity(string _savableID)
+    {
+        savableID = _savableID;
+    }
+}
+
+[System.Serializable]
+public class SerializableEnemySpawner
+{
+    public string savableID;
+
+    public SerializableEnemySpawner(string _savableID)
+    {
+        savableID = _savableID;
+    }
+}
+
+[System.Serializable]
+public class SerializedVector3
+{
+    public float x;
+    public float y;
+    public float z;
+
+    public SerializedVector3(float _x, float _y, float _z)
+    {
+        this.x = _x;
+        this.y = _y;
+        this.z = _z;
     }
 }

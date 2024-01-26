@@ -4,30 +4,40 @@ using TMPro;
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 public class UIController : MonoBehaviour
 {
     public static UIController instance;
 
-    [SerializeField] AudioClip defaultClickAudioClip;
-
+    //[0] = Main Menu Virtual Camera
+    //[1] = Default Virtual Camera
+    //[2] = Dialogue Virtual Camera
+    //[3] = Short Cut Virtual Camera
+    public CinemachineVirtualCamera[] virtualCameras;
+    public AudioClip shortCutAudioClip;
+    public Transform shortCutTarget;
+    public AudioClip defaultClickAudioClip;
+    public GameObject uiPanels;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider energySlider;
     [SerializeField] private Slider experienceSlider;
     [SerializeField] GameObject deathPanel;
     [SerializeField] private TextMeshProUGUI level;
     [SerializeField] CanvasGroup deathPanelBackgroundCanvasGroup;
+    public CanvasGroup mainCanvasCanvasGroup;
     [SerializeField] CanvasGroup deathPanelTextsCanvasGroup;
     [SerializeField] CanvasGroup deathPanelButtonsCanvasGroup;
     [SerializeField] GameObject deathButtonsPanel;
-    [SerializeField] GameObject fadeBackgroundPanel;
-    [SerializeField] CanvasGroup fadeBackgroundCanvasGroup;
+    public GameObject fadeBackgroundPanel;
+    public CanvasGroup fadeBackgroundCanvasGroup;
 
     [SerializeField] GameObject displayInfoTextPrefab;
     [SerializeField] Transform infoPanel;
-    [SerializeField] CinemachineVirtualCamera virtualCamera;
+    public CinemachineVirtualCamera virtualCamera;
     public bool canDisplayMessage = true;
-    private CinemachineFramingTransposer body;
+    public CinemachineFramingTransposer body;
+    public CinemachineSameAsFollowTarget aim;
     private Status status;
     private bool canRebirth = true;
 
@@ -66,9 +76,8 @@ public class UIController : MonoBehaviour
     [SerializeField] Transform animalInteractionBtn;
     [SerializeField] Transform interactBtn;
     [SerializeField] Transform skillArrowBtn;
-
     private int mountLeanIndex;
-
+    public MainMenu mainMenu;
 
     private void Awake()
     {
@@ -85,7 +94,7 @@ public class UIController : MonoBehaviour
         status.OnEnergyChange += OnEnergyChange;
         status.OnDie += OnPlayerDies;
         body = virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
-
+        aim = virtualCamera.GetCinemachineComponent<CinemachineSameAsFollowTarget>();
         healthSlider.minValue = 0;
         healthSlider.maxValue = status.health;
         healthSlider.value = status.currentHealth;
@@ -97,9 +106,16 @@ public class UIController : MonoBehaviour
         experienceSlider.minValue = 0;
         experienceSlider.maxValue = status.nextLevelExperienceNeeded;
 
-        zoomSlider.value = zoomSlider.maxValue;
-        body.m_CameraDistance = zoomSlider.value;
+        //inicia em zoom in
+        zoomSlider.value = zoomSlider.minValue;
+        zoomSlider.interactable = false;
+
+        //inicia em zoom out
+        //zoomSlider.value = zoomSlider.maxValue;
+        //zoomSlider.interactable = true;
+
         virtualCamera.transform.eulerAngles = new Vector3(zoomSlider.value * 5, 0, 0);
+        body.m_CameraDistance = zoomSlider.value;
     }
     public void PlayDefaultAudioClip() => status.player.soundController.PlayClip(defaultClickAudioClip);
 
@@ -109,6 +125,37 @@ public class UIController : MonoBehaviour
     public Slider zoomSlider;
     [SerializeField] GameObject[] positionFocus;
     private Direction currentDirection;
+
+    public void SetMainMenuCamera()
+    {
+        virtualCameras[0].gameObject.SetActive(true);
+        virtualCameras[1].gameObject.SetActive(false);
+        virtualCameras[2].gameObject.SetActive(false);
+        virtualCameras[3].gameObject.SetActive(false);
+    }
+    public void SetDefaultCamera()
+    {
+        virtualCameras[0].gameObject.SetActive(false);
+        virtualCameras[1].gameObject.SetActive(true);
+        virtualCameras[2].gameObject.SetActive(false);
+        virtualCameras[3].gameObject.SetActive(false);
+    }
+
+    public void SetDialogueCamera()
+    {
+        virtualCameras[0].gameObject.SetActive(false);
+        virtualCameras[1].gameObject.SetActive(false);
+        virtualCameras[2].gameObject.SetActive(true);
+        virtualCameras[3].gameObject.SetActive(false);
+    }
+
+    public void SetShortCutCamera()
+    {
+        virtualCameras[0].gameObject.SetActive(false);
+        virtualCameras[1].gameObject.SetActive(false);
+        virtualCameras[2].gameObject.SetActive(false);
+        virtualCameras[3].gameObject.SetActive(true);
+    }
 
     private void SetPositionFocus(int focusIndex)
     {
@@ -189,11 +236,18 @@ public class UIController : MonoBehaviour
         virtualCamera.transform.eulerAngles = new Vector3(value * 5, 0, 0);
     }
 
-    public void SetDialogueCamera()
+    public void SetInsideHouseCamera()
     {
         var currentDistance = body.m_CameraDistance;
+        zoomSlider.interactable = false;
+        var zoom = LeanTween.value(zoomSlider.gameObject, currentDistance, zoomSlider.minValue, .5f).setOnUpdate(OnZoomUpdate);
+    }
 
-        var zoom = LeanTween.value(zoomSlider.gameObject, currentDistance, zoomSlider.maxValue, .5f).setOnUpdate(OnZoomUpdate);
+    public void SetOutsideHouseCamera()
+    {
+        // var currentDistance = body.m_CameraDistance;
+        zoomSlider.interactable = true;
+        //var zoom = LeanTween.value(zoomSlider.gameObject, currentDistance, zoomSlider.maxValue, .5f).setOnUpdate(OnZoomUpdate);
     }
 
     public void OnZoomUpdate(float value)
@@ -205,7 +259,6 @@ public class UIController : MonoBehaviour
     {
         virtualCamera.Follow = target;
     }
-
 
     public void SetLeftControlsConfigurations()
     {
@@ -364,7 +417,6 @@ public class UIController : MonoBehaviour
         fillMountTimer.fillAmount = value;
     }
 
-
     public void Dismount()
     {
         LeanTween.cancelAll(false);
@@ -378,7 +430,7 @@ public class UIController : MonoBehaviour
 
         status.player.soundController.FireballSound();
 
-        status.pet.transform.position = status.player.transform.position + new Vector3(Random.Range(1.5f, 2.5f), 0, Random.Range(-2.5f, -1.5f));
+        status.pet.transform.position = status.player.transform.position + new Vector3(Random.Range(.1f, .3f), 0, Random.Range(-.1f, -.3f));
         status.pet.gameObject.SetActive(true);
         status.pet.hasInteract = false;
 
@@ -402,12 +454,12 @@ public class UIController : MonoBehaviour
 
         if (status.isSafeZone == true)
         {
-            status.player.animations.animator.Play("Dismounting_NoWeapon");
+            status.player.animations.animator.Play("NoWeapon_Dismount");
         }
 
         else
         {
-            status.player.animations.animator.Play("Dismounting_SwordAndShield");
+            status.player.animations.animator.Play("SwordAndShield_Dismount");
         }
 
         if (status.input.input.magnitude > 0)
@@ -419,7 +471,7 @@ public class UIController : MonoBehaviour
             status.player.animations.animator.SetBool("IsMoving", false);
         }
 
-        status.player.transform.SetParent(null);
+        status.player.transform.SetParent(status.playerParentTransform);
         DealMountWaitingTime();
 
     }
@@ -429,7 +481,6 @@ public class UIController : MonoBehaviour
         var value = LeanTween.value(gameObject, 1, 0, .25f).setOnUpdate(UpdateMountFillImage).setOnComplete(() =>
             LeanTween.value(gameObject, 0, 1, 120).setOnUpdate(UpdateMountFillImage).setOnComplete(() => status.input.hasCompletedMountTimer = true));
     }
-
 
     private void OpenSkillsOptions()
     {
@@ -467,7 +518,6 @@ public class UIController : MonoBehaviour
         skillIcon.sprite = skill.icon;
         status.input.selectedSkill = skill;
     }
-
 
     public void OnPlayerDies(object sender, Status.OnDieEventHandler handler)
     {
@@ -508,7 +558,7 @@ public class UIController : MonoBehaviour
     private IEnumerator DealDeath()
     {
         yield return new WaitForSeconds(1f);
-        status.saveSystem.Load();
+        status.saveSystem.LoadStatus();
 
         foreach (Enemy enemy in status.enemies)
         {
@@ -552,6 +602,11 @@ public class UIController : MonoBehaviour
             languageController.SetChineseFont(message.text);
     }
 
+    public void SetShortCutTargetInicialTransform(Vector3 position, Vector3 rotation)
+    {
+        shortCutTarget.localPosition = position;
+        shortCutTarget.localEulerAngles = rotation;
+    }
 }
 
 

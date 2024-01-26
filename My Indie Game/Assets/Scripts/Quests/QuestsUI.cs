@@ -139,4 +139,12 @@ public class QuestsUI : MonoBehaviour
 
         settingsController.uiController.PlayDefaultAudioClip();
     }
+
+    public void ResetAllQuestSlots()
+    { 
+        foreach(QuestSlot slot in questSlots)
+        {
+            Destroy(slot.gameObject);
+        }
+    }
 }

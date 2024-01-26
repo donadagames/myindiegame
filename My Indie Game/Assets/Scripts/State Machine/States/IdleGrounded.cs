@@ -19,6 +19,9 @@ public class IdleGrounded : IState
         inputHandler.hasEndedLanding = false;
         shouldCheckFalling = true;
 
+        if (status.uiController.aim != null)
+            status.uiController.aim.m_Damping = status.dampingTime;
+
         if (inputHandler.isCarrying)
         {
             status.player.animations.animator.Play("CarryMoveIdle");
@@ -34,6 +37,7 @@ public class IdleGrounded : IState
 
     public void OnExit()
     {
+        status.uiController.aim.m_Damping = 999999999f;
         return;
     }
 

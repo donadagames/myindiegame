@@ -36,6 +36,8 @@ public class Interacting : IState
         inputHandler.hasPressedMeleeAttackButton = false;
         inputHandler.hasPressedMagicAttackButton = false;
 
+        inputHandler.isInteracting = false;
+
         inputHandler.canMount = true;
         inputHandler.canMeleeAttack = true;
         inputHandler.canMagicAttack = true;
@@ -45,8 +47,22 @@ public class Interacting : IState
 
         inputHandler.interactable = null;
 
+        if (status.inventory.swordAndShield[0].quantity < 1 || status.inventory.swordAndShield[1].quantity < 1)
+        {
+            if (status.inventory.swordAndShield[0].quantity < 1 && status.inventory.swordAndShield[1].quantity < 1)
+                status.player.SetUnequipedConfiguration();
+            else if (status.inventory.swordAndShield[1].quantity >= 1 && status.inventory.swordAndShield[0].quantity < 1)
+                status.player.SetOnlyShieldConfiguration();
+            else
+                status.player.SetOnlySwordConfiguration();
+
+            return;
+        }
+
         if (status.isSafeZone || inputHandler.isCarrying)
+        {
             status.player.SetUnarmedConfiguration();
+        }
         else
             status.player.SetSwordAndShieldConfiguration();
     }

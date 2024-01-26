@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5a5ad708c00db429bc221a0e90873f, type: 3}
   m_Name: Cure
   m_EditorClassIdentifier: 
-  _name: Cure
-  animationClip: Cure
+  animationClip: Spell_Cure_SwordAndShield
   animationDuration: 1.433
   icon: {fileID: 21300000, guid: ad2aa7308fc6f4a08a5e2492cad0817e, type: 3}
   energyCost: 100
   healthRegenaration: 0.2
-  criticalDamageFactor: 0
   minDamage: 0
   maxDamage: 0
   skill_VFX: {fileID: 1592372973558972, guid: 721cfe8018b2cd04abd0748143d2a312, type: 3}

@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class LanguageController : MonoBehaviour
 {
@@ -67,6 +63,17 @@ public class LanguageController : MonoBehaviour
 
     #region DIALOGUE PANEL
     [SerializeField] TextMeshProUGUI dialogueText;
+    #endregion
+
+    #region MAIN MENU
+    [SerializeField] TextMeshProUGUI newGameText;
+    [SerializeField] TextMeshProUGUI continueGameText;
+    [SerializeField] TextMeshProUGUI newGameQuestionText;
+    [SerializeField] TextMeshProUGUI newGameYesText;
+    [SerializeField] TextMeshProUGUI newGameNoText;
+    [SerializeField] TextMeshProUGUI newGameTitleText;
+    [SerializeField] TextMeshProUGUI exitText;
+    [SerializeField] TextMeshProUGUI menuSettingsText;
     #endregion
 
     public Language GetGlobalLanguage() => GlobalLanguage;
@@ -155,6 +162,26 @@ public class LanguageController : MonoBehaviour
             #region DIALOGUE PANEL
             SetRegularFont(dialogueText);
             #endregion
+
+            #region MAIN MENU PANEL
+            SetRegularFont(newGameText);
+            SetRegularFont(continueGameText);
+            SetRegularFont(newGameQuestionText);
+            SetRegularFont(newGameYesText);
+            SetRegularFont(newGameNoText);
+            SetRegularFont(newGameTitleText);
+            SetRegularFont(exitText);
+            SetRegularFont(menuSettingsText);
+            menuSettingsText.text = "Configurações";
+            exitText.text = "Sair";
+            newGameText.text = "Novo Jogo";
+            newGameTitleText.text = "Novo Jogo";
+            continueGameText.text = "Continuar";
+            newGameQuestionText.text = "Você tem certeza que quer começar um novo jogo? Irá perder todo o progresso já salvo!";
+            newGameYesText.text = "Sim";
+            newGameNoText.text = "Não";
+
+            #endregion
         }
 
         else if (GlobalLanguage == Language.English)
@@ -230,11 +257,31 @@ public class LanguageController : MonoBehaviour
             #region DIALOGUE PANEL
             SetRegularFont(dialogueText);
             #endregion
+
+            #region MAIN MENU PANEL
+            SetRegularFont(newGameText);
+            SetRegularFont(continueGameText);
+            SetRegularFont(newGameQuestionText);
+            SetRegularFont(newGameYesText);
+            SetRegularFont(newGameNoText);
+            SetRegularFont(newGameTitleText);
+            SetRegularFont(exitText);
+            SetRegularFont(menuSettingsText);
+            menuSettingsText.text = "Settings";
+            exitText.text = "Exit";
+            newGameText.text = "New Game";
+            newGameTitleText.text = "New Game";
+            continueGameText.text = "Continue";
+            newGameQuestionText.text = "Are you sure you want to start a new game? You will lose all saved progress!";
+            newGameYesText.text = "Yes";
+            newGameNoText.text = "No";
+            #endregion
         }
 
         else if (GlobalLanguage == Language.Chinese)
         {
             #region SETTINGS PANEL
+
             SetChineseFont(languageText);
             SetChineseFont(musicText);
             SetChineseFont(soundFXText);
@@ -252,18 +299,19 @@ public class LanguageController : MonoBehaviour
             SetChineseFont(rightText);
             SetChineseFont(controllsText);
 
+
             languageText.text = "语言";
             musicText.text = "音乐";
             soundFXText.text = "声音特效";
             vibrationText.text = "振动";
-            followText.text = "跟随";
-            rateText.text = "速度";
-            creditsText.text = "制作人员";
+            followText.text = "<跟随";
+            rateText.text = "<速度";
+            creditsText.text = "<制作人员";
             otherGamesText.text = "其他游戏";
             settingsText.text = "设置";
-            creditsTitleText.text = "制作人员";
+            creditsTitleText.text = "<制作人员";
             leftCreditsText.text = "<uppercase><size=40><color=#F6E19C>图形</color></uppercase></size><color=white>\r\n\r\nArt by Kandles (artbykandles.com)\r\nBorodar (borodar.com)\r\nBroken Vector (brokenvector.com)\r\nDungeon Mason (alexkim0415.wixsite.com/dungeonmason)\r\nEmacEArt (www.emaceart.com)\r\nCreativetrio (creativetrio.art)\r\nInfinity PBR (infinitypbr.com)\r\nJean Moreno (jeanmoreno.com)\r\nLayer Lab (layerlabgames.com)\r\nMalbers Animations (malbersanimations.artstation.com)\r\nMeshtint Studio (meshtint.com)\r\nOMABUARTS STUDIO (www.omabuarts.com)\r\nRetroVistas (artstation.com/ramonavladut)\r\nRunemark Studio (runemarkstudio.com)\r\nSynty Studios (syntystudios.com)\r\n";
-            rightCreditsText.text = "<uppercase><size=40><color=#F6E19C>音效和音频</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nCicifyre (cicifyre.carrd.co)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>工具</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
+            rightCreditsText.text = "<<uppercase><size=40><color=#F6E19C>音效和音频</color></uppercase></size><color=white>\r\n\r\nAmeAngelofSin (twitter.com/ameangelofsin)\r\nCafofo (cafofomusic.com)\r\nCicifyre (cicifyre.carrd.co)\r\nFreesound (freesound.org)\r\nSkyRaeVoicing (skyraevoicing.com)\r\nZapslat (zapsplat.com)</color>\r\n\r\n<uppercase><size=40>\r\n<color=#F6E19C>工具</color></uppercase></size><color=white>\r\n\r\nDented Pixel (dentedpixel.com)\r\nM Studio Hub (mstudiohub.com)</color>";
             otherGamesTitleText.text = "其他游戏";
             leftText.text = "左边";
             rightText.text = "正确的";
@@ -304,6 +352,25 @@ public class LanguageController : MonoBehaviour
 
             #region DIALOGUE PANEL
             SetChineseFont(dialogueText);
+            #endregion
+
+            #region MAIN MENU PANEL
+            SetChineseFont(newGameText);
+            SetChineseFont(continueGameText);
+            SetChineseFont(newGameQuestionText);
+            SetChineseFont(newGameYesText);
+            SetChineseFont(newGameNoText);
+            SetChineseFont(newGameTitleText);
+            SetChineseFont(exitText);
+            SetChineseFont(menuSettingsText);
+            menuSettingsText.text = "设置";
+            exitText.text = "出口";
+            newGameText.text = "新游戏";
+            newGameTitleText.text = "新游戏";
+            continueGameText.text = "继续游戏";
+            newGameQuestionText.text = "您确定要开始新游戏吗？ 您将失去所有已保存的进度！";
+            newGameYesText.text = "是的";
+            newGameNoText.text = "在";
             #endregion
         }
     }
